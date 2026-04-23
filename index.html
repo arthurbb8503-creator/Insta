@@ -30,9 +30,7 @@
       min-height: 100%;
     }
 
-    body {
-      padding: 18px;
-    }
+    body { padding: 18px; }
 
     .app {
       display: grid;
@@ -77,9 +75,7 @@
       font-size: 12px;
     }
 
-    .panel-body {
-      padding: 16px 18px 18px;
-    }
+    .panel-body { padding: 16px 18px 18px; }
 
     .toolbar {
       display: grid;
@@ -161,38 +157,13 @@
     }
 
     button:hover,
-    .download-link:hover {
-      transform: translateY(-1px);
-    }
+    .download-link:hover { transform: translateY(-1px); }
+    button:disabled { cursor: wait; opacity: 0.65; transform: none; }
 
-    button:disabled {
-      cursor: wait;
-      opacity: 0.65;
-      transform: none;
-    }
-
-    .primary {
-      background: linear-gradient(135deg, #49a6ff, #2e7dff);
-      color: #fff;
-    }
-
-    .secondary {
-      background: #172635;
-      color: var(--text);
-      border: 1px solid var(--line);
-    }
-
-    .ghost {
-      background: transparent;
-      color: var(--muted);
-      border: 1px dashed var(--line);
-    }
-
-    .download-link {
-      background: linear-gradient(135deg, #63d490, #35ad67);
-      color: #08210f;
-      font-weight: 800;
-    }
+    .primary { background: linear-gradient(135deg, #49a6ff, #2e7dff); color: #fff; }
+    .secondary { background: #172635; color: var(--text); border: 1px solid var(--line); }
+    .ghost { background: transparent; color: var(--muted); border: 1px dashed var(--line); }
+    .download-link { background: linear-gradient(135deg, #63d490, #35ad67); color: #08210f; font-weight: 800; }
 
     .status {
       margin-top: 12px;
@@ -206,21 +177,9 @@
       line-height: 1.45;
     }
 
-    .status strong {
-      color: var(--text);
-    }
-
-    .status.error {
-      border-color: rgba(255, 122, 122, 0.28);
-      color: #ffd4d4;
-      background: rgba(255, 122, 122, 0.08);
-    }
-
-    .status.success {
-      border-color: rgba(99, 212, 144, 0.26);
-      color: #d9ffea;
-      background: rgba(99, 212, 144, 0.1);
-    }
+    .status strong { color: var(--text); }
+    .status.error { border-color: rgba(255, 122, 122, 0.28); color: #ffd4d4; background: rgba(255, 122, 122, 0.08); }
+    .status.success { border-color: rgba(99, 212, 144, 0.26); color: #d9ffea; background: rgba(99, 212, 144, 0.1); }
 
     .tips {
       margin-top: 12px;
@@ -229,10 +188,7 @@
       line-height: 1.5;
     }
 
-    .preview-wrap {
-      display: grid;
-      gap: 14px;
-    }
+    .preview-wrap { display: grid; gap: 14px; }
 
     .preview-shell {
       border: 1px solid rgba(255,255,255,0.06);
@@ -240,7 +196,7 @@
       border-radius: 18px;
       min-height: 760px;
       padding: 18px;
-      overflow: hidden;
+      overflow: auto;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -248,42 +204,44 @@
     }
 
     .preview-stage {
-      width: min(100%, 460px);
+      width: 100%;
       display: flex;
       justify-content: center;
       align-items: flex-start;
+      min-height: 100%;
     }
 
     .phone-shadow {
       position: absolute;
-      inset: auto 50% 34px auto;
       width: 280px;
       height: 560px;
       filter: blur(60px);
       opacity: 0.28;
       background: rgba(73, 166, 255, 0.42);
-      transform: translateX(50%);
       pointer-events: none;
+      z-index: 0;
     }
 
     .scale-box {
       position: relative;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      overflow: hidden;
+      width: 258px;
+      height: 460px;
+      display: block;
+      z-index: 1;
+      flex: 0 0 auto;
     }
 
     .preview-root {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 1080px;
       height: 1920px;
-      transform-origin: top center;
+      transform-origin: top left;
       border-radius: 26px;
       overflow: hidden;
       box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
       background: #000;
-      flex: 0 0 auto;
     }
 
     .legend {
@@ -308,6 +266,14 @@
       z-index: -1;
     }
 
+    .export-preview { margin-top: 14px; display: none; }
+    .export-preview video {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #000;
+    }
+
     progress {
       width: 100%;
       height: 10px;
@@ -319,54 +285,24 @@
       margin-top: 12px;
     }
 
-    progress::-webkit-progress-bar {
-      background: rgba(255,255,255,0.08);
-      border-radius: 999px;
-    }
-
-    progress::-webkit-progress-value {
-      background: linear-gradient(90deg, #49a6ff, #63d490);
-      border-radius: 999px;
-    }
-
-    progress::-moz-progress-bar {
-      background: linear-gradient(90deg, #49a6ff, #63d490);
-      border-radius: 999px;
-    }
+    progress::-webkit-progress-bar { background: rgba(255,255,255,0.08); border-radius: 999px; }
+    progress::-webkit-progress-value { background: linear-gradient(90deg, #49a6ff, #63d490); border-radius: 999px; }
+    progress::-moz-progress-bar { background: linear-gradient(90deg, #49a6ff, #63d490); border-radius: 999px; }
 
     @media (max-width: 1100px) {
-      .app {
-        grid-template-columns: 1fr;
-      }
-      .preview-shell {
-        min-height: 620px;
-      }
+      .app { grid-template-columns: 1fr; }
+      .preview-shell { min-height: 620px; }
     }
 
     @media (max-width: 720px) {
-      body {
-        padding: 12px;
-      }
-      .toolbar,
-      .grid-2 {
-        grid-template-columns: 1fr 1fr;
-      }
+      body { padding: 12px; }
+      .toolbar, .grid-2 { grid-template-columns: 1fr 1fr; }
     }
 
     @media (max-width: 520px) {
-      .toolbar,
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
-      .panel-body,
-      .panel-head {
-        padding-left: 14px;
-        padding-right: 14px;
-      }
-      .preview-shell {
-        padding: 12px;
-        min-height: 520px;
-      }
+      .toolbar, .grid-2 { grid-template-columns: 1fr; }
+      .panel-body, .panel-head { padding-left: 14px; padding-right: 14px; }
+      .preview-shell { padding: 12px; min-height: 520px; }
     }
   </style>
 </head>
@@ -387,11 +323,11 @@
           </div>
           <div class="field">
             <label for="fps">FPS</label>
-            <input id="fps" type="number" min="4" max="24" step="1" value="12" />
+            <input id="fps" type="number" min="4" max="30" step="1" value="15" />
           </div>
           <div class="field">
             <label for="bitrate">Bitrate (Mbps)</label>
-            <input id="bitrate" type="number" min="2" max="30" step="1" value="12" />
+            <input id="bitrate" type="number" min="2" max="30" step="1" value="14" />
           </div>
           <div class="field">
             <label for="filename">Nome do arquivo</label>
@@ -418,12 +354,17 @@
         </div>
 
         <div id="status" class="status">
-          <strong>Dica:</strong> use no desktop, de preferência no Chrome. Animações mais simples e vídeos curtos exportam melhor.
+          <strong>Dica:</strong> use no desktop, de preferência no Chrome ou Safari. Para iPhone, o melhor cenário é exportar em MP4 quando o navegador suportar esse formato.
         </div>
         <progress id="progress" value="0" max="100" hidden></progress>
 
         <div class="tips">
-          Exportação simples via navegador. Melhor para vídeos curtos, layouts controlados e peças como WhatsApp fake, posts animados e telas do app. Para resultados mais consistentes, mantenha o HTML dentro do quadro 1080x1920.
+          O preview foi ajustado para encaixar melhor no quadro. A página tenta gerar MP4 primeiro e cai para WebM quando o navegador não suportar MP4.
+        </div>
+
+        <div class="export-preview" id="exportPreviewWrap">
+          <label style="display:block;margin-bottom:8px;font-size:12px;color:var(--muted);font-weight:600;">Último vídeo gerado</label>
+          <video id="exportPreview" controls playsinline></video>
         </div>
       </div>
     </section>
@@ -436,8 +377,8 @@
         </div>
       </div>
       <div class="panel-body">
-        <div class="preview-shell">
-          <div class="phone-shadow"></div>
+        <div class="preview-shell" id="previewShell">
+          <div class="phone-shadow" id="phoneShadow"></div>
           <div class="preview-stage">
             <div class="scale-box" id="scaleBox">
               <div id="previewRoot" class="preview-root"></div>
@@ -470,7 +411,11 @@
       var previewRoot = document.getElementById('previewRoot');
       var captureRoot = document.getElementById('captureRoot');
       var scaleBox = document.getElementById('scaleBox');
+      var previewShell = document.getElementById('previewShell');
+      var phoneShadow = document.getElementById('phoneShadow');
       var mimeInfo = document.getElementById('mimeInfo');
+      var exportPreviewWrap = document.getElementById('exportPreviewWrap');
+      var exportPreview = document.getElementById('exportPreview');
 
       var durationInput = document.getElementById('duration');
       var fpsInput = document.getElementById('fps');
@@ -484,6 +429,7 @@
         '<div class="wa-scene">',
         '  <div class="wa-top">',
         '    <div class="wa-left">',
+        '      <div class="wa-back">‹</div>',
         '      <div class="wa-avatar">R</div>',
         '      <div class="wa-person">',
         '        <div class="wa-name">Rafa Uber</div>',
@@ -511,77 +457,20 @@
 
       var defaultCSS = [
         '#captureRoot, #previewRoot { background: #0b1014; }',
-        '.wa-scene {',
-        '  width: 100%;',
-        '  height: 100%;',
-        '  background: #0b1014;',
-        '  color: #f6f7fb;',
-        '  font-family: Inter, Arial, sans-serif;',
-        '  display: flex;',
-        '  flex-direction: column;',
-        '}',
-        '.wa-top {',
-        '  height: 148px;',
-        '  padding: 28px 34px;',
-        '  background: #141b22;',
-        '  display: flex;',
-        '  align-items: center;',
-        '  justify-content: space-between;',
-        '}',
+        '.wa-scene { width: 100%; height: 100%; background: #0b1014; color: #f6f7fb; font-family: Inter, Arial, sans-serif; display: flex; flex-direction: column; position: relative; }',
+        '.wa-top { height: 148px; padding: 28px 34px; background: #141b22; display: flex; align-items: center; justify-content: space-between; }',
         '.wa-left { display: flex; align-items: center; gap: 18px; }',
-        '.wa-avatar {',
-        '  width: 68px;',
-        '  height: 68px;',
-        '  border-radius: 50%;',
-        '  background: linear-gradient(135deg, #ff8a65, #ff5a60);',
-        '  display: flex;',
-        '  align-items: center;',
-        '  justify-content: center;',
-        '  font-size: 30px;',
-        '  font-weight: 800;',
-        '}',
+        '.wa-back { font-size: 54px; line-height: 1; opacity: 0.9; margin-right: 4px; }',
+        '.wa-avatar { width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(135deg, #ff8a65, #ff5a60); display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 800; }',
         '.wa-name { font-size: 34px; font-weight: 700; letter-spacing: -0.03em; }',
         '.wa-online { font-size: 22px; color: #97a5b4; margin-top: 4px; }',
         '.wa-actions { display: flex; gap: 18px; font-size: 34px; opacity: 0.9; }',
-        '.wa-chat {',
-        '  flex: 1;',
-        '  padding: 34px 28px 70px;',
-        '  display: flex;',
-        '  flex-direction: column;',
-        '  gap: 18px;',
-        '  background: radial-gradient(circle at top right, rgba(73,166,255,0.08), transparent 24%), #0b1014;',
-        '}',
-        '.msg {',
-        '  max-width: 74%;',
-        '  padding: 22px 24px;',
-        '  border-radius: 26px;',
-        '  font-size: 34px;',
-        '  line-height: 1.28;',
-        '  word-break: break-word;',
-        '  box-shadow: 0 12px 24px rgba(0,0,0,0.18);',
-        '}',
-        '.msg.in {',
-        '  align-self: flex-start;',
-        '  background: #1a232d;',
-        '  color: #eef3f8;',
-        '  border-top-left-radius: 12px;',
-        '}',
-        '.msg.out {',
-        '  align-self: flex-end;',
-        '  background: #1f6a54;',
-        '  color: #f6fff8;',
-        '  border-top-right-radius: 12px;',
-        '}',
+        '.wa-chat { flex: 1; padding: 34px 28px 70px; display: flex; flex-direction: column; gap: 18px; background: radial-gradient(circle at top right, rgba(73,166,255,0.08), transparent 24%), #0b1014; }',
+        '.msg { max-width: 74%; padding: 22px 24px; border-radius: 26px; font-size: 34px; line-height: 1.28; word-break: break-word; box-shadow: 0 12px 24px rgba(0,0,0,0.18); }',
+        '.msg.in { align-self: flex-start; background: #1a232d; color: #eef3f8; border-top-left-radius: 12px; }',
+        '.msg.out { align-self: flex-end; background: #1f6a54; color: #f6fff8; border-top-right-radius: 12px; }',
         '.msg.final { font-weight: 700; }',
-        '.wa-mark {',
-        '  position: absolute;',
-        '  right: 34px;',
-        '  bottom: 24px;',
-        '  color: rgba(255,255,255,0.42);',
-        '  font-size: 24px;',
-        '  letter-spacing: 0.08em;',
-        '}',
-        '.wa-scene { position: relative; }'
+        '.wa-mark { position: absolute; left: 50%; transform: translateX(-50%); bottom: 24px; color: rgba(255,255,255,0.42); font-size: 24px; letter-spacing: 0.02em; }'
       ].join('\n');
 
       function setStatus(message, type) {
@@ -591,6 +480,9 @@
 
       function getSupportedMimeType() {
         var types = [
+          'video/mp4;codecs=h264',
+          'video/mp4;codecs=avc1.42E01E',
+          'video/mp4',
           'video/webm;codecs=vp9',
           'video/webm;codecs=vp8',
           'video/webm'
@@ -601,6 +493,13 @@
           }
         }
         return '';
+      }
+
+      function extensionFromMime(mime) {
+        if (!mime) return 'video';
+        if (mime.indexOf('mp4') > -1) return 'mp4';
+        if (mime.indexOf('webm') > -1) return 'webm';
+        return 'video';
       }
 
       var supportedMimeType = getSupportedMimeType();
@@ -619,13 +518,17 @@
       }
 
       function scalePreview() {
-        var containerWidth = scaleBox.clientWidth;
-        if (!containerWidth) return;
-        var idealWidth = 1080;
-        var maxWidth = Math.min(containerWidth, 460);
-        var scale = maxWidth / idealWidth;
+        var shellWidth = previewShell.clientWidth - 36;
+        var shellHeight = Math.max(420, previewShell.clientHeight - 36);
+        if (!shellWidth || !shellHeight) return;
+        var scale = Math.min(shellWidth / 1080, shellHeight / 1920, 1);
+        var scaledWidth = Math.round(1080 * scale);
+        var scaledHeight = Math.round(1920 * scale);
+        scaleBox.style.width = scaledWidth + 'px';
+        scaleBox.style.height = scaledHeight + 'px';
         previewRoot.style.transform = 'scale(' + scale + ')';
-        previewRoot.style.marginBottom = (-1920 + (1920 * scale)) + 'px';
+        phoneShadow.style.width = Math.max(180, Math.round(scaledWidth * 0.72)) + 'px';
+        phoneShadow.style.height = Math.max(360, Math.round(scaledHeight * 0.72)) + 'px';
       }
 
       function loadDefaultExample() {
@@ -635,19 +538,17 @@
       }
 
       function wait(ms) {
-        return new Promise(function (resolve) {
-          setTimeout(resolve, ms);
-        });
+        return new Promise(function (resolve) { setTimeout(resolve, ms); });
       }
 
-      function downloadBlob(blob, filename) {
-        if (currentBlobUrl) {
-          URL.revokeObjectURL(currentBlobUrl);
-        }
+      function attachBlob(blob) {
+        if (currentBlobUrl) URL.revokeObjectURL(currentBlobUrl);
         currentBlobUrl = URL.createObjectURL(blob);
         downloadLink.href = currentBlobUrl;
-        downloadLink.download = filename;
+        downloadLink.download = (filenameInput.value || 'video-html').trim() + '.' + extensionFromMime(blob.type || supportedMimeType);
         downloadLink.hidden = false;
+        exportPreview.src = currentBlobUrl;
+        exportPreviewWrap.style.display = 'block';
       }
 
       async function captureFrame(target, canvas, context) {
@@ -683,13 +584,13 @@
         progressEl.value = 0;
 
         var duration = Math.max(1, Number(durationInput.value) || 8);
-        var fps = Math.max(4, Math.min(24, Number(fpsInput.value) || 12));
-        var bitrateMbps = Math.max(2, Number(bitrateInput.value) || 12);
+        var fps = Math.max(4, Math.min(30, Number(fpsInput.value) || 15));
+        var bitrateMbps = Math.max(2, Number(bitrateInput.value) || 14);
         var filename = (filenameInput.value || 'video-html').trim();
         if (!filename) filename = 'video-html';
 
         renderScene();
-        setStatus('<strong>Exportando...</strong> Isso pode levar alguns segundos. Evite trocar de aba durante a geração.', '');
+        setStatus('<strong>Exportando...</strong> Não troque de aba. Se estiver no iPhone, prefira Safari e teste se a saída veio em MP4.', '');
 
         var canvas = document.createElement('canvas');
         canvas.width = 1080;
@@ -713,9 +614,7 @@
         }
 
         recorder.ondataavailable = function (event) {
-          if (event.data && event.data.size > 0) {
-            chunks.push(event.data);
-          }
+          if (event.data && event.data.size > 0) chunks.push(event.data);
         };
 
         var stopped = new Promise(function (resolve) {
@@ -746,14 +645,13 @@
         recorder.stop();
         await stopped;
 
-        var blob = new Blob(chunks, { type: supportedMimeType || 'video/webm' });
-        var extension = supportedMimeType.indexOf('webm') > -1 ? 'webm' : 'video';
-        downloadBlob(blob, filename + '.' + extension);
+        var blob = new Blob(chunks, { type: supportedMimeType });
+        attachBlob(blob);
 
         progressEl.hidden = true;
         isRecording = false;
         recordBtn.disabled = false;
-        setStatus('<strong>Pronto.</strong> Vídeo gerado com sucesso. Use o botão verde para baixar.', 'success');
+        setStatus('<strong>Pronto.</strong> Vídeo gerado com sucesso em <strong>' + supportedMimeType + '</strong>. Use o botão verde para baixar.', 'success');
       }
 
       applyBtn.addEventListener('click', renderScene);
