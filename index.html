@@ -1,902 +1,622 @@
 <!DOCTYPE html>
 
-<html lang="pt-BR" style="background:#03080F;">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#03080F">
-<meta name="supported-color-schemes" content="dark">
-<title>No Azul — Demo</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>No Azul</title>
 <style>
-:root {
-  --azul:   #0A84FF;
-  --azul2:  #40AFFF;
-  --azul3:  #00D4FF;
-  --fundo:  #03080F;
-  --verde:  #00E676;
-  --verde2: #00C864;
-  --amarelo:#FFB800;
-  --branco: #FFFFFF;
-  --cinza:  #1E3A5A;
-  --cinza2: #5A8AB0;
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    width: 100%; height: 100%;
+    background: #000;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
+    overflow: hidden;
+    user-select: none;
+  }
+
+.stage {
+position: fixed; inset: 0;
+display: flex; align-items: center; justify-content: center;
+background: #000;
 }
 
-- { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
-
-html { background:#03080F !important; color-scheme:dark; }
-html, body {
-width:100%; height:100%;
-background:#03080F !important;
-font-family:‘DM Sans’,sans-serif;
-overflow:hidden;
+.phone {
+position: relative;
+width: 100vw;
+max-width: calc(100vh * 9 / 16);
+aspect-ratio: 9 / 16;
+background: #0b0b0b;
+overflow: hidden;
+animation: handshake 12s infinite ease-in-out;
+}
+@keyframes handshake {
+0%, 100% { transform: translate(0, 0); }
+33% { transform: translate(0.08%, -0.05%); }
+66% { transform: translate(-0.06%, 0.06%); }
 }
 
-/* ── GRADE CSS PERSPECTIVA (leve, CSS puro) ─────────────────── */
-.bg-grid {
-position:fixed; inset:0; z-index:0; pointer-events:none;
+/* ===== STATUS BAR ===== */
+.statusbar {
+height: 4.8%;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 1vh 7% 0.3vh;
+color: #fff;
+font-size: 1.85vh;
+font-weight: 600;
+letter-spacing: -0.02em;
+}
+.statusbar .right {
+display: flex;
+align-items: center;
+gap: 0.7vh;
+}
+.signal-bars {
+display: flex;
+align-items: flex-end;
+gap: 0.28vh;
+height: 1.3vh;
+}
+.signal-bars span {
+width: 0.4vh;
+background: #fff;
+border-radius: 0.1vh;
+}
+.signal-bars span:nth-child(1) { height: 35%; }
+.signal-bars span:nth-child(2) { height: 55%; }
+.signal-bars span:nth-child(3) { height: 75%; }
+.signal-bars span:nth-child(4) { height: 100%; }
+.five-g { font-size: 1.55vh; font-weight: 600; letter-spacing: -0.03em; }
+.battery {
+width: 3.1vh; height: 1.5vh;
+border: 0.18vh solid rgba(255,255,255,0.45);
+border-radius: 0.45vh;
+position: relative;
+padding: 0.15vh;
+}
+.battery::after {
+content: “”;
+position: absolute;
+right: -0.4vh; top: 28%;
+width: 0.22vh; height: 44%;
+background: rgba(255,255,255,0.45);
+border-radius: 0 0.1vh 0.1vh 0;
+}
+.battery-fill {
+height: 100%;
+width: 75%;
+background: #fff;
+border-radius: 0.18vh;
+}
+.battery-percent {
+position: absolute;
+inset: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.9vh;
+font-weight: 700;
+color: #000;
+letter-spacing: -0.05em;
+}
+
+/* ===== HEADER ===== */
+.chat-header {
+height: 6.8%;
+background: #0b0b0b;
+display: flex;
+align-items: center;
+padding: 0 3.5%;
+gap: 1.4vh;
+position: relative;
+}
+.back-group {
+display: flex;
+align-items: center;
+gap: 0.8vh;
+flex-shrink: 0;
+}
+.back-arrow {
+font-size: 3.4vh;
+font-weight: 300;
+line-height: 1;
+color: #4a9eff;
+margin-top: -0.3vh;
+}
+.back-count {
+font-size: 2.05vh;
+color: #4a9eff;
+font-weight: 400;
+letter-spacing: -0.01em;
+}
+.avatar {
+width: 4.5vh;
+height: 4.5vh;
+border-radius: 50%;
+background: linear-gradient(135deg, #4e8d7c 0%, #2d5a4e 100%);
+display: flex;
+align-items: center;
+justify-content: center;
+color: #fff;
+font-size: 2vh;
+font-weight: 600;
+flex-shrink: 0;
+overflow: hidden;
+letter-spacing: -0.02em;
+}
+.contact-info {
+display: flex;
+flex-direction: column;
+gap: 0.05vh;
+line-height: 1.15;
+flex: 1;
+min-width: 0;
+}
+.contact-name {
+color: #fff;
+font-size: 1.95vh;
+font-weight: 600;
+letter-spacing: -0.01em;
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+.contact-status {
+color: #8a8a8e;
+font-size: 1.35vh;
+font-weight: 400;
+}
+.header-icons {
+display: flex;
+gap: 2.4vh;
+align-items: center;
+color: #fff;
+flex-shrink: 0;
+}
+.header-icons svg {
+width: 2.7vh;
+height: 2.7vh;
+stroke: #fff;
+stroke-width: 1.7;
+fill: none;
+stroke-linecap: round;
+stroke-linejoin: round;
+}
+
+/* ===== CHAT AREA ===== */
+.chat {
+position: relative;
+height: calc(100% - 4.8% - 6.8% - 7.2%);
+background-color: #0b0b0b;
 background-image:
-linear-gradient(rgba(10,132,255,0.06) 1px, transparent 1px),
-linear-gradient(90deg, rgba(10,132,255,0.06) 1px, transparent 1px);
-background-size:44px 44px;
--webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
-animation:grid-drift 18s linear infinite;
+radial-gradient(circle at 8% 12%, rgba(255,255,255,0.025) 0 1.1vh, transparent 1.2vh),
+radial-gradient(circle at 82% 6%, rgba(255,255,255,0.02) 0 0.9vh, transparent 1vh),
+radial-gradient(circle at 22% 38%, rgba(255,255,255,0.022) 0 0.8vh, transparent 0.9vh),
+radial-gradient(circle at 68% 52%, rgba(255,255,255,0.025) 0 1.3vh, transparent 1.4vh),
+radial-gradient(circle at 42% 72%, rgba(255,255,255,0.02) 0 0.9vh, transparent 1vh),
+radial-gradient(circle at 88% 85%, rgba(255,255,255,0.022) 0 1.1vh, transparent 1.2vh),
+radial-gradient(circle at 5% 88%, rgba(255,255,255,0.02) 0 0.9vh, transparent 1vh),
+radial-gradient(circle at 32% 22%, rgba(255,255,255,0.017) 0 0.7vh, transparent 0.8vh),
+radial-gradient(circle at 58% 28%, rgba(255,255,255,0.022) 0 1vh, transparent 1.1vh),
+radial-gradient(circle at 12% 62%, rgba(255,255,255,0.02) 0 0.85vh, transparent 0.95vh),
+radial-gradient(circle at 75% 25%, rgba(255,255,255,0.018) 0 0.8vh, transparent 0.9vh),
+radial-gradient(circle at 38% 55%, rgba(255,255,255,0.02) 0 0.75vh, transparent 0.85vh);
+background-size: 35% 35%;
+overflow-y: auto;
+overflow-x: hidden;
+padding: 1vh 3% 1vh;
+display: flex;
+flex-direction: column;
+scrollbar-width: none;
 }
-@keyframes grid-drift { from{background-position:0 0} to{background-position:0 44px} }
+.chat::-webkit-scrollbar { display: none; }
 
-.bg-glow {
-position:fixed; inset:0; z-index:0; pointer-events:none;
-background:radial-gradient(ellipse 70% 50% at 50% 50%, rgba(10,132,255,0.08) 0%, transparent 70%);
+/* ===== BALÕES com rabinho ===== */
+.msg {
+max-width: 78%;
+padding: 0.85vh 1.35vh 1vh 1.35vh;
+border-radius: 1vh;
+font-size: 1.95vh;
+line-height: 1.3;
+color: #fff;
+position: relative;
+word-wrap: break-word;
+opacity: 0;
+letter-spacing: -0.005em;
+margin-bottom: 0.25vh;
+min-width: 10vh;
 }
-
-/* ── STAGE ──────────────────────────────────────────────────── */
-#stage {
-position:fixed; inset:0;
-display:flex; justify-content:center; align-items:center;
-z-index:10;
+.msg.received {
+background: #1f2c2e;
+align-self: flex-start;
+border-top-left-radius: 0.2vh;
+margin-left: 1vh;
 }
-
-/* ── CENAS ──────────────────────────────────────────────────── */
-.scene {
-position:absolute; inset:0;
-display:flex; flex-direction:column;
-justify-content:center; align-items:center;
-opacity:0; pointer-events:none;
-transition:opacity 0.05s;
+.msg.sent {
+background: #005c4b;
+align-self: flex-end;
+border-top-right-radius: 0.2vh;
+margin-right: 1vh;
 }
-.scene.active { opacity:1; pointer-events:all; }
-
-/* ── TRANSIÇÃO ──────────────────────────────────────────────── */
-#glitch-overlay {
-position:fixed; inset:0; z-index:999;
-pointer-events:none; overflow:hidden;
+/* rabinho do balão */
+.msg.received::before {
+content: “”;
+position: absolute;
+top: 0;
+left: -0.8vh;
+width: 1vh;
+height: 1.3vh;
+background: #1f2c2e;
+clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
-
-/* ================================================================
-CENA 1 — LAYOUT v2 + EFEITOS v3
-================================================================ */
-#scene-1 { text-align:center; overflow:hidden; }
-
-/* Radar — gira em direções opostas (v3) */
-.radar-ring { position:absolute; border-radius:50%; border:1px solid rgba(10,132,255,0.12); }
-.rr1 { width:250px; height:250px; border-color:rgba(10,132,255,0.20);
-animation:r-pop 0.6s ease 0.2s both, r-pulse 4s ease-in-out 0.8s infinite; }
-.rr2 { width:420px; height:420px;
-animation:r-pop 0.6s ease 0.5s both, r-pulse 4s ease-in-out 1.2s infinite; }
-.rr3 { width:600px; height:600px;
-animation:r-pop 0.6s ease 0.8s both, r-pulse 4s ease-in-out 1.6s infinite; }
-.rr4 { width:800px; height:800px;
-animation:r-pop 0.6s ease 1.1s both, r-pulse 4s ease-in-out 2.0s infinite; }
-
-@keyframes r-pop    { from{opacity:0;transform:scale(0.5)} to{opacity:1;transform:scale(1)} }
-@keyframes r-spin-cw  { from{transform:rotate(0deg)}   to{transform:rotate(360deg)} }
-@keyframes r-spin-ccw { from{transform:rotate(0deg)}   to{transform:rotate(-360deg)} }
-@keyframes r-pulse {
-0%,100% { border-color:rgba(10,132,255,0.14); }
-50%     { border-color:rgba(10,132,255,0.42); box-shadow:0 0 18px rgba(10,132,255,0.1); }
-}
-
-/* Glow pulsante central */
-.c1-glow {
-position:absolute; width:320px; height:320px; border-radius:50%;
-background:radial-gradient(circle, rgba(10,132,255,0.1) 0%, transparent 70%);
-animation:glow-breathe 3s ease-in-out infinite; pointer-events:none;
-}
-@keyframes glow-breathe { 0%,100%{transform:scale(1);opacity:0.5} 50%{transform:scale(1.3);opacity:1} }
-
-/* Logo — zoom crash (v2 original) */
-.c1-logo-wrap {
-position:relative; z-index:5;
-display:flex; flex-direction:column; align-items:center;
-opacity:0; transform:scale(1.8);
-animation:logo-crash 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
-}
-@keyframes logo-crash { to{opacity:1;transform:scale(1)} }
-
-.c1-logo-badge {
-width:72px; height:72px; border-radius:22px;
-background:linear-gradient(135deg,rgba(10,132,255,0.2) 0%,rgba(0,212,255,0.1) 100%);
-border:1.5px solid rgba(64,175,255,0.4);
-display:flex; align-items:center; justify-content:center;
-box-shadow:0 0 40px rgba(10,132,255,0.3),0 0 80px rgba(10,132,255,0.1),inset 0 1px 0 rgba(255,255,255,0.15);
-margin-bottom:20px; position:relative;
+.msg.sent::before {
+content: “”;
+position: absolute;
+top: 0;
+right: -0.8vh;
+width: 1vh;
+height: 1.3vh;
+background: #005c4b;
+clip-path: polygon(0 0, 100% 0, 0 100%);
 }
 
-/* Nome — letras caem com bounce individual (v3) */
-.c1-nome-wrap { position:relative; z-index:5; overflow:visible; }
-.c1-letra {
-display:inline-block;
-font-family:‘Bebas Neue’,sans-serif;
-font-size:72px; letter-spacing:4px; color:white; line-height:1;
-text-shadow:0 0 60px rgba(10,132,255,0.4);
-opacity:0; transform:translateY(-70px) rotate(-6deg);
+/* agrupamento: mensagens consecutivas do mesmo tipo ficam mais juntas e sem rabinho nas seguintes */
+.msg.grouped { margin-top: -0.1vh; margin-bottom: 0.15vh; }
+.msg.grouped.received { border-top-left-radius: 1vh; }
+.msg.grouped.sent { border-top-right-radius: 1vh; }
+.msg.grouped::before { display: none; }
+
+.msg .text-content {
+display: inline;
 }
-.c1-letra.azul { color:var(–azul2); }
-.c1-letra:nth-child(1) { animation:letra-drop 0.55s cubic-bezier(0.34,1.7,0.64,1) 0.4s forwards; }
-.c1-letra:nth-child(2) { animation:letra-drop 0.55s cubic-bezier(0.34,1.7,0.64,1) 0.5s forwards; }
-.c1-letra:nth-child(3) { animation:letra-drop 0.55s cubic-bezier(0.34,1.7,0.64,1) 0.6s forwards; }
-.c1-letra:nth-child(4) { animation:letra-drop 0.55s cubic-bezier(0.34,1.7,0.64,1) 0.7s forwards; }
-.c1-letra:nth-child(5) { animation:letra-drop 0.55s cubic-bezier(0.34,1.7,0.64,1) 0.8s forwards; }
-.c1-letra:nth-child(6) { animation:letra-drop 0.55s cubic-bezier(0.34,1.7,0.64,1) 0.9s forwards; }
-.c1-letra:nth-child(7) { animation:letra-drop 0.55s cubic-bezier(0.34,1.7,0.64,1) 1.0s forwards; }
-@keyframes letra-drop { to{opacity:1;transform:translateY(0) rotate(0deg)} }
-
-.c1-tagline {
-font-family:‘Space Mono’,monospace;
-font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(–cinza2);
-margin-top:10px;
-opacity:0; transform:translateX(-30px);
-animation:slide-from-left 0.6s ease 1.3s forwards;
+.msg .meta {
+display: inline-flex;
+align-items: center;
+gap: 0.4vh;
+font-size: 1.2vh;
+color: rgba(255,255,255,0.55);
+font-weight: 400;
+white-space: nowrap;
+float: right;
+margin-left: 1vh;
+margin-top: 0.7vh;
+line-height: 1;
 }
-@keyframes slide-from-left { to{opacity:1;transform:translateX(0)} }
-
-/* Pergunta — zoom pop (v3) */
-.c1-question {
-position:relative; z-index:5; margin-top:40px;
-font-size:26px; font-weight:700; color:white; line-height:1.25; text-align:center;
-opacity:0; transform:scale(0.7);
-animation:question-pop 0.7s cubic-bezier(0.34,1.5,0.64,1) 1.5s forwards;
+.msg.sent .meta { color: rgba(200,230,220,0.7); }
+.ticks {
+width: 1.9vh;
+height: 1.05vh;
+display: inline-block;
+position: relative;
 }
-.c1-question em { color:var(–azul3); font-style:normal; }
-@keyframes question-pop { to{opacity:1;transform:scale(1)} }
-
-/* Cards — arremessados em curva (v3), mesma posição v2 */
-.c1-float {
-position:absolute; z-index:4;
-background:rgba(4,10,24,0.96);
-border:1px solid rgba(64,175,255,0.2);
-border-radius:16px; padding:14px 18px;
-box-shadow:0 20px 40px rgba(0,0,0,0.6);
-opacity:0;
-}
-.c1-f1 { top:12%; left:3%;   –r:-4deg; transform:rotate(-4deg) translate(-100px,-50px); animation:throw-in-l 0.7s cubic-bezier(0.34,1.4,0.64,1) 1.4s forwards, tilt-bob-l 4s ease-in-out 2.1s infinite; }
-.c1-f2 { top:15%; right:3%;  –r:3deg;  transform:rotate(3deg)  translate(100px,-50px);  animation:throw-in-r 0.7s cubic-bezier(0.34,1.4,0.64,1) 1.6s forwards, tilt-bob-r 4s ease-in-out 2.3s infinite; }
-.c1-f3 { bottom:18%; left:4%;  –r:3deg; transform:rotate(3deg)  translate(-100px,50px);  animation:throw-in-l 0.7s cubic-bezier(0.34,1.4,0.64,1) 1.8s forwards, tilt-bob-l 4s ease-in-out 2.5s infinite; }
-.c1-f4 { bottom:20%; right:4%; –r:-3deg;transform:rotate(-3deg) translate(100px,50px);   animation:throw-in-r 0.7s cubic-bezier(0.34,1.4,0.64,1) 2.0s forwards, tilt-bob-r 4s ease-in-out 2.7s infinite; }
-
-@keyframes throw-in-l { to{opacity:1;transform:rotate(var(–r)) translate(0,0)} }
-@keyframes throw-in-r { to{opacity:1;transform:rotate(var(–r)) translate(0,0)} }
-@keyframes tilt-bob-l { 0%,100%{transform:rotate(-4deg) translateY(0)} 50%{transform:rotate(-4deg) translateY(-8px)} }
-@keyframes tilt-bob-r { 0%,100%{transform:rotate(3deg) translateY(0)}  50%{transform:rotate(3deg)  translateY(-8px)} }
-
-.cf-emoji { font-size:20px; margin-bottom:6px; display:block; }
-.cf-val   { font-size:18px; font-weight:700; color:var(–azul2); line-height:1; margin-bottom:3px; }
-.cf-label { font-size:9px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(–cinza2); }
-
-/* ================================================================
-CENA 2 — LAYOUT v2 + FLIP 3D + SCRAMBLE
-================================================================ */
-#scene-2 { overflow:hidden; padding:0 24px; }
-
-/* Glow azul de fundo */
-.c2-bg-glow {
-position:absolute; width:420px; height:420px; border-radius:50%;
-background:radial-gradient(circle,rgba(10,132,255,0.09) 0%,transparent 70%);
-top:50%; left:50%; transform:translate(-50%,-50%);
-animation:glow-breathe 3s ease-in-out infinite; pointer-events:none;
+.ticks svg {
+width: 100%;
+height: 100%;
+stroke: #53bdeb;
+stroke-width: 2;
+fill: none;
+stroke-linecap: round;
+stroke-linejoin: round;
 }
 
-.c2-eyebrow {
-font-family:‘Space Mono’,monospace;
-font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(–azul);
-margin-bottom:10px;
-opacity:0; animation:fade-in 0.4s ease 0.1s forwards;
+/* ===== TYPING ===== */
+.typing {
+background: #1f2c2e;
+align-self: flex-start;
+padding: 1.25vh 1.6vh;
+border-radius: 1vh;
+border-top-left-radius: 0.2vh;
+display: none;
+gap: 0.55vh;
+align-items: center;
+margin-top: 0.3vh;
+margin-left: 1vh;
+margin-bottom: 0.3vh;
+position: relative;
+}
+.typing::before {
+content: “”;
+position: absolute;
+top: 0;
+left: -0.8vh;
+width: 1vh;
+height: 1.3vh;
+background: #1f2c2e;
+clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
+.typing.show { display: inline-flex; }
+.typing span {
+width: 0.75vh;
+height: 0.75vh;
+border-radius: 50%;
+background: #8a8a8e;
+animation: bounce 1.3s infinite ease-in-out;
+}
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
+30% { transform: translateY(-0.45vh); opacity: 1; }
 }
 
-.c2-title {
-font-family:‘Bebas Neue’,sans-serif;
-font-size:54px; letter-spacing:2px; color:white; line-height:1;
-margin-bottom:30px;
-opacity:0; transform:translateY(-20px);
-animation:rise 0.5s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
+/* ===== ENTRADA ===== */
+.msg.in {
+animation: pop 0.3s cubic-bezier(0.18, 0.9, 0.28, 1.12) forwards;
 }
-.c2-title em { color:var(–azul3); font-style:normal; }
-
-/* Terminal — flip 3D (v3) mantendo visuais v2 */
-.c2-terminal {
-width:100%; max-width:340px;
-background:rgba(0,5,15,0.9);
-border:1px solid rgba(64,175,255,0.2);
-border-radius:20px; overflow:hidden;
-box-shadow:0 40px 80px rgba(0,0,0,0.6),0 0 60px rgba(10,132,255,0.07);
-opacity:0; transform:perspective(800px) rotateY(90deg) scale(0.85);
-animation:flip-in 0.8s cubic-bezier(0.22,1,0.36,1) 0.4s forwards;
-}
-@keyframes flip-in { to{opacity:1;transform:perspective(800px) rotateY(0deg) scale(1)} }
-
-.c2-term-header {
-padding:14px 18px;
-background:rgba(10,132,255,0.08);
-border-bottom:1px solid rgba(64,175,255,0.1);
-display:flex; align-items:center; gap:8px;
-}
-.c2-th-dot { width:8px; height:8px; border-radius:50%; }
-.c2-th-dot:nth-child(1){background:#FF5F57}
-.c2-th-dot:nth-child(2){background:#FEBC2E}
-.c2-th-dot:nth-child(3){background:#28C840}
-.c2-th-title {
-margin-left:auto; margin-right:auto;
-font-family:‘Space Mono’,monospace; font-size:10px; color:var(–cinza2); letter-spacing:1px;
+@keyframes pop {
+0% { opacity: 0; transform: translateY(0.7vh) scale(0.95); }
+70% { opacity: 1; transform: translateY(-0.08vh) scale(1.006); }
+100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.c2-term-body { padding:24px; }
-
-.c2-input-row { display:flex; align-items:baseline; gap:4px; margin-bottom:24px; }
-.c2-prefix { font-family:‘Space Mono’,monospace; font-size:12px; color:var(–cinza2); font-weight:700; }
-.c2-number {
-font-family:‘Bebas Neue’,sans-serif;
-font-size:68px; color:white; letter-spacing:2px; line-height:1; font-variant-numeric:tabular-nums;
+/* ===== INPUT BAR ===== */
+.inputbar {
+height: 7.2%;
+background: #0b0b0b;
+display: flex;
+align-items: center;
+padding: 0 3.5%;
+gap: 1.3vh;
+border-top: 0.5px solid rgba(255,255,255,0.04);
 }
-.c2-cursor-blink {
-display:inline-block; width:3px; height:50px;
-background:var(–azul3); border-radius:2px; vertical-align:middle;
-box-shadow:0 0 8px var(–azul3);
-animation:blink 0.7s step-end infinite;
+.plus-btn {
+width: 3.8vh;
+height: 3.8vh;
+color: #8a8a8e;
+font-size: 3.4vh;
+font-weight: 300;
+display: flex;
+align-items: center;
+justify-content: center;
+line-height: 1;
+flex-shrink: 0;
 }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-.c2-desp {
-margin-bottom:6px; padding:10px 14px;
-background:rgba(10,132,255,0.04); border:1px solid rgba(10,132,255,0.12);
-border-radius:10px;
-display:flex; justify-content:space-between; align-items:center;
-opacity:0; transform:translateX(-20px);
-transition:all 0.4s cubic-bezier(0.34,1.3,0.64,1);
+.input-field {
+flex: 1;
+height: 4vh;
+background: transparent;
+border: 0.5px solid rgba(255,255,255,0.12);
+border-radius: 2vh;
 }
-.c2-desp.show { opacity:1; transform:translateX(0); }
-.c2-desp-label { font-size:12px; color:var(–cinza2); }
-.c2-desp-val { font-size:13px; font-weight:700; color:white; font-family:‘Space Mono’,monospace; }
-
-/* Resultado — spring bounce exagerado (v3) */
-.c2-result {
-margin-top:18px; padding:18px;
-background:rgba(0,230,118,0.06); border:1.5px solid rgba(0,230,118,0.2);
-border-radius:16px;
-opacity:0; transform:scale(0.85) translateY(40px);
-transition:all 0.7s cubic-bezier(0.34,1.6,0.64,1);
-box-shadow:0 0 30px rgba(0,230,118,0.05);
+.input-right-icons {
+display: flex;
+gap: 1.8vh;
+align-items: center;
+color: #8a8a8e;
+flex-shrink: 0;
 }
-.c2-result.show { opacity:1; transform:scale(1) translateY(0); box-shadow:0 0 30px rgba(0,230,118,0.12); }
-.c2-res-row { display:flex; justify-content:space-between; align-items:center; }
-.c2-res-label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(–cinza2); font-weight:600; }
-.c2-res-val { font-family:‘Bebas Neue’,sans-serif; font-size:42px; color:var(–verde); letter-spacing:2px; line-height:1; text-shadow:0 0 20px rgba(0,230,118,0.4); }
-.c2-res-chips { display:flex; gap:8px; margin-top:12px; }
-.c2-chip {
-flex:1; padding:8px; border-radius:10px;
-background:rgba(10,132,255,0.06);
-opacity:0; transform:translateY(12px) scale(0.9);
-transition:all 0.5s cubic-bezier(0.34,1.5,0.64,1); text-align:center;
-}
-.c2-chip.show { opacity:1; transform:translateY(0) scale(1); }
-.c2-chip-label { font-size:8px; text-transform:uppercase; letter-spacing:1px; color:var(–cinza2); margin-bottom:4px; }
-.c2-chip-val { font-size:14px; font-weight:700; color:white; font-family:‘Space Mono’,monospace; }
-
-/* ================================================================
-CENA 3 — LAYOUT v2 + CAM ZOOM + CASCATA
-================================================================ */
-#scene-3 { padding:0 20px; overflow:hidden; }
-
-/* Glow verde acende quando números chegam */
-.c3-bg-glow {
-position:absolute; width:500px; height:500px; border-radius:50%;
-background:radial-gradient(circle,rgba(0,230,118,0.06) 0%,transparent 70%);
-top:50%; left:50%; transform:translate(-50%,-50%);
-opacity:0; transition:opacity 1.5s ease; pointer-events:none;
-}
-.c3-bg-glow.on { opacity:1; }
-
-.c3-head {
-width:100%; max-width:360px;
-display:flex; justify-content:space-between; align-items:flex-end;
-margin-bottom:16px;
-opacity:0; animation:rise 0.5s ease 0.1s forwards;
-}
-.c3-mes { font-family:‘Bebas Neue’,sans-serif; font-size:44px; color:white; letter-spacing:2px; line-height:1; }
-.c3-badge-ok {
-font-family:‘Space Mono’,monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase;
-color:var(–verde); padding:6px 12px;
-background:rgba(0,230,118,0.1); border:1px solid rgba(0,230,118,0.25); border-radius:20px;
-opacity:0; animation:badge-slam 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.7s forwards;
-}
-@keyframes badge-slam {
-0%{opacity:0;transform:scale(0) rotate(-10deg)}
-70%{transform:scale(1.1) rotate(2deg)}
-100%{opacity:1;transform:scale(1) rotate(0)}
+.input-right-icons svg {
+width: 2.4vh;
+height: 2.4vh;
+stroke: #8a8a8e;
+stroke-width: 1.6;
+fill: none;
+stroke-linecap: round;
+stroke-linejoin: round;
 }
 
-/* Card — zoom câmera 3x→1x (v3) */
-.c3-main {
-width:100%; max-width:360px;
-background:rgba(10,132,255,0.04); border:1px solid rgba(10,132,255,0.18);
-border-radius:24px; padding:24px; margin-bottom:12px;
-opacity:0; transform:scale(2.8) translateY(10px);
-animation:cam-zoom 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
-box-shadow:0 40px 80px rgba(0,0,0,0.5),0 0 1px rgba(64,175,255,0.2);
-position:relative; overflow:hidden;
-}
-.c3-main::before {
-content:’’; position:absolute; top:-40%; left:-20%; width:60%; height:80%;
-background:radial-gradient(ellipse,rgba(10,132,255,0.08) 0%,transparent 70%); pointer-events:none;
-}
-@keyframes cam-zoom { to{opacity:1;transform:scale(1) translateY(0)} }
-
-.c3-fat-label {
-font-family:‘Space Mono’,monospace; font-size:9px; letter-spacing:3px;
-text-transform:uppercase; color:var(–cinza2); margin-bottom:6px;
-}
-.c3-fat-num {
-font-family:‘Bebas Neue’,sans-serif; font-size:62px; color:var(–azul2);
-letter-spacing:2px; line-height:1; margin-bottom:4px;
-text-shadow:0 0 40px rgba(64,175,255,0.25);
-}
-.c3-fat-meta { font-size:11px; color:var(–cinza2); margin-bottom:18px; }
-
-.c3-seg-track {
-height:6px; background:rgba(10,132,255,0.1); border-radius:3px;
-overflow:hidden; margin-bottom:6px; position:relative;
-}
-.c3-seg-fill {
-height:100%; width:0%; border-radius:3px;
-background:linear-gradient(90deg,var(–azul),var(–azul3));
-box-shadow:0 0 10px var(–azul3);
-transition:width 2s cubic-bezier(0.4,0,0.2,1); position:relative;
-}
-/* Onda de luz correndo na barra (v3) */
-.c3-seg-fill::after {
-content:’’; position:absolute; top:0; left:-60px; width:60px; height:100%;
-background:linear-gradient(90deg,transparent,rgba(255,255,255,0.5),transparent);
-animation:wave-run 2.5s ease-in-out 2s infinite;
-}
-@keyframes wave-run { 0%{left:-60px} 100%{left:110%} }
-.c3-seg-fill.go { width:58%; }
-
-.c3-prog-info { display:flex; justify-content:space-between; font-size:10px; margin-bottom:20px; }
-.c3-prog-pct  { color:var(–azul2); font-weight:700; font-family:‘Space Mono’,monospace; }
-.c3-prog-falta{ color:var(–amarelo); font-weight:600; }
-
-/* Stats — queda livre de cima em cascata (v3) */
-.c3-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.c3-stat {
-background:rgba(10,132,255,0.05); border:1px solid rgba(10,132,255,0.12);
-border-radius:14px; padding:14px;
-opacity:0; transform:translateY(-50px) scale(0.85);
-transition:all 0.6s cubic-bezier(0.34,1.4,0.64,1);
-}
-.c3-stat.show { opacity:1; transform:translateY(0) scale(1); }
-.c3-stat-lbl {
-font-family:‘Space Mono’,monospace; font-size:8px; letter-spacing:1px;
-text-transform:uppercase; color:var(–cinza2); margin-bottom:8px;
-}
-.c3-stat-val { font-family:‘Bebas Neue’,sans-serif; font-size:28px; letter-spacing:1px; }
-.c3-stat-val.g { color:var(–verde); text-shadow:0 0 20px rgba(0,230,118,0.3); }
-.c3-stat-val.b { color:var(–azul2); text-shadow:0 0 20px rgba(64,175,255,0.3); }
-
-/* Projeção — slide da direita (v3) */
-.c3-proj {
-width:100%; max-width:360px;
-padding:14px 20px;
-background:rgba(0,230,118,0.05); border:1px solid rgba(0,230,118,0.15);
-border-radius:16px;
-display:flex; justify-content:space-between; align-items:center;
-opacity:0; transform:translateX(60px);
-transition:all 0.6s cubic-bezier(0.34,1.3,0.64,1);
-}
-.c3-proj.show { opacity:1; transform:translateX(0); }
-.c3-proj-lbl { font-size:12px; color:var(–cinza2); font-weight:500; }
-.c3-proj-val { font-family:‘Bebas Neue’,sans-serif; font-size:24px; color:var(–verde); letter-spacing:1px; }
-
-/* ================================================================
-CENA 4 — LAYOUT v2 + HEARTBEAT + PALAVRAS OPOSTAS + SCAN
-================================================================ */
-#scene-4 { text-align:center; overflow:hidden; }
-
-/* Burst lines (v2) */
-.c4-burst { position:absolute; inset:0; pointer-events:none; }
-.burst-line {
-position:absolute; top:50%; left:50%; height:1px;
-background:linear-gradient(90deg,transparent,rgba(10,132,255,0.3));
-transform-origin:left center; opacity:0;
-}
-
-/* Rings — heartbeat (v3) */
-.c4-ring { position:absolute; border-radius:50%; border:1px solid rgba(10,132,255,0.15); opacity:0; }
-.c4-ring-1 { width:200px; height:200px; animation:ring-pop 0.8s cubic-bezier(0.22,1,0.36,1) 0.3s forwards, heartbeat 2.4s ease-in-out 1.1s infinite; }
-.c4-ring-2 { width:340px; height:340px; animation:ring-pop 0.8s cubic-bezier(0.22,1,0.36,1) 0.5s forwards, heartbeat 2.4s ease-in-out 1.3s infinite; }
-.c4-ring-3 { width:500px; height:500px; animation:ring-pop 0.8s cubic-bezier(0.22,1,0.36,1) 0.7s forwards, heartbeat 2.4s ease-in-out 1.5s infinite; }
-
-@keyframes ring-pop { to{opacity:1} }
-@keyframes heartbeat {
-0%,100% { transform:scale(1);    border-color:rgba(10,132,255,0.15); }
-10%     { transform:scale(1.07); border-color:rgba(10,132,255,0.5); box-shadow:0 0 18px rgba(10,132,255,0.12); }
-20%     { transform:scale(1);    border-color:rgba(10,132,255,0.15); }
-30%     { transform:scale(1.04); border-color:rgba(10,132,255,0.32); }
-40%,100%{ transform:scale(1);    border-color:rgba(10,132,255,0.15); }
-}
-
-/* Badge (v2) */
-.c4-badge {
-position:relative; z-index:5;
-width:88px; height:88px; border-radius:28px;
-background:linear-gradient(135deg,rgba(10,132,255,0.25) 0%,rgba(0,212,255,0.1) 100%);
-border:1.5px solid rgba(64,175,255,0.5);
-display:flex; align-items:center; justify-content:center;
-box-shadow:0 0 60px rgba(10,132,255,0.3),0 0 100px rgba(10,132,255,0.1);
-margin-bottom:32px;
-opacity:0; transform:scale(0) rotate(-15deg);
-animation:badge-crash 0.9s cubic-bezier(0.34,1.56,0.64,1) 0.3s forwards;
-}
-@keyframes badge-crash { to{opacity:1;transform:scale(1) rotate(0deg)} }
-
-/* Headline — palavras de lados opostos (v3), mas visual v2 */
-.c4-hl { position:relative; z-index:5; margin-bottom:16px; }
-.c4-word {
-display:block;
-font-family:‘Bebas Neue’,sans-serif; font-size:60px; letter-spacing:3px; color:white; line-height:1.05;
-opacity:0;
-}
-.c4-word.w1 { transform:translateX(-80px) rotate(-2deg); animation:word-l 0.7s cubic-bezier(0.22,1,0.36,1) 0.7s forwards; }
-.c4-word.w2 { transform:translateX(80px)  rotate(2deg);  animation:word-r 0.7s cubic-bezier(0.22,1,0.36,1) 0.95s forwards; color:var(–azul3); }
-@keyframes word-l { to{opacity:1;transform:translateX(0) rotate(0)} }
-@keyframes word-r { to{opacity:1;transform:translateX(0) rotate(0)} }
-
-.c4-sub {
-position:relative; z-index:5;
-font-size:14px; color:var(–cinza2); line-height:1.65; font-weight:400;
-max-width:260px; margin:0 auto 40px;
-opacity:0; animation:fade-in 0.6s ease 1.2s forwards;
-}
-
-/* URL chip — scan de luz (v3) no visual v2 */
-.c4-url-wrap {
-position:relative; z-index:5;
-opacity:0; animation:pop-bounce 0.6s cubic-bezier(0.34,1.56,0.64,1) 1.5s forwards;
-}
-.c4-url {
-display:inline-flex; align-items:center; gap:10px;
-padding:14px 28px; overflow:hidden; position:relative;
-background:rgba(10,132,255,0.12); border:1.5px solid rgba(64,175,255,0.3);
-border-radius:100px;
-font-family:‘Space Mono’,monospace; font-size:14px; font-weight:700; color:var(–azul2); letter-spacing:1px;
-box-shadow:0 0 40px rgba(10,132,255,0.15),0 20px 40px rgba(0,0,0,0.4);
-}
-/* Scan correndo */
-.c4-url::after {
-content:’’; position:absolute; top:0; left:-80px; width:80px; height:100%;
-background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);
-animation:scan-run 2.5s ease-in-out 2s infinite;
-}
-@keyframes scan-run { 0%{left:-80px} 100%{left:110%} }
-
-.c4-url-dot {
-width:8px; height:8px; border-radius:50%; background:var(–verde);
-box-shadow:0 0 8px var(–verde); animation:dot-pulse 1.5s ease infinite;
-}
-@keyframes dot-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.7)} }
-
-/* ── UTILITÁRIOS ─────────────────────────────────────────────── */
-@keyframes fade-in  { to{opacity:1} }
-@keyframes rise     { to{opacity:1;transform:translateY(0)} }
-@keyframes pop-bounce {
-0%  {opacity:0;transform:scale(0.5)}
-70% {transform:scale(1.05)}
-100%{opacity:1;transform:scale(1)}
+.home-indicator {
+position: absolute;
+bottom: 0.55vh;
+left: 50%;
+transform: translateX(-50%);
+width: 30%;
+height: 0.5vh;
+background: rgba(255,255,255,0.92);
+border-radius: 0.3vh;
 }
 </style>
 
 </head>
 <body>
 
-<div class="bg-grid"></div>
-<div class="bg-glow"></div>
-<div id="glitch-overlay"></div>
-
-<div id="stage">
-
-  <!-- CENA 1 -->
-
-  <div class="scene active" id="scene-1">
-    <div class="c1-glow"></div>
-    <div class="radar-ring rr1"></div>
-    <div class="radar-ring rr2"></div>
-    <div class="radar-ring rr3"></div>
-    <div class="radar-ring rr4"></div>
+<div class="stage">
+  <div class="phone">
 
 ```
-<div class="c1-float c1-f1">
-  <span class="cf-emoji">⚡</span>
-  <div class="cf-val">10s</div>
-  <div class="cf-label">pra lançar</div>
-</div>
-<div class="c1-float c1-f2">
-  <span class="cf-emoji">📊</span>
-  <div class="cf-val">R$ 5.805</div>
-  <div class="cf-label">este mês</div>
-</div>
-<div class="c1-float c1-f3">
-  <span class="cf-emoji">✅</span>
-  <div class="cf-val">No azul!</div>
-  <div class="cf-label">abril 2026</div>
-</div>
-<div class="c1-float c1-f4">
-  <span class="cf-emoji">🎯</span>
-  <div class="cf-val">R$ 350</div>
-  <div class="cf-label">meta hoje</div>
+<div class="statusbar">
+  <span>12:47</span>
+  <div class="right">
+    <div class="signal-bars">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <span class="five-g">5G</span>
+    <div class="battery">
+      <div class="battery-fill"></div>
+      <div class="battery-percent">75</div>
+    </div>
+  </div>
 </div>
 
-<div class="c1-logo-wrap">
-  <div class="c1-logo-badge">
-    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-      <path d="M4 26 Q10 8 18 18 Q26 28 32 10" stroke="url(#lg1)" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-      <defs>
-        <linearGradient id="lg1" x1="4" y1="18" x2="32" y2="18" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stop-color="#0A84FF"/>
-          <stop offset="100%" stop-color="#00D4FF"/>
-        </linearGradient>
-      </defs>
-    </svg>
+<div class="chat-header">
+  <div class="back-group">
+    <span class="back-arrow">‹</span>
+    <span class="back-count">8</span>
   </div>
-  <div class="c1-nome-wrap">
-    <span class="c1-letra">N</span><span class="c1-letra">O</span><span class="c1-letra">&nbsp;</span><span class="c1-letra azul">A</span><span class="c1-letra azul">Z</span><span class="c1-letra azul">U</span><span class="c1-letra azul">L</span>
+  <div class="avatar">R</div>
+  <div class="contact-info">
+    <div class="contact-name">Rafa Uber</div>
+    <div class="contact-status">online</div>
   </div>
-  <div class="c1-tagline">Controle financeiro · sem complicação</div>
+  <div class="header-icons">
+    <svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+  </div>
 </div>
 
-<div class="c1-question">
-  Você está <em>no azul</em><br>hoje?
+<div class="chat" id="chat">
+  <div class="typing" id="typing">
+    <span></span><span></span><span></span>
+  </div>
 </div>
+
+<div class="inputbar">
+  <div class="plus-btn">+</div>
+  <div class="input-field"></div>
+  <div class="input-right-icons">
+    <svg viewBox="0 0 24 24"><path d="M21 15V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10z"/><path d="M21 15l-6 6v-4a2 2 0 0 1 2-2z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M3 7h4l2-2h6l2 2h4v12H3z"/><circle cx="12" cy="13" r="3.5"/></svg>
+    <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="21"/></svg>
+  </div>
+</div>
+
+<div class="home-indicator"></div>
 ```
 
   </div>
-
-  <!-- CENA 2 -->
-
-  <div class="scene" id="scene-2">
-    <div class="c2-bg-glow"></div>
-    <div class="c2-eyebrow">&gt; lançar operação_</div>
-    <div class="c2-title">Menos de<br><em>10 segundos.</em></div>
-
-```
-<div class="c2-terminal">
-  <div class="c2-term-header">
-    <div class="c2-th-dot"></div>
-    <div class="c2-th-dot"></div>
-    <div class="c2-th-dot"></div>
-    <div class="c2-th-title">noazul — ganhos do dia</div>
-  </div>
-  <div class="c2-term-body">
-    <div class="c2-input-row">
-      <span class="c2-prefix">R$&nbsp;</span>
-      <div class="c2-number" id="c2-num">0</div>
-      <div class="c2-cursor-blink"></div>
-    </div>
-    <div class="c2-desp" id="c2-d1">
-      <div class="c2-desp-label">⛽ Combustível</div>
-      <div class="c2-desp-val">R$ 120</div>
-    </div>
-    <div class="c2-desp" id="c2-d2">
-      <div class="c2-desp-label">Total despesas</div>
-      <div class="c2-desp-val" style="color:var(--azul2)">R$ 120</div>
-    </div>
-    <div class="c2-result" id="c2-result">
-      <div class="c2-res-row">
-        <div class="c2-res-label">Resultado</div>
-        <div class="c2-res-val">+R$ 380</div>
-      </div>
-      <div class="c2-res-chips">
-        <div class="c2-chip" id="c2-ch1">
-          <div class="c2-chip-label">Faturou</div>
-          <div class="c2-chip-val">R$ 500</div>
-        </div>
-        <div class="c2-chip" id="c2-ch2">
-          <div class="c2-chip-label">Gastou</div>
-          <div class="c2-chip-val">R$ 120</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-```
-
-  </div>
-
-  <!-- CENA 3 -->
-
-  <div class="scene" id="scene-3">
-    <div class="c3-bg-glow" id="c3-glow"></div>
-    <div class="c3-head">
-      <div class="c3-mes">ABRIL 2026</div>
-      <div class="c3-badge-ok">✓ NO AZUL</div>
-    </div>
-    <div class="c3-main">
-      <div class="c3-fat-label">Faturamento do mês</div>
-      <div class="c3-fat-num" id="c3-fat">R$ 0</div>
-      <div class="c3-fat-meta">Meta: R$ 10.000</div>
-      <div class="c3-seg-track">
-        <div class="c3-seg-fill" id="c3-fill"></div>
-      </div>
-      <div class="c3-prog-info">
-        <span class="c3-prog-pct" id="c3-pct">0%</span>
-        <span class="c3-prog-falta">Faltam R$ 4.195 · no ritmo ✅</span>
-      </div>
-      <div class="c3-grid">
-        <div class="c3-stat" id="c3-s1">
-          <div class="c3-stat-lbl">Lucro</div>
-          <div class="c3-stat-val g" id="c3-lucro">+R$ 0</div>
-        </div>
-        <div class="c3-stat" id="c3-s2">
-          <div class="c3-stat-lbl">Meta hoje</div>
-          <div class="c3-stat-val b">R$ 350</div>
-        </div>
-      </div>
-    </div>
-    <div class="c3-proj" id="c3-proj">
-      <div class="c3-proj-lbl">Projeção do mês</div>
-      <div class="c3-proj-val">R$ 10.522 ✅</div>
-    </div>
-  </div>
-
-  <!-- CENA 4 -->
-
-  <div class="scene" id="scene-4">
-    <div class="c4-burst" id="c4-burst"></div>
-    <div class="c4-ring c4-ring-1"></div>
-    <div class="c4-ring c4-ring-2"></div>
-    <div class="c4-ring c4-ring-3"></div>
-
-```
-<div class="c4-badge">
-  <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-    <path d="M6 32 Q13 10 22 22 Q31 34 38 14" stroke="url(#lg2)" stroke-width="4" stroke-linecap="round" fill="none"/>
-    <defs>
-      <linearGradient id="lg2" x1="6" y1="22" x2="38" y2="22" gradientUnits="userSpaceOnUse">
-        <stop offset="0%" stop-color="#0A84FF"/>
-        <stop offset="100%" stop-color="#00D4FF"/>
-      </linearGradient>
-    </defs>
-  </svg>
-</div>
-
-<div class="c4-hl">
-  <span class="c4-word w1">Seu negócio,</span>
-  <span class="c4-word w2">no azul.</span>
-</div>
-
-<div class="c4-sub">Controle financeiro simples para quem trabalha por conta própria.</div>
-
-<div class="c4-url-wrap">
-  <div class="c4-url">
-    <div class="c4-url-dot"></div>
-    usenoazul.com.br
-  </div>
-</div>
-```
-
-  </div>
-
 </div>
 
 <script>
-// ── Contagem animada ──────────────────────────────────────────
-function countUp(el, end, dur, pre, suf) {
-  var s = null;
-  function step(ts) {
-    if (!s) s = ts;
-    var p = Math.min((ts - s) / dur, 1);
-    var e = 1 - Math.pow(1-p, 3);
-    el.textContent = pre + Math.floor(end * e).toLocaleString('pt-BR') + suf;
-    if (p < 1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-}
+  // Roteiro completo - timings calibrados pra ~22s
+  const script = [
+    { type: 'r', text: 'mano, quanto tu fez hj?',                    delay: 350, typing: 700, time: '12:41' },
+    { type: 'r', text: 'tô tentando fechar aqui e me perdi',         delay: 400, typing: 650, time: '12:41' },
+    { type: 's', text: 'acho q uns 240',                              delay: 700, typing: 500, time: '12:42' },
+    { type: 's', text: 'mas tirando gasolina n sei',                  delay: 280, typing: 450, time: '12:42' },
+    { type: 'r', text: 'gasolina foi quanto?',                        delay: 550, typing: 500, time: '12:42' },
+    { type: 's', text: 'uns 70',                                      delay: 500, typing: 350, time: '12:43' },
+    { type: 's', text: 'fora almoço',                                 delay: 280, typing: 300, time: '12:43' },
+    { type: 's', text: 'café',                                        delay: 200, typing: 250, time: '12:43' },
+    { type: 's', text: 'água',                                        delay: 200, typing: 250, time: '12:43' },
+    { type: 'r', text: 'pois é kkk',                                  delay: 550, typing: 400, time: '12:43' },
+    { type: 'r', text: 'a gente roda o dia todo',                     delay: 280, typing: 500, time: '12:44' },
+    { type: 'r', text: 'e no fim responde no chute',                  delay: 280, typing: 550, time: '12:44' },
+    { type: 'r', text: 'tô cansado disso',                            delay: 350, typing: 650, time: '12:44', anchor: true },
+    { type: 's', text: 'pior é quando entra dinheiro',                delay: 800, typing: 500, time: '12:45' },
+    { type: 's', text: 'e mesmo assim tu não sente que sobrou',       delay: 280, typing: 600, time: '12:45' },
+    { type: 'r', text: 'exatamente',                                  delay: 550, typing: 400, time: '12:45' },
+    { type: 'r', text: 'não é nem trabalhar pouco',                   delay: 280, typing: 500, time: '12:46' },
+    { type: 'r', text: 'é fechar o dia no escuro',                    delay: 350, typing: 600, time: '12:46' },
+  ];
 
-// ── Cena 2: scramble hacker + digitação ──────────────────────
-function initScene2() {
-  var numEl  = document.getElementById('c2-num');
-  var result = document.getElementById('c2-result');
-  var d1 = document.getElementById('c2-d1');
-  var d2 = document.getElementById('c2-d2');
-  var ch1 = document.getElementById('c2-ch1');
-  var ch2 = document.getElementById('c2-ch2');
+  const chat = document.getElementById('chat');
+  const typing = document.getElementById('typing');
 
-  numEl.textContent = '0';
-  result.classList.remove('show');
-  d1.classList.remove('show'); d2.classList.remove('show');
-  ch1.classList.remove('show'); ch2.classList.remove('show');
-
-  // Scramble antes de digitar
-  var sc = 0;
-  var scT = setInterval(function() {
-    numEl.textContent = Math.floor(Math.random() * 900);
-    sc++;
-    if (sc >= 7) {
-      clearInterval(scT);
-      var steps = [0,1,5,30,100,200,300,400,480,500];
-      var i = 0;
-      var t = setInterval(function() {
-        if (i < steps.length) { numEl.textContent = steps[i]; i++; }
-        else {
-          clearInterval(t);
-          setTimeout(function() { d1.classList.add('show'); }, 200);
-          setTimeout(function() { d2.classList.add('show'); }, 450);
-          setTimeout(function() {
-            result.classList.add('show');
-            setTimeout(function() { ch1.classList.add('show'); }, 250);
-            setTimeout(function() { ch2.classList.add('show'); }, 450);
-          }, 900);
-        }
-      }, 130);
+  let audioCtx = null;
+  function initAudio() {
+    if (!audioCtx) {
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
     }
-  }, 55);
-}
+  }
 
-// ── Cena 3: cam zoom + cascata + glow verde ───────────────────
-function initScene3() {
-  var fatEl   = document.getElementById('c3-fat');
-  var lucroEl = document.getElementById('c3-lucro');
-  var fill    = document.getElementById('c3-fill');
-  var pctEl   = document.getElementById('c3-pct');
-  var s1      = document.getElementById('c3-s1');
-  var s2      = document.getElementById('c3-s2');
-  var proj    = document.getElementById('c3-proj');
-  var glow    = document.getElementById('c3-glow');
+  function playReceived() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(780, now);
+    o.frequency.exponentialRampToValueAtTime(1180, now + 0.08);
+    g.gain.setValueAtTime(0, now);
+    g.gain.linearRampToValueAtTime(0.18, now + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+    o.connect(g).connect(audioCtx.destination);
+    o.start(now); o.stop(now + 0.25);
 
-  fatEl.textContent = 'R$ 0'; lucroEl.textContent = '+R$ 0'; pctEl.textContent = '0%';
-  fill.classList.remove('go');
-  s1.classList.remove('show'); s2.classList.remove('show');
-  proj.classList.remove('show'); glow.classList.remove('on');
+    const o2 = audioCtx.createOscillator();
+    const g2 = audioCtx.createGain();
+    o2.type = 'triangle';
+    o2.frequency.setValueAtTime(1580, now + 0.05);
+    o2.frequency.exponentialRampToValueAtTime(1980, now + 0.12);
+    g2.gain.setValueAtTime(0, now + 0.05);
+    g2.gain.linearRampToValueAtTime(0.08, now + 0.06);
+    g2.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+    o2.connect(g2).connect(audioCtx.destination);
+    o2.start(now + 0.05); o2.stop(now + 0.22);
+  }
 
-  setTimeout(function() {
-    countUp(fatEl, 5805, 2000, 'R$ ', '');
-    fill.classList.add('go');
-    var st = null;
-    function animPct(ts) {
-      if (!st) st = ts;
-      var p = Math.min((ts - st) / 2000, 1);
-      pctEl.textContent = Math.floor(58 * (1 - Math.pow(1-p,3))) + '%';
-      if (p < 1) requestAnimationFrame(animPct);
+  function playSent() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(580, now);
+    o.frequency.exponentialRampToValueAtTime(290, now + 0.12);
+    g.gain.setValueAtTime(0, now);
+    g.gain.linearRampToValueAtTime(0.11, now + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+    o.connect(g).connect(audioCtx.destination);
+    o.start(now); o.stop(now + 0.2);
+  }
+
+  const tickSVG = `<span class="ticks"><svg viewBox="0 0 19 10.5"><polyline points="1,5.5 4.5,9 10.5,1.5"/><polyline points="7,5.5 10.5,9 18,1.5"/></svg></span>`;
+
+  let lastType = null;
+
+  function addMessage(item) {
+    const div = document.createElement('div');
+    const isGrouped = lastType === item.type;
+    div.className = 'msg ' + (item.type === 'r' ? 'received' : 'sent') + ' in' + (isGrouped ? ' grouped' : '');
+
+    const metaHtml = item.type === 's'
+      ? `<span class="meta">${item.time}${tickSVG}</span>`
+      : `<span class="meta">${item.time}</span>`;
+
+    const safeText = item.text.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    div.innerHTML = `<span class="text-content">${safeText}</span>${metaHtml}`;
+
+    chat.insertBefore(div, typing);
+    chat.scrollTop = chat.scrollHeight;
+
+    lastType = item.type;
+
+    if (item.type === 'r') playReceived();
+    else playSent();
+  }
+
+  function showTyping(show) {
+    if (show) {
+      typing.classList.add('show');
+      chat.scrollTop = chat.scrollHeight;
+    } else {
+      typing.classList.remove('show');
     }
-    requestAnimationFrame(animPct);
-  }, 400);
-
-  setTimeout(function() {
-    s1.classList.add('show');
-    countUp(lucroEl, 3975, 1400, '+R$ ', '');
-    glow.classList.add('on');
-  }, 1100);
-  setTimeout(function() { s2.classList.add('show'); }, 1380);
-  setTimeout(function() { proj.classList.add('show'); }, 1700);
-}
-
-// ── Cena 4: burst lines ───────────────────────────────────────
-function initScene4() {
-  var container = document.getElementById('c4-burst');
-  container.innerHTML = '';
-  for (var i = 0; i < 24; i++) {
-    var line = document.createElement('div');
-    line.className = 'burst-line';
-    var angle = (i / 24) * 360;
-    var len = 80 + Math.random() * 120;
-    var delay = Math.random() * 0.5;
-    line.style.cssText =
-      'width:' + len + 'px;' +
-      'transform:rotate(' + angle + 'deg);' +
-      'animation:fade-in 0.5s ease ' + delay + 's forwards;';
-    container.appendChild(line);
-  }
-}
-
-// ── Transição: Liquid Shutter ─────────────────────────────────
-// 10 faixas verticais fecham da esquerda pra direita (escalonadas),
-// cena troca no meio, depois abrem da direita pra esquerda.
-function fadeTransition(callback) {
-  var overlay = document.getElementById('glitch-overlay');
-  overlay.innerHTML = '';
-
-  var N = 10;
-  var W = window.innerWidth;
-  var H = window.innerHeight;
-  var faixaW = Math.ceil(W / N) + 1;
-  var strips = [];
-
-  for (var i = 0; i < N; i++) {
-    var s = document.createElement('div');
-    s.style.cssText = [
-      'position:absolute',
-      'top:0',
-      'left:' + (i * faixaW) + 'px',
-      'width:' + faixaW + 'px',
-      'height:' + H + 'px',
-      'background:#03080F',
-      'transform:scaleY(0)',
-      'transform-origin:top center',
-      'will-change:transform'
-    ].join(';');
-    overlay.appendChild(s);
-    strips.push(s);
   }
 
-  // FECHAR — faixas descem escalonadas da esquerda
-  var closeDelay = 28; // ms entre cada faixa
-  var closeDur   = 220;
-  strips.forEach(function(s, i) {
-    setTimeout(function() {
-      s.style.transition = 'transform ' + closeDur + 'ms cubic-bezier(0.7,0,0.3,1)';
-      s.style.transform  = 'scaleY(1)';
-    }, i * closeDelay);
-  });
+  function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-  // Troca de cena quando a última faixa terminou de fechar
-  var totalClose = N * closeDelay + closeDur;
-  setTimeout(function() {
-    callback();
+  async function runScript() {
+    for (let i = 0; i < script.length; i++) {
+      const item = script[i];
+      await wait(item.delay);
 
-    // ABRIR — faixas sobem escalonadas da direita pra esquerda
-    var openDelay = 22;
-    var openDur   = 200;
-    strips.slice().reverse().forEach(function(s, i) {
-      setTimeout(function() {
-        s.style.transformOrigin = 'bottom center';
-        s.style.transition = 'transform ' + openDur + 'ms cubic-bezier(0.7,0,0.3,1)';
-        s.style.transform  = 'scaleY(0)';
-      }, i * openDelay);
-    });
+      // typing só aparece no primeiro de um bloco do outro lado, ou em mensagens importantes
+      const showTypingForThis = item.type === 'r' && (lastType !== 'r' || item.anchor);
 
-    // Limpar overlay
-    var totalOpen = N * openDelay + openDur + 60;
-    setTimeout(function() { overlay.innerHTML = ''; }, totalOpen);
+      if (showTypingForThis) {
+        showTyping(true);
+        await wait(item.typing);
+        showTyping(false);
+      } else {
+        await wait(item.typing * (item.type === 'r' ? 0.55 : 0.3));
+      }
 
-  }, totalClose + 20);
-}
+      addMessage(item);
+    }
+    await wait(1800);
+  }
 
-// ── Orquestração ──────────────────────────────────────────────
-var scenes    = ['scene-1','scene-2','scene-3','scene-4'];
-// Tempo de entrega + 1.5s de respiro
-var durations = [4400, 5300, 3900, 3700];
-var current   = 0;
-var nextTimer = null;
+  let started = false;
+  function begin() {
+    if (started) return;
+    started = true;
+    initAudio();
+    runScript();
+  }
 
-function goTo(idx) {
-  if (nextTimer) clearTimeout(nextTimer);
-  fadeTransition(function() {
-    scenes.forEach(function(id) { document.getElementById(id).classList.remove('active'); });
-    document.getElementById(scenes[idx]).classList.add('active');
-    current = idx;
-    if (idx === 1) setTimeout(initScene2, 450);
-    if (idx === 2) setTimeout(initScene3, 280);
-    if (idx === 3) initScene4();
-    scheduleNext();
-  });
-}
+  document.addEventListener('click', begin);
+  document.addEventListener('touchstart', begin, { passive: true });
 
-function scheduleNext() {
-  nextTimer = setTimeout(function() {
-    goTo((current + 1) % scenes.length);
-  }, durations[current]);
-}
-
-scheduleNext();
+  // Fallback: se ninguém tocar em 1.2s, inicia sem som
+  setTimeout(() => {
+    if (!started) {
+      started = true;
+      runScript();
+    }
+  }, 1200);
 </script>
 
 </body>
