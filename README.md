@@ -25,5 +25,6 @@ Aplicação web simples para gerenciar fila por fichas físicas com QR Code.
 ## Observações de teste
 
 - Estado compartilhado via `localStorage` + `BroadcastChannel` (sincroniza entre abas).
+- Se o navegador bloquear `localStorage` (ex.: alguns modos privativos), a fila continua funcionando com cache em memória na aba atual.
 - Para mostrar sua logo, use `?logo=https://url-da-sua-logo`.
 - Para validar deploy/cache, confira o selo de versão na tela inicial: `2026.04.26-v3`.

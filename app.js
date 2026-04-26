@@ -1,5 +1,6 @@
 const CHANNEL = 'fila-sorvete-na-chapa-v1';
 const STORAGE_KEY = 'filaSorveteState';
+let memoryStateCache = null;
 
 const flavorsData = [
   { id: 'f1', name: 'Morango Cremoso', photo: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=300&q=60' },
@@ -32,17 +33,29 @@ window.addEventListener('storage', (e) => {
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : structuredClone(initialState);
+    if (!raw) return cloneInitialState();
+    return JSON.parse(raw);
   } catch {
-    return structuredClone(initialState);
+    return memoryStateCache ? JSON.parse(memoryStateCache) : cloneInitialState();
   }
 }
 
 function saveState() {
   state.lastUpdated = Date.now();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  const serialized = JSON.stringify(state);
+  memoryStateCache = serialized;
+  try {
+    localStorage.setItem(STORAGE_KEY, serialized);
+  } catch {
+    // Em modo privado ou com storage bloqueado, segue com cache em memória.
+  }
   if (bc) bc.postMessage({ type: 'state', payload: state });
   renderAll();
+}
+
+function cloneInitialState() {
+  if (typeof structuredClone === 'function') return structuredClone(initialState);
+  return JSON.parse(JSON.stringify(initialState));
 }
 
 function ticketBusy(ticket) {
@@ -67,7 +80,7 @@ function addOrder() {
   }
 
   state.queue.push({
-    id: crypto.randomUUID(),
+    id: safeId(),
     flavorId: selectedFlavor,
     ticket: Number(selectedTicket),
     status: 'waiting',
@@ -76,6 +89,11 @@ function addOrder() {
 
   recomputeStatuses();
   saveState();
+}
+
+function safeId() {
+  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  return `pedido-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
 }
 
 function markDelivered(id) {
@@ -271,10 +289,6 @@ if (mode) {
   document.getElementById('attendantView').classList.add('hidden');
   document.getElementById('clientView').classList.add('hidden');
   document.getElementById('launchView').classList.remove('hidden');
-}
-
-if ('Notification' in window && Notification.permission === 'default') {
-  Notification.requestPermission();
 }
 
 setInterval(() => {
