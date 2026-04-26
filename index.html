@@ -1,621 +1,88 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>No Azul</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
-  html, body {
-    width: 100%; height: 100%;
-    background: #000;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
-    overflow: hidden;
-    user-select: none;
-  }
-
-.stage {
-position: fixed; inset: 0;
-display: flex; align-items: center; justify-content: center;
-background: #000;
-}
-
-.phone {
-position: relative;
-width: 100vw;
-max-width: calc(100vh * 9 / 16);
-aspect-ratio: 9 / 16;
-background: #0b0b0b;
-overflow: hidden;
-animation: handshake 12s infinite ease-in-out;
-}
-@keyframes handshake {
-0%, 100% { transform: translate(0, 0); }
-33% { transform: translate(0.08%, -0.05%); }
-66% { transform: translate(-0.06%, 0.06%); }
-}
-
-/* ===== STATUS BAR ===== */
-.statusbar {
-height: 4.8%;
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 1vh 7% 0.3vh;
-color: #fff;
-font-size: 1.85vh;
-font-weight: 600;
-letter-spacing: -0.02em;
-}
-.statusbar .right {
-display: flex;
-align-items: center;
-gap: 0.7vh;
-}
-.signal-bars {
-display: flex;
-align-items: flex-end;
-gap: 0.28vh;
-height: 1.3vh;
-}
-.signal-bars span {
-width: 0.4vh;
-background: #fff;
-border-radius: 0.1vh;
-}
-.signal-bars span:nth-child(1) { height: 35%; }
-.signal-bars span:nth-child(2) { height: 55%; }
-.signal-bars span:nth-child(3) { height: 75%; }
-.signal-bars span:nth-child(4) { height: 100%; }
-.five-g { font-size: 1.55vh; font-weight: 600; letter-spacing: -0.03em; }
-.battery {
-width: 3.1vh; height: 1.5vh;
-border: 0.18vh solid rgba(255,255,255,0.45);
-border-radius: 0.45vh;
-position: relative;
-padding: 0.15vh;
-}
-.battery::after {
-content: “”;
-position: absolute;
-right: -0.4vh; top: 28%;
-width: 0.22vh; height: 44%;
-background: rgba(255,255,255,0.45);
-border-radius: 0 0.1vh 0.1vh 0;
-}
-.battery-fill {
-height: 100%;
-width: 75%;
-background: #fff;
-border-radius: 0.18vh;
-}
-.battery-percent {
-position: absolute;
-inset: 0;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 0.9vh;
-font-weight: 700;
-color: #000;
-letter-spacing: -0.05em;
-}
-
-/* ===== HEADER ===== */
-.chat-header {
-height: 6.8%;
-background: #0b0b0b;
-display: flex;
-align-items: center;
-padding: 0 3.5%;
-gap: 1.4vh;
-position: relative;
-}
-.back-group {
-display: flex;
-align-items: center;
-gap: 0.8vh;
-flex-shrink: 0;
-}
-.back-arrow {
-font-size: 3.4vh;
-font-weight: 300;
-line-height: 1;
-color: #4a9eff;
-margin-top: -0.3vh;
-}
-.back-count {
-font-size: 2.05vh;
-color: #4a9eff;
-font-weight: 400;
-letter-spacing: -0.01em;
-}
-.avatar {
-width: 4.5vh;
-height: 4.5vh;
-border-radius: 50%;
-background: linear-gradient(135deg, #4e8d7c 0%, #2d5a4e 100%);
-display: flex;
-align-items: center;
-justify-content: center;
-color: #fff;
-font-size: 2vh;
-font-weight: 600;
-flex-shrink: 0;
-overflow: hidden;
-letter-spacing: -0.02em;
-}
-.contact-info {
-display: flex;
-flex-direction: column;
-gap: 0.05vh;
-line-height: 1.15;
-flex: 1;
-min-width: 0;
-}
-.contact-name {
-color: #fff;
-font-size: 1.95vh;
-font-weight: 600;
-letter-spacing: -0.01em;
-overflow: hidden;
-text-overflow: ellipsis;
-white-space: nowrap;
-}
-.contact-status {
-color: #8a8a8e;
-font-size: 1.35vh;
-font-weight: 400;
-}
-.header-icons {
-display: flex;
-gap: 2.4vh;
-align-items: center;
-color: #fff;
-flex-shrink: 0;
-}
-.header-icons svg {
-width: 2.7vh;
-height: 2.7vh;
-stroke: #fff;
-stroke-width: 1.7;
-fill: none;
-stroke-linecap: round;
-stroke-linejoin: round;
-}
-
-/* ===== CHAT AREA ===== */
-.chat {
-position: relative;
-height: calc(100% - 4.8% - 6.8% - 7.2%);
-background-color: #0b0b0b;
-background-image:
-radial-gradient(circle at 8% 12%, rgba(255,255,255,0.025) 0 1.1vh, transparent 1.2vh),
-radial-gradient(circle at 82% 6%, rgba(255,255,255,0.02) 0 0.9vh, transparent 1vh),
-radial-gradient(circle at 22% 38%, rgba(255,255,255,0.022) 0 0.8vh, transparent 0.9vh),
-radial-gradient(circle at 68% 52%, rgba(255,255,255,0.025) 0 1.3vh, transparent 1.4vh),
-radial-gradient(circle at 42% 72%, rgba(255,255,255,0.02) 0 0.9vh, transparent 1vh),
-radial-gradient(circle at 88% 85%, rgba(255,255,255,0.022) 0 1.1vh, transparent 1.2vh),
-radial-gradient(circle at 5% 88%, rgba(255,255,255,0.02) 0 0.9vh, transparent 1vh),
-radial-gradient(circle at 32% 22%, rgba(255,255,255,0.017) 0 0.7vh, transparent 0.8vh),
-radial-gradient(circle at 58% 28%, rgba(255,255,255,0.022) 0 1vh, transparent 1.1vh),
-radial-gradient(circle at 12% 62%, rgba(255,255,255,0.02) 0 0.85vh, transparent 0.95vh),
-radial-gradient(circle at 75% 25%, rgba(255,255,255,0.018) 0 0.8vh, transparent 0.9vh),
-radial-gradient(circle at 38% 55%, rgba(255,255,255,0.02) 0 0.75vh, transparent 0.85vh);
-background-size: 35% 35%;
-overflow-y: auto;
-overflow-x: hidden;
-padding: 1vh 3% 1vh;
-display: flex;
-flex-direction: column;
-scrollbar-width: none;
-}
-.chat::-webkit-scrollbar { display: none; }
-
-/* ===== BALÕES com rabinho ===== */
-.msg {
-max-width: 78%;
-padding: 0.85vh 1.35vh 1vh 1.35vh;
-border-radius: 1vh;
-font-size: 1.95vh;
-line-height: 1.3;
-color: #fff;
-position: relative;
-word-wrap: break-word;
-opacity: 0;
-letter-spacing: -0.005em;
-margin-bottom: 0.25vh;
-min-width: 10vh;
-}
-.msg.received {
-background: #1f2c2e;
-align-self: flex-start;
-border-top-left-radius: 0.2vh;
-margin-left: 1vh;
-}
-.msg.sent {
-background: #005c4b;
-align-self: flex-end;
-border-top-right-radius: 0.2vh;
-margin-right: 1vh;
-}
-/* rabinho do balão */
-.msg.received::before {
-content: “”;
-position: absolute;
-top: 0;
-left: -0.8vh;
-width: 1vh;
-height: 1.3vh;
-background: #1f2c2e;
-clip-path: polygon(100% 0, 100% 100%, 0 0);
-}
-.msg.sent::before {
-content: “”;
-position: absolute;
-top: 0;
-right: -0.8vh;
-width: 1vh;
-height: 1.3vh;
-background: #005c4b;
-clip-path: polygon(0 0, 100% 0, 0 100%);
-}
-
-/* agrupamento: mensagens consecutivas do mesmo tipo ficam mais juntas e sem rabinho nas seguintes */
-.msg.grouped { margin-top: -0.1vh; margin-bottom: 0.15vh; }
-.msg.grouped.received { border-top-left-radius: 1vh; }
-.msg.grouped.sent { border-top-right-radius: 1vh; }
-.msg.grouped::before { display: none; }
-
-.msg .text-content {
-display: inline;
-}
-.msg .meta {
-display: inline-flex;
-align-items: center;
-gap: 0.4vh;
-font-size: 1.2vh;
-color: rgba(255,255,255,0.55);
-font-weight: 400;
-white-space: nowrap;
-float: right;
-margin-left: 1vh;
-margin-top: 0.7vh;
-line-height: 1;
-}
-.msg.sent .meta { color: rgba(200,230,220,0.7); }
-.ticks {
-width: 1.9vh;
-height: 1.05vh;
-display: inline-block;
-position: relative;
-}
-.ticks svg {
-width: 100%;
-height: 100%;
-stroke: #53bdeb;
-stroke-width: 2;
-fill: none;
-stroke-linecap: round;
-stroke-linejoin: round;
-}
-
-/* ===== TYPING ===== */
-.typing {
-background: #1f2c2e;
-align-self: flex-start;
-padding: 1.25vh 1.6vh;
-border-radius: 1vh;
-border-top-left-radius: 0.2vh;
-display: none;
-gap: 0.55vh;
-align-items: center;
-margin-top: 0.3vh;
-margin-left: 1vh;
-margin-bottom: 0.3vh;
-position: relative;
-}
-.typing::before {
-content: “”;
-position: absolute;
-top: 0;
-left: -0.8vh;
-width: 1vh;
-height: 1.3vh;
-background: #1f2c2e;
-clip-path: polygon(100% 0, 100% 100%, 0 0);
-}
-.typing.show { display: inline-flex; }
-.typing span {
-width: 0.75vh;
-height: 0.75vh;
-border-radius: 50%;
-background: #8a8a8e;
-animation: bounce 1.3s infinite ease-in-out;
-}
-.typing span:nth-child(2) { animation-delay: 0.2s; }
-.typing span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes bounce {
-0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
-30% { transform: translateY(-0.45vh); opacity: 1; }
-}
-
-/* ===== ENTRADA ===== */
-.msg.in {
-animation: pop 0.3s cubic-bezier(0.18, 0.9, 0.28, 1.12) forwards;
-}
-@keyframes pop {
-0% { opacity: 0; transform: translateY(0.7vh) scale(0.95); }
-70% { opacity: 1; transform: translateY(-0.08vh) scale(1.006); }
-100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-/* ===== INPUT BAR ===== */
-.inputbar {
-height: 7.2%;
-background: #0b0b0b;
-display: flex;
-align-items: center;
-padding: 0 3.5%;
-gap: 1.3vh;
-border-top: 0.5px solid rgba(255,255,255,0.04);
-}
-.plus-btn {
-width: 3.8vh;
-height: 3.8vh;
-color: #8a8a8e;
-font-size: 3.4vh;
-font-weight: 300;
-display: flex;
-align-items: center;
-justify-content: center;
-line-height: 1;
-flex-shrink: 0;
-}
-.input-field {
-flex: 1;
-height: 4vh;
-background: transparent;
-border: 0.5px solid rgba(255,255,255,0.12);
-border-radius: 2vh;
-}
-.input-right-icons {
-display: flex;
-gap: 1.8vh;
-align-items: center;
-color: #8a8a8e;
-flex-shrink: 0;
-}
-.input-right-icons svg {
-width: 2.4vh;
-height: 2.4vh;
-stroke: #8a8a8e;
-stroke-width: 1.6;
-fill: none;
-stroke-linecap: round;
-stroke-linejoin: round;
-}
-
-.home-indicator {
-position: absolute;
-bottom: 0.55vh;
-left: 50%;
-transform: translateX(-50%);
-width: 30%;
-height: 0.5vh;
-background: rgba(255,255,255,0.92);
-border-radius: 0.3vh;
-}
-</style>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Fila Virtual • Sorvete na Chapa</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <main class="app">
+    <section id="launchView" class="launch hidden">
+      <h2>Escolha o acesso</h2>
+      <p class="note">Versão de teste com duas visões para validar rapidamente.</p>
+      <div class="launch-actions">
+        <button id="launchAttendant" class="primary">Entrar como Atendente</button>
+        <button id="launchClient">Entrar como Cliente</button>
+      </div>
+      <div class="version">Versão: 2026.04.26-v3</div>
+    </section>
 
-<div class="stage">
-  <div class="phone">
+    <section class="header">
+      <div class="brand">
+        <img id="logoImg" class="logo" alt="Logo" src="" />
+        <div>
+          <div><strong>Sorvete na Chapa • Fila Virtual</strong></div>
+          <div class="note note--header">Atualização em tempo real (sem F5) para teste local.</div>
+        </div>
+      </div>
+      <div>
+        <span class="badge">10 fichas reutilizáveis (1 a 10)</span>
+        <div class="mode-switch">
+          <button id="goAttendant" class="ghost">Atendente</button>
+          <button id="goClient" class="ghost">Cliente</button>
+        </div>
+      </div>
+    </section>
 
-```
-<div class="statusbar">
-  <span>21:34</span>
-  <div class="right">
-    <div class="signal-bars">
-      <span></span><span></span><span></span><span></span>
-    </div>
-    <span class="five-g">5G</span>
-    <div class="battery">
-      <div class="battery-fill"></div>
-      <div class="battery-percent">75</div>
-    </div>
-  </div>
-</div>
+    <section id="attendantView" class="grid attendant-layout">
+      <div class="card left">
+        <h3>1) Escolha o sabor</h3>
+        <p class="note">10 sabores de teste com foto.</p>
+        <div id="flavors" class="flavors"></div>
+      </div>
+      <div class="card right">
+        <h3>2) Escolha a ficha e entre na fila</h3>
+        <p class="note">Fichas ocupadas aparecem em vermelho.</p>
+        <div id="tickets" class="ticket-list"></div>
+        <div class="actions-row">
+          <button id="addToQueue" class="primary">Adicionar na fila</button>
+          <button id="clearDone">Limpar entregues</button>
+        </div>
 
-<div class="chat-header">
-  <div class="back-group">
-    <span class="back-arrow">‹</span>
-    <span class="back-count">8</span>
-  </div>
-  <div class="avatar" style="background: linear-gradient(135deg, #1a6b9a 0%, #0d3d5c 100%);">L</div>
-  <div class="contact-info">
-    <div class="contact-name">Léo Moto</div>
-    <div class="contact-status">online</div>
-  </div>
-  <div class="header-icons">
-    <svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-    <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-  </div>
-</div>
+        <hr class="separator" />
 
-<div class="chat" id="chat">
-  <div class="typing" id="typing">
-    <span></span><span></span><span></span>
-  </div>
-</div>
+        <h3>Fila atual</h3>
+        <p class="note">Marque como entregue para avançar a fila automaticamente.</p>
+        <div id="queue"></div>
+      </div>
+    </section>
 
-<div class="inputbar">
-  <div class="plus-btn">+</div>
-  <div class="input-field"></div>
-  <div class="input-right-icons">
-    <svg viewBox="0 0 24 24"><path d="M21 15V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10z"/><path d="M21 15l-6 6v-4a2 2 0 0 1 2-2z"/></svg>
-    <svg viewBox="0 0 24 24"><path d="M3 7h4l2-2h6l2 2h4v12H3z"/><circle cx="12" cy="13" r="3.5"/></svg>
-    <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="21"/></svg>
-  </div>
-</div>
+    <section id="clientView" class="grid client-layout hidden">
+      <div class="card top">
+        <h3>Entrada do cliente por QR Code</h3>
+        <p class="note">Cada ficha física pode apontar para: <code>?modo=cliente&ficha=NUMERO</code></p>
+        <div id="qrLinks" class="qr-grid"></div>
+      </div>
+      <div class="card left">
+        <h3>Sua ficha</h3>
+        <div class="select-row">
+          <label for="clientTicket">Número:</label>
+          <select id="clientTicket"></select>
+        </div>
+        <div class="big-number" id="ticketNumber">--</div>
+        <div class="alert" id="clientAlert">Aguardando seleção da sua ficha.</div>
+      </div>
+      <div class="card right">
+        <h3>Fila em tempo real</h3>
+        <div id="clientQueue"></div>
+      </div>
+    </section>
+  </main>
 
-<div class="home-indicator"></div>
-```
-
-  </div>
-</div>
-
-<script>
-  // Roteiro Léo Moto
-  const script = [
-    { type: 'r', text: 'fechei o mês aqui',                        delay: 400,  typing: 600, time: '21:28' },
-    { type: 'r', text: 'e ainda não sei se foi bom ou ruim',       delay: 300,  typing: 650, time: '21:28' },
-    { type: 's', text: 'como assim?',                               delay: 750,  typing: 320, time: '21:29' },
-    { type: 'r', text: 'entrou pix quase todo dia',                 delay: 600,  typing: 580, time: '21:29' },
-    { type: 'r', text: 'mas quando olho no fim',                    delay: 300,  typing: 500, time: '21:29' },
-    { type: 'r', text: 'não sei pra onde foi',                      delay: 280,  typing: 480, time: '21:29', anchor: true },
-    { type: 's', text: 'acontece demais',                           delay: 700,  typing: 360, time: '21:30' },
-    { type: 'r', text: 'combustível',                               delay: 600,  typing: 380, time: '21:30' },
-    { type: 'r', text: 'lanche',                                    delay: 200,  typing: 260, time: '21:30' },
-    { type: 'r', text: 'água',                                      delay: 180,  typing: 240, time: '21:30' },
-    { type: 'r', text: 'taxa',                                      delay: 180,  typing: 240, time: '21:30' },
-    { type: 'r', text: 'manutenção',                                delay: 180,  typing: 300, time: '21:30' },
-    { type: 'r', text: 'vai saindo aos poucos',                     delay: 420,  typing: 520, time: '21:31' },
-    { type: 'r', text: 'e no fim eu só sinto que trabalhei',        delay: 300,  typing: 600, time: '21:31' },
-    { type: 'r', text: 'mas não consigo ler meu próprio mês',       delay: 300,  typing: 680, time: '21:32' },
-    { type: 's', text: 'isso cansa de verdade',                     delay: 750,  typing: 420, time: '21:32' },
-  ];
-
-  const chat = document.getElementById('chat');
-  const typing = document.getElementById('typing');
-
-  let audioCtx = null;
-  function initAudio() {
-    if (!audioCtx) {
-      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
-    }
-  }
-
-  function playReceived() {
-    if (!audioCtx) return;
-    const now = audioCtx.currentTime;
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type = 'sine';
-    o.frequency.setValueAtTime(780, now);
-    o.frequency.exponentialRampToValueAtTime(1180, now + 0.08);
-    g.gain.setValueAtTime(0, now);
-    g.gain.linearRampToValueAtTime(0.18, now + 0.012);
-    g.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-    o.connect(g).connect(audioCtx.destination);
-    o.start(now); o.stop(now + 0.25);
-
-    const o2 = audioCtx.createOscillator();
-    const g2 = audioCtx.createGain();
-    o2.type = 'triangle';
-    o2.frequency.setValueAtTime(1580, now + 0.05);
-    o2.frequency.exponentialRampToValueAtTime(1980, now + 0.12);
-    g2.gain.setValueAtTime(0, now + 0.05);
-    g2.gain.linearRampToValueAtTime(0.08, now + 0.06);
-    g2.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-    o2.connect(g2).connect(audioCtx.destination);
-    o2.start(now + 0.05); o2.stop(now + 0.22);
-  }
-
-  function playSent() {
-    if (!audioCtx) return;
-    const now = audioCtx.currentTime;
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type = 'sine';
-    o.frequency.setValueAtTime(580, now);
-    o.frequency.exponentialRampToValueAtTime(290, now + 0.12);
-    g.gain.setValueAtTime(0, now);
-    g.gain.linearRampToValueAtTime(0.11, now + 0.012);
-    g.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-    o.connect(g).connect(audioCtx.destination);
-    o.start(now); o.stop(now + 0.2);
-  }
-
-  const tickSVG = `<span class="ticks"><svg viewBox="0 0 19 10.5"><polyline points="1,5.5 4.5,9 10.5,1.5"/><polyline points="7,5.5 10.5,9 18,1.5"/></svg></span>`;
-
-  let lastType = null;
-
-  function addMessage(item) {
-    const div = document.createElement('div');
-    const isGrouped = lastType === item.type;
-    div.className = 'msg ' + (item.type === 'r' ? 'received' : 'sent') + ' in' + (isGrouped ? ' grouped' : '');
-
-    const metaHtml = item.type === 's'
-      ? `<span class="meta">${item.time}${tickSVG}</span>`
-      : `<span class="meta">${item.time}</span>`;
-
-    const safeText = item.text.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    div.innerHTML = `<span class="text-content">${safeText}</span>${metaHtml}`;
-
-    chat.insertBefore(div, typing);
-    chat.scrollTop = chat.scrollHeight;
-
-    lastType = item.type;
-
-    if (item.type === 'r') playReceived();
-    else playSent();
-  }
-
-  function showTyping(show) {
-    if (show) {
-      typing.classList.add('show');
-      chat.scrollTop = chat.scrollHeight;
-    } else {
-      typing.classList.remove('show');
-    }
-  }
-
-  function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-  async function runScript() {
-    for (let i = 0; i < script.length; i++) {
-      const item = script[i];
-      await wait(item.delay);
-
-      // typing só aparece no primeiro de um bloco do outro lado, ou em mensagens importantes
-      const showTypingForThis = item.type === 'r' && (lastType !== 'r' || item.anchor);
-
-      if (showTypingForThis) {
-        showTyping(true);
-        await wait(item.typing);
-        showTyping(false);
-      } else {
-        await wait(item.typing * (item.type === 'r' ? 0.55 : 0.3));
-      }
-
-      addMessage(item);
-    }
-    await wait(1800);
-  }
-
-  let started = false;
-  function begin() {
-    if (started) return;
-    started = true;
-    initAudio();
-    runScript();
-  }
-
-  document.addEventListener('click', begin);
-  document.addEventListener('touchstart', begin, { passive: true });
-
-  // Fallback: se ninguém tocar em 1.2s, inicia sem som
-  setTimeout(() => {
-    if (!started) {
-      started = true;
-      runScript();
-    }
-  }, 1200);
-</script>
-
+  <script src="app.js" defer></script>
 </body>
 </html>
