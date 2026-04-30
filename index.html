@@ -251,78 +251,111 @@ animation:particleFloat 2.5s ease-out forwards;
 100%{opacity:0;transform:translate(var(–tx),var(–ty)) scale(.3);}
 }
 
-/* === MODO CARROSSEL === */
-.carousel{
-position:absolute;inset:0;display:none;flex-direction:column;
-align-items:center;justify-content:center;padding:0 6vw;
+/* === MODO MOSAICO: vários nomes ocupando a tela === */
+.mosaico{
+position:absolute;inset:0;display:none;
+padding:90px 4vw 4vw 4vw; /* topo dá espaço pro header */
 }
-.carousel.show{display:flex;}
+.mosaico.show{display:block;}
 
-.carousel-eyebrow{
-font-family:‘Bebas Neue’;letter-spacing:.6em;font-size:clamp(12px,1.6vw,18px);
-color:#D4AF37;margin-bottom:30px;
-position:relative;
+.mosaico-eyebrow{
+position:absolute;top:90px;left:50%;transform:translateX(-50%);
+font-family:‘Bebas Neue’;letter-spacing:.6em;font-size:clamp(11px,1.2vw,14px);
+color:#D4AF37;opacity:.7;z-index:5;
 }
-.carousel-eyebrow::before,.carousel-eyebrow::after{
-content:’’;position:absolute;top:50%;width:60px;height:1px;background:#D4AF37;opacity:.4;
+.mosaico-eyebrow::before,.mosaico-eyebrow::after{
+content:’’;position:absolute;top:50%;width:50px;height:1px;background:#D4AF37;opacity:.4;
 }
-.carousel-eyebrow::before{right:calc(100% + 20px);}
-.carousel-eyebrow::after{left:calc(100% + 20px);}
+.mosaico-eyebrow::before{right:calc(100% + 18px);}
+.mosaico-eyebrow::after{left:calc(100% + 18px);}
 
-.carousel-stage{
-position:relative;width:100%;max-width:1400px;
-height:clamp(180px,28vh,300px);
-display:flex;align-items:center;justify-content:center;
+.mosaico-stage{
+position:relative;width:100%;height:100%;
 overflow:hidden;
 }
 
-.carousel-name{
+.tile{
 position:absolute;
 font-family:‘Anton’;
-font-size:clamp(48px,10vw,150px);
-line-height:1;letter-spacing:-.005em;text-transform:uppercase;
+text-transform:uppercase;
+letter-spacing:-.005em;line-height:.95;
 white-space:nowrap;
-color:#fff; /* fallback */
-background:linear-gradient(180deg,#fff,#7da9d6);
--webkit-background-clip:text;background-clip:text;
--webkit-text-fill-color:transparent;
-text-align:center;
-}
-
-.carousel-codigo{
-margin-top:20px;
-font-family:‘Inter Tight’;font-weight:300;letter-spacing:.5em;font-size:clamp(11px,1.4vw,14px);
-color:rgba(255,255,255,.4);
-}
-
-.carousel-progress{
-margin-top:60px;width:300px;height:2px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;
-}
-.carousel-progress-fill{height:100%;background:linear-gradient(90deg,#2BA15A,#D4AF37);}
-
-/* Tickers laterais decorativos */
-.ticker-side{
-position:absolute;top:0;bottom:0;width:14vw;
-display:flex;align-items:center;overflow:hidden;
 pointer-events:none;
-mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);
--webkit-mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);
+transform-origin:center;
+will-change:opacity, transform;
+transition:opacity .8s ease, transform .8s cubic-bezier(.16,1,.3,1);
 }
-.ticker-side.left{left:0;}
-.ticker-side.right{right:0;}
-.ticker-track{display:flex;flex-direction:column;gap:24px;animation:tickerScroll 60s linear infinite;}
-.ticker-track.reverse{animation-direction:reverse;}
-@keyframes tickerScroll{from{transform:translateY(0);}to{transform:translateY(-50%);}}
-.ticker-item{
-font-family:‘Bebas Neue’;letter-spacing:.16em;font-size:clamp(11px,1.1vw,14px);
-color:rgba(255,255,255,.18);text-align:center;writing-mode:vertical-rl;
-white-space:nowrap;
-}
-.ticker-side.left .ticker-item{text-align:left;padding-left:14px;}
-.ticker-side.right .ticker-item{text-align:right;padding-right:14px;}
 
-/* Estado vazio do carrossel */
+/* Tamanhos: hero, large, medium, small */
+.tile.size-hero{
+font-size:clamp(70px,10vw,160px);
+color:#fff;
+text-shadow:0 0 50px rgba(212,175,55,.25);
+}
+.tile.size-large{
+font-size:clamp(40px,5.5vw,90px);
+color:#fff;
+}
+.tile.size-medium{
+font-size:clamp(24px,3.2vw,52px);
+color:rgba(255,255,255,.78);
+font-family:‘Bebas Neue’;letter-spacing:.04em;
+}
+.tile.size-small{
+font-size:clamp(15px,1.6vw,24px);
+color:rgba(255,255,255,.45);
+font-family:‘Bebas Neue’;letter-spacing:.12em;
+}
+
+/* Cores variantes */
+.tile.color-gold{color:#D4AF37;text-shadow:0 0 40px rgba(212,175,55,.35);}
+.tile.color-green{color:#3DC872;}
+.tile.color-blue{color:#7DB1FF;}
+.tile.color-soft{color:rgba(255,255,255,.6);}
+
+/* Animações sutis de “vida” */
+.tile.anim-breathe{animation:tileBreathe 4s ease-in-out infinite;}
+.tile.anim-float{animation:tileFloat 6s ease-in-out infinite;}
+.tile.anim-pulse{animation:tilePulse 5s ease-in-out infinite;}
+.tile.anim-shimmer{animation:tileShimmer 7s ease-in-out infinite;}
+
+@keyframes tileBreathe{
+0%,100%{opacity:1;transform:scale(1);}
+50%{opacity:.85;transform:scale(1.03);}
+}
+@keyframes tileFloat{
+0%,100%{transform:translateY(0);}
+50%{transform:translateY(-12px);}
+}
+@keyframes tilePulse{
+0%,100%{opacity:1;}
+50%{opacity:.55;}
+}
+@keyframes tileShimmer{
+0%,100%{filter:brightness(1);}
+50%{filter:brightness(1.4);}
+}
+
+/* Entrada de cada tile */
+.tile.entering{
+animation:tileIn .9s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes tileIn{
+0%{opacity:0;transform:scale(.6) translateY(20px);filter:blur(15px);}
+100%{opacity:1;transform:scale(1) translateY(0);filter:blur(0);}
+}
+
+.tile.leaving{
+animation:tileOut .6s cubic-bezier(.7,0,.84,0) both;
+}
+@keyframes tileOut{
+0%{opacity:1;transform:scale(1);filter:blur(0);}
+100%{opacity:0;transform:scale(1.2);filter:blur(20px);}
+}
+
+/* Estado vazio */
 .empty-state{
+position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
 text-align:center;color:rgba(255,255,255,.5);
 }
 .empty-state h2{font-family:‘Anton’;font-size:clamp(40px,8vw,120px);letter-spacing:-.01em;
@@ -475,28 +508,22 @@ text-transform:uppercase;
   </div>
 
   <div class="stage">
-    <!-- Tickers laterais decorativos -->
-    <div class="ticker-side left"><div class="ticker-track" id="tickerLeft"></div></div>
-    <div class="ticker-side right"><div class="ticker-track reverse" id="tickerRight"></div></div>
+    <!-- Modo destaque (nome de quem acabou de chegar) -->
+    <div class="spotlight" id="spotlight">
+      <div class="spotlight-bg"></div>
+      <div class="spotlight-eyebrow">Bem-vindo(a) ao evento</div>
+      <h1 class="spotlight-name" id="spotlightName">NOME</h1>
+      <div class="spotlight-codigo" id="spotlightCodigo">F0000000</div>
+      <div class="spotlight-bar"></div>
+    </div>
 
 ```
-<!-- Modo destaque (nome de quem acabou de chegar) -->
-<div class="spotlight" id="spotlight">
-  <div class="spotlight-bg"></div>
-  <div class="spotlight-eyebrow">Bem-vindo(a) ao evento</div>
-  <h1 class="spotlight-name" id="spotlightName">NOME</h1>
-  <div class="spotlight-codigo" id="spotlightCodigo">F0000000</div>
-  <div class="spotlight-bar"></div>
-</div>
-
-<!-- Modo carrossel (todos os presentes) -->
-<div class="carousel" id="carousel">
-  <div class="carousel-eyebrow" id="carouselEyebrow">Presentes no evento</div>
-  <div class="carousel-stage" id="carouselStage">
-    <!-- nomes injetados aqui -->
+<!-- Modo mosaico (todos os presentes preenchendo a tela) -->
+<div class="mosaico" id="mosaico">
+  <div class="mosaico-eyebrow" id="mosaicoEyebrow">Presentes no evento</div>
+  <div class="mosaico-stage" id="mosaicoStage">
+    <!-- nomes injetados dinamicamente -->
   </div>
-  <div class="carousel-codigo" id="carouselCodigo">F0000000</div>
-  <div class="carousel-progress"><div class="carousel-progress-fill" id="carouselProgress"></div></div>
 </div>
 ```
 
@@ -521,8 +548,8 @@ const STATE = {
   fila: [],        // matrículas aguardando exibição
   exibindo: false,
   totalUnique: 0,
-  carouselIdx: 0,
-  carouselTimer: null,
+  mosaicoTimer: null,
+  mosaicoLayout: [],
 };
 
 /* Total de convidados únicos */
@@ -620,7 +647,7 @@ function processarCheckin(input, fonte){
 
   // Atualizar tudo
   atualizarPainel();
-  atualizarTickers();
+  atualizarMosaicoSeAtivo();
 
   // Tentar exibir
   if(!STATE.exibindo) processarFila();
@@ -656,12 +683,12 @@ const TEMPO_DESTAQUE = 7000;
 function processarFila(){
   if(STATE.fila.length === 0){
     STATE.exibindo = false;
-    iniciarCarrossel();
+    iniciarMosaico();
     return;
   }
 
   STATE.exibindo = true;
-  pararCarrossel();
+  pararMosaico();
 
   const proximo = STATE.fila.shift();
   document.getElementById('filaCount').textContent = STATE.fila.length;
@@ -676,9 +703,9 @@ function processarFila(){
 /* ===== EXIBIÇÃO EM DESTAQUE ===== */
 function exibirSpotlight(registro){
   const spotlight = document.getElementById('spotlight');
-  const carousel = document.getElementById('carousel');
+  const mosaico = document.getElementById('mosaico');
 
-  carousel.classList.remove('show');
+  mosaico.classList.remove('show');
   spotlight.classList.remove('show');
 
   // Forçar reflow para reiniciar animações
@@ -725,129 +752,210 @@ function spawnParticles(parent){
   }
 }
 
-/* ===== CARROSSEL DE PRESENTES ===== */
-const ANIM_DURATION = 4500;
+/* ===== MOSAICO VIVO: vários nomes ocupando a tela ===== */
 
-function iniciarCarrossel(){
-  const carousel = document.getElementById('carousel');
-  const spotlight = document.getElementById('spotlight');
-  const stage = document.getElementById('carouselStage');
-  const eyebrow = document.getElementById('carouselEyebrow');
-  const codigoEl = document.getElementById('carouselCodigo');
+const MOSAICO_REFRESH = 4500;        // intervalo entre re-shuffles (ms)
+const MOSAICO_TILES_TROCA = 4;        // quantos tiles trocar a cada refresh
+const ANIM_BREATHES = ['anim-breathe','anim-float','anim-pulse','anim-shimmer',''];
+const COLORS = ['','color-gold','color-green','color-blue','color-soft','',''];
 
-  spotlight.classList.remove('show');
+function pickWeighted(){
+  // Distribuição de tamanhos: poucos hero, alguns large, muitos medium/small
+  const r = Math.random();
+  if(r < 0.06) return 'size-hero';
+  if(r < 0.22) return 'size-large';
+  if(r < 0.60) return 'size-medium';
+  return 'size-small';
+}
+
+function pickFrom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+/* Gera posições não-sobrepostas em uma grade fluida.
+   Retorna array de {top, left, size, anim, color, registro} */
+function gerarLayout(presentes){
+  if(presentes.length === 0) return [];
+
+  const stage = document.getElementById('mosaicoStage');
+  const W = stage.clientWidth || window.innerWidth;
+  const H = stage.clientHeight || window.innerHeight;
+
+  // Quantos tiles cabem? Mais presentes = mais densidade
+  const targetCount = Math.min(
+    Math.max(presentes.length, 8),    // mínimo 8 pra encher mesmo com poucos
+    50                                  // máximo 50 pra não sobrecarregar
+  );
+
+  // Embaralhar lista de presentes (vai repetir se preciso)
+  const shuffled = [...presentes].sort(() => Math.random() - 0.5);
+  const tiles = [];
+  for(let i = 0; i < targetCount; i++){
+    tiles.push({registro: shuffled[i % shuffled.length]});
+  }
+
+  // Garantir 1 tile hero se tem mais de 5 presentes
+  let heroAssigned = false;
+  tiles.forEach((t,i) => {
+    if(!heroAssigned && presentes.length > 5 && i === 0){
+      t.size = 'size-hero';
+      heroAssigned = true;
+    } else {
+      t.size = pickWeighted();
+      // Não permitir mais de 1 hero
+      if(t.size === 'size-hero' && heroAssigned) t.size = 'size-large';
+      if(t.size === 'size-hero') heroAssigned = true;
+    }
+    t.anim = pickFrom(ANIM_BREATHES);
+    t.color = pickFrom(COLORS);
+  });
+
+  // === Posicionamento por grade com perturbação ===
+  // Divide a tela em uma grade lógica
+  const cols = 4, rows = 5;
+  const cellW = W / cols;
+  const cellH = H / rows;
+
+  // Embaralhar células
+  const cells = [];
+  for(let r = 0; r < rows; r++){
+    for(let c = 0; c < cols; c++){
+      cells.push({r, c});
+    }
+  }
+  cells.sort(() => Math.random() - 0.5);
+
+  // Atribuir células aos tiles, ciclando se houver mais tiles que células
+  tiles.forEach((t, i) => {
+    const cell = cells[i % cells.length];
+    // Posição central da célula + deslocamento aleatório
+    const baseLeft = cell.c * cellW + cellW * 0.5;
+    const baseTop = cell.r * cellH + cellH * 0.5;
+    const jitterX = (Math.random() - 0.5) * cellW * 0.6;
+    const jitterY = (Math.random() - 0.5) * cellH * 0.5;
+
+    t.x = baseLeft + jitterX;
+    t.y = baseTop + jitterY;
+
+    // Hero vai pro centro
+    if(t.size === 'size-hero'){
+      t.x = W * (0.35 + Math.random() * 0.3);
+      t.y = H * (0.35 + Math.random() * 0.3);
+    }
+  });
+
+  return tiles;
+}
+
+function criarTileEl(tile){
+  const el = document.createElement('div');
+  const classes = ['tile', tile.size, 'entering'];
+  if(tile.anim) classes.push(tile.anim);
+  if(tile.color) classes.push(tile.color);
+  el.className = classes.join(' ');
+  el.textContent = tile.registro.nome;
+  // Posicionar pelo centro
+  el.style.left = tile.x + 'px';
+  el.style.top = tile.y + 'px';
+  el.style.transform = 'translate(-50%, -50%)';
+  // Pequeno delay aleatório pra escalonar entrada
+  el.style.animationDelay = (Math.random() * 0.6) + 's';
+  return el;
+}
+
+function renderMosaicoCompleto(){
+  const stage = document.getElementById('mosaicoStage');
+  const eyebrow = document.getElementById('mosaicoEyebrow');
 
   if(STATE.presentes.length === 0){
     stage.innerHTML = '<div class="empty-state"><h2>AGUARDANDO</h2><p>O evento começará em breve</p></div>';
     eyebrow.style.display = 'none';
-    codigoEl.style.display = 'none';
-    carousel.classList.add('show');
     return;
   }
 
   eyebrow.style.display = '';
-  codigoEl.style.display = '';
-  carousel.classList.add('show');
-
-  // Embaralhar índice inicial para não começar sempre no mesmo
-  STATE.carouselIdx = Math.floor(Math.random() * STATE.presentes.length);
-
-  proximoNomeCarrossel();
-}
-
-function pararCarrossel(){
-  document.getElementById('carousel').classList.remove('show');
-  if(STATE.carouselTimer){
-    clearTimeout(STATE.carouselTimer);
-    STATE.carouselTimer = null;
-  }
-}
-
-const ESTILOS_CARROSSEL = [
-  // Fade + scale
-  {entrada:{from:{opacity:0,transform:'scale(0.7)',filter:'blur(20px)'},to:{opacity:1,transform:'scale(1)',filter:'blur(0)'}},
-   saida:{to:{opacity:0,transform:'scale(1.15)',filter:'blur(20px)'}}},
-  // Slide horizontal
-  {entrada:{from:{opacity:0,transform:'translateX(120%) skewX(-8deg)'},to:{opacity:1,transform:'translateX(0) skewX(0)'}},
-   saida:{to:{opacity:0,transform:'translateX(-120%) skewX(-8deg)'}}},
-  // Slide vertical
-  {entrada:{from:{opacity:0,transform:'translateY(80px)'},to:{opacity:1,transform:'translateY(0)'}},
-   saida:{to:{opacity:0,transform:'translateY(-80px)'}}},
-  // Rotate
-  {entrada:{from:{opacity:0,transform:'rotateY(90deg) scale(0.8)'},to:{opacity:1,transform:'rotateY(0) scale(1)'}},
-   saida:{to:{opacity:0,transform:'rotateY(-90deg) scale(0.8)'}}},
-  // Letter-spacing dramatic
-  {entrada:{from:{opacity:0,letterSpacing:'1em',filter:'blur(15px)'},to:{opacity:1,letterSpacing:'-0.005em',filter:'blur(0)'}},
-   saida:{to:{opacity:0,letterSpacing:'.5em',filter:'blur(15px)'}}},
-];
-
-function proximoNomeCarrossel(){
-  if(STATE.exibindo) return;
-  if(STATE.presentes.length === 0){
-    iniciarCarrossel();
-    return;
-  }
-
-  const stage = document.getElementById('carouselStage');
-  const codigoEl = document.getElementById('carouselCodigo');
-  const progressEl = document.getElementById('carouselProgress');
-
-  // Ciclar (e re-randomizar de vez em quando)
-  STATE.carouselIdx = (STATE.carouselIdx + 1) % STATE.presentes.length;
-  const registro = STATE.presentes[STATE.carouselIdx];
-  const estilo = ESTILOS_CARROSSEL[Math.floor(Math.random() * ESTILOS_CARROSSEL.length)];
-
-  // Limpar e criar novo
   stage.innerHTML = '';
-  const el = document.createElement('div');
-  el.className = 'carousel-name';
-  el.textContent = registro.nome;
-  stage.appendChild(el);
-
-  codigoEl.textContent = registro.codigo + ' · CHEGOU ÀS ' + registro.hora;
-
-  // Aplicar entrada
-  Object.assign(el.style, estilo.entrada.from);
-  el.animate([estilo.entrada.from, estilo.entrada.to], {
-    duration: 900,
-    easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-    fill: 'forwards'
+  const layout = gerarLayout(STATE.presentes);
+  layout.forEach(tile => {
+    stage.appendChild(criarTileEl(tile));
   });
-
-  // Reset progress
-  progressEl.style.transition = 'none';
-  progressEl.style.width = '0%';
-  void progressEl.offsetWidth;
-  progressEl.style.transition = 'width ' + (ANIM_DURATION/1000) + 's linear';
-  progressEl.style.width = '100%';
-
-  // Saída antes do próximo
-  STATE.carouselTimer = setTimeout(() => {
-    el.animate([{}, estilo.saida.to], {
-      duration: 600,
-      easing: 'cubic-bezier(0.7, 0, 0.84, 0)',
-      fill: 'forwards'
-    });
-    STATE.carouselTimer = setTimeout(proximoNomeCarrossel, 600);
-  }, ANIM_DURATION);
+  // Salvar referência pro shuffle
+  STATE.mosaicoLayout = layout;
 }
 
-/* ===== TICKERS LATERAIS DECORATIVOS ===== */
-function atualizarTickers(){
-  const left = document.getElementById('tickerLeft');
-  const right = document.getElementById('tickerRight');
-  if(!left || !right) return;
+/* Trocar alguns tiles aleatórios sem refazer tudo (transição suave) */
+function shuffleParcialMosaico(){
+  if(STATE.exibindo) return;
+  if(STATE.presentes.length === 0) return;
 
-  if(STATE.presentes.length === 0){
-    left.innerHTML = '';
-    right.innerHTML = '';
-    return;
+  const stage = document.getElementById('mosaicoStage');
+  const tiles = stage.querySelectorAll('.tile');
+  if(tiles.length === 0){ renderMosaicoCompleto(); return; }
+
+  // Escolher N tiles aleatórios pra trocar
+  const indices = [];
+  while(indices.length < Math.min(MOSAICO_TILES_TROCA, tiles.length)){
+    const r = Math.floor(Math.random() * tiles.length);
+    if(indices.indexOf(r) === -1) indices.push(r);
   }
 
-  // Duplicar para loop infinito
-  const items = STATE.presentes.map(p => '<div class="ticker-item">' + p.nome + ' · ' + p.hora + '</div>').join('');
-  left.innerHTML = items + items;
-  right.innerHTML = items + items;
+  indices.forEach(i => {
+    const oldEl = tiles[i];
+    if(!oldEl) return;
+    oldEl.classList.remove('entering');
+    oldEl.classList.add('leaving');
+
+    setTimeout(() => {
+      // Gerar novo tile na mesma posição (ou nova posição)
+      const stage = document.getElementById('mosaicoStage');
+      if(!stage.contains(oldEl)){ return; }
+
+      const W = stage.clientWidth, H = stage.clientHeight;
+      const novoRegistro = STATE.presentes[Math.floor(Math.random() * STATE.presentes.length)];
+      const novoTile = {
+        registro: novoRegistro,
+        size: pickWeighted(),
+        anim: pickFrom(ANIM_BREATHES),
+        color: pickFrom(COLORS),
+        x: oldEl.offsetLeft + (Math.random() - 0.5) * 100,
+        y: oldEl.offsetTop + (Math.random() - 0.5) * 100,
+      };
+      // Manter dentro da tela
+      novoTile.x = Math.max(80, Math.min(W - 80, novoTile.x));
+      novoTile.y = Math.max(80, Math.min(H - 80, novoTile.y));
+
+      const novoEl = criarTileEl(novoTile);
+      oldEl.remove();
+      stage.appendChild(novoEl);
+    }, 600);
+  });
+}
+
+function iniciarMosaico(){
+  const mosaico = document.getElementById('mosaico');
+  const spotlight = document.getElementById('spotlight');
+
+  spotlight.classList.remove('show');
+  mosaico.classList.add('show');
+
+  renderMosaicoCompleto();
+
+  if(STATE.mosaicoTimer) clearInterval(STATE.mosaicoTimer);
+  STATE.mosaicoTimer = setInterval(shuffleParcialMosaico, MOSAICO_REFRESH);
+}
+
+function pararMosaico(){
+  document.getElementById('mosaico').classList.remove('show');
+  if(STATE.mosaicoTimer){
+    clearInterval(STATE.mosaicoTimer);
+    STATE.mosaicoTimer = null;
+  }
+}
+
+/* Re-renderizar quando alguém novo é adicionado durante o mosaico */
+function atualizarMosaicoSeAtivo(){
+  const mosaico = document.getElementById('mosaico');
+  if(mosaico.classList.contains('show') && !STATE.exibindo){
+    renderMosaicoCompleto();
+  }
 }
 
 /* ===== EVENTOS DA INTERFACE ===== */
@@ -873,7 +981,7 @@ document.getElementById('btnReset').addEventListener('click', () => {
   STATE.fila = [];
   saveState();
   atualizarPainel();
-  atualizarTickers();
+  atualizarMosaicoSeAtivo();
   setFeedback('Lista limpa.', 'ok');
 });
 
@@ -897,8 +1005,7 @@ document.getElementById('btnSair').addEventListener('click', fecharTelaEvento);
 function abrirTelaEvento(){
   document.getElementById('painel').style.display = 'none';
   document.getElementById('tela').classList.add('active');
-  atualizarTickers();
-  if(!STATE.exibindo) iniciarCarrossel();
+  if(!STATE.exibindo) iniciarMosaico();
 
   // Tentar fullscreen
   try{
@@ -910,7 +1017,7 @@ function abrirTelaEvento(){
 function fecharTelaEvento(){
   document.getElementById('tela').classList.remove('active');
   document.getElementById('painel').style.display = '';
-  pararCarrossel();
+  pararMosaico();
   document.getElementById('spotlight').classList.remove('show');
   try{ if(document.fullscreenElement) document.exitFullscreen(); }catch(e){}
 }
@@ -1012,7 +1119,7 @@ window.addEventListener('storage', function(e){
 
   // Atualiza UI
   atualizarPainel();
-  atualizarTickers();
+  atualizarMosaicoSeAtivo();
 
   // Se chegaram novos e não tem nada exibindo, dispara
   if(novosRegistros.length > 0 && !STATE.exibindo){
@@ -1022,7 +1129,6 @@ window.addEventListener('storage', function(e){
 
 /* ===== INICIALIZAR ===== */
 atualizarPainel();
-atualizarTickers();
 </script>
 
 </body>
