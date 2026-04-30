@@ -542,7 +542,7 @@ document.getElementById('statTotal').textContent = STATE.totalUnique;
 
 // Restaurar estado salvo
 try{
-  const saved = JSON.parse(sessionStorage.getItem('checkin_state') || '{}');
+  const saved = JSON.parse(localStorage.getItem('checkin_state') || '{}');
   if(saved.presentes) STATE.presentes = saved.presentes;
 }catch(e){}
 
@@ -584,7 +584,7 @@ function setFeedback(msg, tipo){
 
 function saveState(){
   try{
-    sessionStorage.setItem('checkin_state', JSON.stringify({presentes: STATE.presentes}));
+    localStorage.setItem('checkin_state', JSON.stringify({presentes: STATE.presentes}));
   }catch(e){}
 }
 
@@ -989,6 +989,36 @@ commandInput.addEventListener('input', () => {
 const styleEl = document.createElement('style');
 styleEl.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}';
 document.head.appendChild(styleEl);
+
+/* ===== SINCRONIZAÇÃO ENTRE ABAS (mesmo navegador) =====
+   Quando outra aba salva no localStorage, o evento 'storage' dispara aqui.
+   Comparamos a lista de presentes — quem é novo entra na fila de exibição. */
+window.addEventListener('storage', function(e){
+  if(e.key !== 'checkin_state') return;
+  if(!e.newValue) return;
+
+  let novoEstado;
+  try{ novoEstado = JSON.parse(e.newValue); }catch(err){ return; }
+  if(!novoEstado || !Array.isArray(novoEstado.presentes)) return;
+
+  const codigosAtuais = new Set(STATE.presentes.map(p => p.codigo));
+  const novosRegistros = novoEstado.presentes.filter(p => !codigosAtuais.has(p.codigo));
+
+  // Atualiza estado local
+  STATE.presentes = novoEstado.presentes;
+
+  // Coloca os novos na fila de exibição
+  novosRegistros.forEach(r => STATE.fila.push(r));
+
+  // Atualiza UI
+  atualizarPainel();
+  atualizarTickers();
+
+  // Se chegaram novos e não tem nada exibindo, dispara
+  if(novosRegistros.length > 0 && !STATE.exibindo){
+    processarFila();
+  }
+});
 
 /* ===== INICIALIZAR ===== */
 atualizarPainel();
