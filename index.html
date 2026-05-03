@@ -50,7 +50,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;z-i
   <div class="view view-login is-active" id="view-login">
     <div class="login-wrap">
       <div class="login-card card">
-        <h1 class="login-title">Casa <em>Leve</em></h1>
+        <h1 class="login-title">1101 <em>Fitness</em></h1>
         <p class="login-sub">Escolha quem está usando este celular. O app vai lembrar sua escolha nas próximas visitas.</p>
         <div class="login-list" id="login-list"></div>
       </div>
@@ -60,6 +60,33 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;z-i
 
   <div class="view view-loading" id="view-loading">
     <div class="loading">Carregando dados...</div>
+  </div>
+
+  <div class="view view-onboarding" id="view-onboarding">
+    <header class="app-header">
+      <div class="brand">1101 <em>Fitness</em></div>
+      <button class="icon-btn" id="btn-onboarding-switch" aria-label="Trocar usuário">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20L21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg>
+      </button>
+    </header>
+    <div class="card">
+      <div class="person-name" style="font-size:24px;margin-bottom:8px;" id="onboarding-title">Começar desafio</div>
+      <p class="muted" style="margin:0 0 16px;">Antes de liberar o acompanhamento, informe o peso inicial. Essa informação é obrigatória porque define todas as metas dos 90 dias.</p>
+      <form id="onboarding-form" autocomplete="off">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="onboarding-date">Data inicial</label>
+            <input class="form-input" type="date" id="onboarding-date" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="onboarding-weight">Peso inicial (kg)</label>
+            <input class="form-input" type="number" id="onboarding-weight" inputmode="decimal" step="0.1" min="20" max="250" placeholder="Ex.: 82,4" required />
+          </div>
+        </div>
+        <div class="ok-box" id="onboarding-preview">Ao informar o peso, o app calcula automaticamente as metas de 5%, 10% e 15%.</div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Começar acompanhamento</button>
+      </form>
+    </div>
   </div>
 
   <div class="view view-dashboard" id="view-dashboard">
@@ -93,7 +120,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;z-i
     <form id="register-form" autocomplete="off">
       <div class="form-row">
         <div class="form-group"><label class="form-label" for="reg-date">Data</label><input class="form-input" type="date" id="reg-date" required /></div>
-        <div class="form-group"><label class="form-label" for="reg-weight">Peso (opcional)</label><input class="form-input" type="number" id="reg-weight" inputmode="decimal" step="0.1" placeholder="—" /></div>
+        <div class="form-group"><label class="form-label" for="reg-weight" id="reg-weight-label">Peso do dia (opcional)</label><input class="form-input" type="number" id="reg-weight" inputmode="decimal" step="0.1" placeholder="—" /></div>
       </div>
       <div class="check-card" id="reg-walked"><div class="check-box"></div><div class="check-text"><div class="check-title">Caminhei hoje</div><div class="check-sub">Qualquer caminhada conta</div></div></div>
       <div class="form-group" id="reg-walk-minutes-group" style="display:none;"><label class="form-label">Tempo de caminhada</label><div class="choice-group cols-5" id="reg-walk-minutes"><button type="button" class="choice-btn" data-min="15">15</button><button type="button" class="choice-btn" data-min="30">30</button><button type="button" class="choice-btn" data-min="45">45</button><button type="button" class="choice-btn" data-min="60">60</button><button type="button" class="choice-btn" data-min="other">+</button></div><input class="form-input" type="number" id="reg-walk-other" inputmode="numeric" placeholder="Outro valor (min)" style="display:none;margin-top:8px;" /></div>
@@ -163,6 +190,7 @@ var state = { people:[], records:[] };
 var currentUser = null;
 var currentEvoPerson = null;
 var registerDraft = { personId:null, date:null, weight:"", walked:false, walkMinutes:null, avoidedSnack:false, eating:null, note:"" };
+var onboardingDraft = { personId:null, date:null, weight:"" };
 
 function $(id){ return document.getElementById(id); }
 function todayISO(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
@@ -219,8 +247,13 @@ async function loadData(){
     state.people=people;
     state.records=records;
     refreshCurrentWeightsFromRecords();
-    renderDashboard();
-    showView("dashboard");
+    if(needsInitialWeight()){
+      renderOnboarding();
+      showView("onboarding");
+    } else {
+      renderDashboard();
+      showView("dashboard");
+    }
   }catch(err){
     showView("dashboard");
     $("app-error").innerHTML='<div class="error-box">Erro ao carregar o Firebase. Confira se o Firestore foi criado e se as regras permitem leitura/escrita. Detalhe: '+escapeHtml(err.message||String(err))+'</div>';
@@ -242,6 +275,44 @@ function renderLogin(){
     btn.innerHTML='<span>Entrar como '+escapeHtml(u.name)+'</span><span>→</span>';
     holder.appendChild(btn);
   }
+}
+
+function needsInitialWeight(){
+  if(!currentUser || currentUser.role!=="participant") return false;
+  var p=getPerson(currentUser.id);
+  return !!p && (!p.startWeight || !p.startDate);
+}
+function renderOnboarding(){
+  var p=getPerson(currentUser.id);
+  onboardingDraft.personId=currentUser.id;
+  onboardingDraft.date=todayISO();
+  onboardingDraft.weight="";
+  $("onboarding-title").textContent="Começar desafio · "+(p?p.name:currentUser.name);
+  $("onboarding-date").value=onboardingDraft.date;
+  $("onboarding-weight").value="";
+  updateOnboardingPreview();
+}
+function updateOnboardingPreview(){
+  var raw=$("onboarding-weight").value;
+  var w=parseFloat(raw);
+  if(isNaN(w) || w<=0){
+    $("onboarding-preview").textContent="Ao informar o peso, o app calcula automaticamente as metas de 5%, 10% e 15%.";
+    return;
+  }
+  $("onboarding-preview").textContent="Metas: mês 1 " + formatNum(w*0.95) + " kg · mês 2 " + formatNum(w*0.90) + " kg · final 90 dias " + formatNum(w*0.85) + " kg.";
+}
+async function saveInitialWeight(){
+  if(!currentUser || currentUser.role!=="participant") return;
+  var date=$("onboarding-date").value || todayISO();
+  var weight=parseFloat($("onboarding-weight").value);
+  if(isNaN(weight) || weight<=0){ toast("Informe o peso inicial"); return; }
+  if(weight<20 || weight>250){ toast("Confira o peso informado"); return; }
+  var personId=currentUser.id;
+  var recordId=personId+"_"+date;
+  await setDoc(doc(db,"participants",personId),{ startWeight:weight, currentWeight:weight, goalWeight:weight*0.85, startDate:date, walkGoal:4, updatedAt:serverTimestamp() },{merge:true});
+  await setDoc(doc(db,"records",recordId),{ id:recordId, personId:personId, date:date, weight:weight, walked:false, walkMinutes:null, avoidedSnack:false, eating:null, note:"Peso inicial", createdAt:serverTimestamp(), updatedAt:serverTimestamp() },{merge:true});
+  toast("Peso inicial salvo");
+  await loadData();
 }
 function renderDashboard(){
   $("app-error").innerHTML="";
@@ -294,14 +365,19 @@ async function saveRecord(){
   if(!currentUser || currentUser.role!=="participant"){ toast("Admin apenas visualiza"); return; }
   var person=getPerson(currentUser.id); if(!person){ toast("Pessoa não encontrada"); return; }
   var weightVal=null; if(registerDraft.weight!==""&&!isNaN(parseFloat(registerDraft.weight))) weightVal=parseFloat(registerDraft.weight);
+  if(!person.startWeight && weightVal===null){ toast("O peso inicial é obrigatório"); renderOnboarding(); showView("onboarding"); return; }
   var recordId=registerDraft.personId+"_"+registerDraft.date;
+  var oldSnap=await getDoc(doc(db,"records",recordId));
+  var oldData=oldSnap.exists()?oldSnap.data():null;
+  if(weightVal===null && oldData && oldData.weight!==null && oldData.weight!==undefined && !isNaN(oldData.weight)) weightVal=parseFloat(oldData.weight);
   var rec={ id:recordId, personId:registerDraft.personId, date:registerDraft.date, weight:weightVal, walked:!!registerDraft.walked, walkMinutes:registerDraft.walked?registerDraft.walkMinutes:null, avoidedSnack:!!registerDraft.avoidedSnack, eating:registerDraft.eating||null, note:registerDraft.note||"", updatedAt:serverTimestamp() };
-  var oldSnap=await getDoc(doc(db,"records",recordId)); if(!oldSnap.exists()) rec.createdAt=serverTimestamp();
+  if(!oldSnap.exists()) rec.createdAt=serverTimestamp();
   await setDoc(doc(db,"records",recordId),rec,{merge:true});
   var personUpdate={ updatedAt:serverTimestamp() };
+  if(!person.startWeight && weightVal!==null){ personUpdate.startWeight=weightVal; personUpdate.startDate=registerDraft.date; personUpdate.goalWeight=weightVal*0.85; }
   if(weightVal!==null){
-    if(!person.startWeight){ personUpdate.startWeight=weightVal; personUpdate.startDate=registerDraft.date; personUpdate.goalWeight=weightVal*0.85; }
-    personUpdate.currentWeight=weightVal;
+    var latest=latestWeightRecord(person.id);
+    if(!latest || registerDraft.date>=latest.date) personUpdate.currentWeight=weightVal;
   }
   await setDoc(doc(db,"participants",person.id),personUpdate,{merge:true});
   toast("Registro salvo");
@@ -352,9 +428,12 @@ function renderSettings(){
 
 $("login-list").addEventListener("click",function(e){ var btn=e.target.closest?e.target.closest("[data-login]"):null; if(!btn) return; var id=btn.getAttribute("data-login"); currentUser=getUser(id); localStorage.setItem(LS_USER,id); loadData(); });
 $("btn-open-settings").addEventListener("click",function(){ renderSettings(); showView("settings"); });
-document.addEventListener("click",function(e){ var b=e.target.closest?e.target.closest("[data-back]"):null; if(b){ renderDashboard(); showView("dashboard"); } });
+document.addEventListener("click",function(e){ var b=e.target.closest?e.target.closest("[data-back]"):null; if(b){ if(needsInitialWeight()){ renderOnboarding(); showView("onboarding"); } else { renderDashboard(); showView("dashboard"); } } });
 $("btn-switch-user").addEventListener("click",function(){ localStorage.removeItem(LS_USER); currentUser=null; renderLogin(); showView("login"); });
-$("view-dashboard").addEventListener("click",function(e){ var btn=e.target.closest?e.target.closest("[data-action]"):null; if(!btn) return; var action=btn.getAttribute("data-action"); var id=btn.getAttribute("data-id"); if(action==="register"){ resetRegisterDraft(id); var p=getPerson(id); $("register-title").textContent="Registrar · "+(p?p.name:""); syncRegisterUI(); showView("register"); } if(action==="evolve") renderEvolution(id); });
+$("btn-onboarding-switch").addEventListener("click",function(){ localStorage.removeItem(LS_USER); currentUser=null; renderLogin(); showView("login"); });
+$("onboarding-weight").addEventListener("input",function(){ updateOnboardingPreview(); });
+$("onboarding-form").addEventListener("submit",function(e){ e.preventDefault(); saveInitialWeight(); });
+$("view-dashboard").addEventListener("click",function(e){ var btn=e.target.closest?e.target.closest("[data-action]"):null; if(!btn) return; var action=btn.getAttribute("data-action"); var id=btn.getAttribute("data-id"); if(action==="register"){ resetRegisterDraft(id); var p=getPerson(id); $("register-title").textContent="Registrar · "+(p?p.name:""); $("reg-weight-label").textContent=(p&&p.startWeight)?"Peso do dia (opcional)":"Peso inicial (obrigatório)"; syncRegisterUI(); showView("register"); } if(action==="evolve") renderEvolution(id); });
 $("reg-date").addEventListener("change",function(e){ registerDraft.date=e.target.value; });
 $("reg-weight").addEventListener("input",function(e){ registerDraft.weight=e.target.value; });
 $("reg-note").addEventListener("input",function(e){ registerDraft.note=e.target.value; });
