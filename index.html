@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#f4f1e8" />
-<title>Casa Leve</title>
+<title>1101 Fitness</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,7 +50,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;z-i
   <div class="view view-login is-active" id="view-login">
     <div class="login-wrap">
       <div class="login-card card">
-        <h1 class="login-title">1101 <em>Fitness</em></h1>
+        <h1 class="login-title">Casa <em>Leve</em></h1>
         <p class="login-sub">Escolha quem está usando este celular. O app vai lembrar sua escolha nas próximas visitas.</p>
         <div class="login-list" id="login-list"></div>
       </div>
@@ -64,7 +64,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;z-i
 
   <div class="view view-dashboard" id="view-dashboard">
     <header class="app-header">
-      <div class="brand">Casa <em>Leve</em></div>
+      <div class="brand">1101 <em>Fitness</em></div>
       <button class="icon-btn" id="btn-open-settings" aria-label="Configurações">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       </button>
@@ -146,17 +146,17 @@ var firebaseConfig = {
 var app = initializeApp(firebaseConfig);
 var db = getFirestore(app);
 
-var LS_USER = "casaleve_current_user";
+var LS_USER = "fitness1101_current_user";
 var CHALLENGE_DAYS = 90;
 var MONTH_DAYS = 30;
 var MONTHLY_LOSS_RATE = 0.05;
 var PARTICIPANTS = [
   { id:"fernanda", name:"Fernanda", walkGoal:4 },
-  { id:"aldeisa", name:"Aldeisa", walkGoal:4 }
+  { id:"aldeiza", name:"Aldeiza", walkGoal:4 }
 ];
 var USERS = [
   { id:"fernanda", name:"Fernanda", role:"participant" },
-  { id:"aldeisa", name:"Aldeisa", role:"participant" },
+  { id:"aldeiza", name:"Aldeiza", role:"participant" },
   { id:"admin", name:"Admin", role:"admin" }
 ];
 var state = { people:[], records:[] };
