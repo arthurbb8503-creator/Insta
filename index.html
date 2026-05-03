@@ -200,6 +200,8 @@ function startOfWeekISO(){ var d=new Date(); var day=d.getDay(); var diff=(day==
 function endOfWeekISO(){ var d=isoToDate(startOfWeekISO()); d.setDate(d.getDate()+6); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
 function formatNum(n,dec){ if(n===null||n===undefined||isNaN(n)) return "—"; if(dec===undefined) dec=1; return Number(n).toFixed(dec).replace(".",","); }
+function parseWeightValue(v){ if(v===null||v===undefined) return NaN; return parseFloat(String(v).replace(",",".")); }
+function withTimeout(promise, label){ return Promise.race([promise, new Promise(function(resolve,reject){ setTimeout(function(){ reject(new Error((label||"Operação")+" demorou demais. Verifique internet, Firestore Database e regras.")); }, 12000); })]); }
 function formatDateBR(iso){ var d=isoToDate(iso); var months=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"]; return d.getDate()+" "+months[d.getMonth()]; }
 function formatWeekday(iso){ var d=isoToDate(iso); var wd=["dom","seg","ter","qua","qui","sex","sáb"]; return wd[d.getDay()]; }
 function escapeHtml(s){ if(s===null||s===undefined) return ""; return String(s).replace(/[&<>\"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
@@ -235,18 +237,30 @@ async function ensureParticipants(){
 async function loadData(){
   showView("loading");
   try{
-    await ensureParticipants();
-    var peopleSnap=await getDocs(collection(db,"participants"));
+    await withTimeout(ensureParticipants(), "Criação/leitura dos participantes");
+
+    // Não usamos getDocs(collection(db,"participants")) porque regras por ID podem bloquear listagem.
+    // Buscamos apenas os documentos permitidos: fernanda e aldeiza.
     var people=[];
-    peopleSnap.forEach(function(s){ var d=s.data(); if(d.active!==false) people.push(d); });
+    for(var i=0;i<PARTICIPANTS.length;i++){
+      var base=PARTICIPANTS[i];
+      var snap=await withTimeout(getDoc(doc(db,"participants",base.id)), "Leitura de " + base.name);
+      if(snap.exists()){
+        var d=snap.data();
+        if(d.active!==false) people.push(d);
+      }
+    }
     people.sort(function(a,b){ return a.name>b.name?1:-1; });
-    var recordsSnap=await getDocs(collection(db,"records"));
+
+    var recordsSnap=await withTimeout(getDocs(collection(db,"records")), "Leitura dos registros");
     var records=[];
     recordsSnap.forEach(function(s){ var d=s.data(); d.id=s.id; records.push(d); });
     records.sort(function(a,b){ return a.date<b.date?-1:(a.date>b.date?1:0); });
+
     state.people=people;
     state.records=records;
     refreshCurrentWeightsFromRecords();
+
     if(needsInitialWeight()){
       renderOnboarding();
       showView("onboarding");
@@ -256,7 +270,7 @@ async function loadData(){
     }
   }catch(err){
     showView("dashboard");
-    $("app-error").innerHTML='<div class="error-box">Erro ao carregar o Firebase. Confira se o Firestore foi criado e se as regras permitem leitura/escrita. Detalhe: '+escapeHtml(err.message||String(err))+'</div>';
+    $("app-error").innerHTML='<div class="error-box"><strong>Não consegui carregar os dados.</strong><br>O app conseguiu abrir, mas travou ao buscar/salvar no Firestore. Verifique se o Firestore Database foi criado e se as regras estão publicadas. Detalhe técnico: '+escapeHtml(err.message||String(err))+'</div><button class="btn btn-ghost btn-block" onclick="location.reload()">Tentar novamente</button>';
   }
 }
 function refreshCurrentWeightsFromRecords(){
@@ -294,7 +308,7 @@ function renderOnboarding(){
 }
 function updateOnboardingPreview(){
   var raw=$("onboarding-weight").value;
-  var w=parseFloat(raw);
+  var w=parseWeightValue(raw);
   if(isNaN(w) || w<=0){
     $("onboarding-preview").textContent="Ao informar o peso, o app calcula automaticamente as metas de 5%, 10% e 15%.";
     return;
@@ -304,15 +318,21 @@ function updateOnboardingPreview(){
 async function saveInitialWeight(){
   if(!currentUser || currentUser.role!=="participant") return;
   var date=$("onboarding-date").value || todayISO();
-  var weight=parseFloat($("onboarding-weight").value);
+  var weight=parseWeightValue($("onboarding-weight").value);
   if(isNaN(weight) || weight<=0){ toast("Informe o peso inicial"); return; }
   if(weight<20 || weight>250){ toast("Confira o peso informado"); return; }
   var personId=currentUser.id;
   var recordId=personId+"_"+date;
-  await setDoc(doc(db,"participants",personId),{ startWeight:weight, currentWeight:weight, goalWeight:weight*0.85, startDate:date, walkGoal:4, updatedAt:serverTimestamp() },{merge:true});
-  await setDoc(doc(db,"records",recordId),{ id:recordId, personId:personId, date:date, weight:weight, walked:false, walkMinutes:null, avoidedSnack:false, eating:null, note:"Peso inicial", createdAt:serverTimestamp(), updatedAt:serverTimestamp() },{merge:true});
-  toast("Peso inicial salvo");
-  await loadData();
+  try{
+    await withTimeout(setDoc(doc(db,"participants",personId),{ startWeight:weight, currentWeight:weight, goalWeight:weight*0.85, startDate:date, walkGoal:4, updatedAt:serverTimestamp() },{merge:true}), "Salvar participante");
+    await withTimeout(setDoc(doc(db,"records",recordId),{ id:recordId, personId:personId, date:date, weight:weight, walked:false, walkMinutes:null, avoidedSnack:false, eating:null, note:"Peso inicial", createdAt:serverTimestamp(), updatedAt:serverTimestamp() },{merge:true}), "Salvar registro inicial");
+    toast("Peso inicial salvo");
+    await loadData();
+  }catch(err){
+    toast("Erro ao salvar");
+    $("onboarding-preview").innerHTML='Erro ao salvar no Firestore: '+escapeHtml(err.message||String(err));
+    $("onboarding-preview").className="error-box";
+  }
 }
 function renderDashboard(){
   $("app-error").innerHTML="";
@@ -364,24 +384,35 @@ function syncRegisterUI(){
 async function saveRecord(){
   if(!currentUser || currentUser.role!=="participant"){ toast("Admin apenas visualiza"); return; }
   var person=getPerson(currentUser.id); if(!person){ toast("Pessoa não encontrada"); return; }
-  var weightVal=null; if(registerDraft.weight!==""&&!isNaN(parseFloat(registerDraft.weight))) weightVal=parseFloat(registerDraft.weight);
+  var weightVal=null;
+  var typedWeight=parseWeightValue(registerDraft.weight);
+  if(registerDraft.weight!=="" && !isNaN(typedWeight)) weightVal=typedWeight;
   if(!person.startWeight && weightVal===null){ toast("O peso inicial é obrigatório"); renderOnboarding(); showView("onboarding"); return; }
   var recordId=registerDraft.personId+"_"+registerDraft.date;
-  var oldSnap=await getDoc(doc(db,"records",recordId));
-  var oldData=oldSnap.exists()?oldSnap.data():null;
-  if(weightVal===null && oldData && oldData.weight!==null && oldData.weight!==undefined && !isNaN(oldData.weight)) weightVal=parseFloat(oldData.weight);
-  var rec={ id:recordId, personId:registerDraft.personId, date:registerDraft.date, weight:weightVal, walked:!!registerDraft.walked, walkMinutes:registerDraft.walked?registerDraft.walkMinutes:null, avoidedSnack:!!registerDraft.avoidedSnack, eating:registerDraft.eating||null, note:registerDraft.note||"", updatedAt:serverTimestamp() };
-  if(!oldSnap.exists()) rec.createdAt=serverTimestamp();
-  await setDoc(doc(db,"records",recordId),rec,{merge:true});
-  var personUpdate={ updatedAt:serverTimestamp() };
-  if(!person.startWeight && weightVal!==null){ personUpdate.startWeight=weightVal; personUpdate.startDate=registerDraft.date; personUpdate.goalWeight=weightVal*0.85; }
-  if(weightVal!==null){
-    var latest=latestWeightRecord(person.id);
-    if(!latest || registerDraft.date>=latest.date) personUpdate.currentWeight=weightVal;
+  try{
+    var oldSnap=await withTimeout(getDoc(doc(db,"records",recordId)), "Ler registro existente");
+    var oldData=oldSnap.exists()?oldSnap.data():null;
+    if(weightVal===null && oldData && oldData.weight!==null && oldData.weight!==undefined && !isNaN(oldData.weight)) weightVal=parseFloat(oldData.weight);
+    var rec={ id:recordId, personId:registerDraft.personId, date:registerDraft.date, weight:weightVal, walked:!!registerDraft.walked, walkMinutes:registerDraft.walked?registerDraft.walkMinutes:null, avoidedSnack:!!registerDraft.avoidedSnack, eating:registerDraft.eating||null, note:registerDraft.note||"", updatedAt:serverTimestamp() };
+    if(!oldSnap.exists()) rec.createdAt=serverTimestamp();
+    await withTimeout(setDoc(doc(db,"records",recordId),rec,{merge:true}), "Salvar registro");
+
+    var updates={ updatedAt:serverTimestamp() };
+    if(weightVal!==null){
+      var startW=person.startWeight || weightVal;
+      updates.startWeight=person.startWeight || weightVal;
+      updates.startDate=person.startDate || registerDraft.date;
+      updates.goalWeight=startW*0.85;
+      updates.currentWeight=weightVal;
+    }
+    await withTimeout(setDoc(doc(db,"participants",person.id),updates,{merge:true}), "Atualizar participante");
+    toast("Registro salvo");
+    await loadData();
+  }catch(err){
+    toast("Erro ao salvar");
+    showView("dashboard");
+    $("app-error").innerHTML='<div class="error-box">Erro ao salvar no Firestore: '+escapeHtml(err.message||String(err))+'</div>';
   }
-  await setDoc(doc(db,"participants",person.id),personUpdate,{merge:true});
-  toast("Registro salvo");
-  await loadData();
 }
 function renderEvolution(personId){
   currentEvoPerson=personId; var p=getPerson(personId); if(!p) return;
