@@ -1,990 +1,2550 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#f4f1e8">
-<title>1101 Fitness</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#f4f1e8" />
+    <title>1101 Fitness</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-<style>
-:root{
-  --bg:#f4f1e8;
-  --bg-tint:#eee9da;
-  --card:#ffffff;
-  --ink:#20231d;
-  --ink-soft:#5b6157;
-  --ink-mute:#8a8f82;
-  --line:#e6e1d2;
-  --line-soft:#f0ecdf;
-  --green:#4a6b3e;
-  --green-soft:#e7ede0;
-  --green-deep:#2f4a26;
-  --terra:#b96b4a;
-  --terra-soft:#f3e1d6;
-  --blue:#4a6373;
-  --blue-soft:#dde6ec;
-  --shadow:0 1px 2px rgba(40,42,30,0.04),0 8px 24px -12px rgba(40,42,30,0.12);
-  --radius-lg:22px;
-  --radius-md:14px;
-  --serif:'Fraunces','Iowan Old Style','Palatino Linotype',Georgia,serif;
-  --sans:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,system-ui,sans-serif;
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0}
-body{
-  background:var(--bg);
-  color:var(--ink);
-  font-family:var(--sans);
-  font-size:16px;
-  line-height:1.45;
-  min-height:100vh;
-  -webkit-font-smoothing:antialiased;
-  padding-bottom:env(safe-area-inset-bottom);
-}
-body:before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  opacity:.55;
-  z-index:0;
-  background-image:
-    radial-gradient(circle at 20% 30%,rgba(74,107,62,.05),transparent 40%),
-    radial-gradient(circle at 80% 70%,rgba(185,107,74,.04),transparent 40%);
-}
-.app{
-  position:relative;
-  z-index:1;
-  max-width:520px;
-  margin:0 auto;
-  padding:0 18px 90px;
-  min-height:100vh;
-}
-.view{display:none}
-.view.is-active{display:block;animation:fadeIn .22s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.app-header{
-  padding:26px 4px 18px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
-.brand{
-  font-family:var(--serif);
-  font-weight:400;
-  font-size:30px;
-  letter-spacing:-.03em;
-}
-.brand em{font-style:italic;font-weight:300;color:var(--green)}
-.greeting{font-size:15px;color:var(--ink-mute);margin:-4px 4px 18px}
-.icon-btn{
-  width:42px;
-  height:42px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:50%;
-  cursor:pointer;
-  color:var(--ink-soft);
-  box-shadow:var(--shadow);
-  padding:0;
-}
-.icon-btn svg{width:20px;height:20px}
-.subview-header{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:22px 4px 14px;
-}
-.subview-header .title{
-  font-family:var(--serif);
-  font-size:23px;
-  font-weight:400;
-  flex:1;
-}
-.card,.person-card,.summary-card,.chart-card{
-  background:var(--card);
-  border:1px solid var(--line-soft);
-  border-radius:var(--radius-lg);
-  padding:20px;
-  box-shadow:var(--shadow);
-  margin-bottom:14px;
-}
-.person-card{position:relative;overflow:hidden}
-.accent-bar{
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:3px;
-  background:linear-gradient(90deg,var(--green),var(--green) 60%,transparent);
-}
-.person-card.tone-blue .accent-bar{background:linear-gradient(90deg,var(--blue),var(--blue) 60%,transparent)}
-.person-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px}
-.person-name{font-family:var(--serif);font-size:22px;font-weight:500;letter-spacing:-.02em}
-.person-meta{font-size:12px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;text-align:right}
-.weight-row{display:flex;align-items:baseline;gap:14px;margin-bottom:12px}
-.weight-now{font-family:var(--serif);font-size:38px;line-height:1;letter-spacing:-.03em}
-.unit{font-size:14px;color:var(--ink-mute);font-weight:400;margin-left:2px}
-.weight-aside{font-size:13px;color:var(--ink-soft)}
-.label{font-size:11px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.07em}
-.progress-bar{height:7px;background:var(--bg-tint);border-radius:999px;overflow:hidden}
-.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--green),#6b8c5e);border-radius:999px}
-.progress-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink-mute);margin-top:7px}
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:15px 0 16px;padding:12px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
-.stat{text-align:center}
-.stat .num{font-family:var(--serif);font-size:22px;display:block;line-height:1.1}
-.stat .total{font-size:15px;color:var(--ink-mute)}
-.stat-label{font-size:10px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;display:block}
-.btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  padding:12px 18px;
-  border-radius:var(--radius-md);
-  font-family:var(--sans);
-  font-size:14px;
-  font-weight:600;
-  border:1px solid transparent;
-  cursor:pointer;
-  background:transparent;
-  color:var(--ink);
-  text-decoration:none;
-}
-.btn:active{transform:scale(.98)}
-.btn-primary{background:var(--green);color:#f6f4ec;border-color:var(--green)}
-.btn-ghost{background:var(--card);border-color:var(--line);color:var(--ink)}
-.btn-block{width:100%}
-.btn-lg{padding:15px 18px;font-size:15px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.actions.single{grid-template-columns:1fr}
-.section-title{font-family:var(--serif);font-weight:500;font-size:15px;letter-spacing:.05em;color:var(--ink-soft);text-transform:uppercase;margin:22px 4px 10px}
-.muted{color:var(--ink-mute);font-size:14px}
-.error-box{background:#f3ded6;border:1px solid #e3b8aa;color:#6b3f2c;border-radius:20px;padding:18px;margin-bottom:14px}
-.success-box{background:var(--green-soft);border-left:4px solid var(--green);color:var(--green-deep);border-radius:16px;padding:14px 16px;margin:12px 0;font-size:14px}
-.motivation-box{background:#fbfaf5;border:1px solid var(--line-soft);border-radius:18px;padding:13px 15px;margin:12px 0 0;font-size:14px;color:var(--ink-soft);font-style:italic}
-.check-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.check-pill{background:var(--green-soft);color:var(--green-deep);border-radius:999px;padding:7px 10px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
-.house-card{background:linear-gradient(135deg,#f5f1e2,#eee9d8);border:1px solid var(--line);border-radius:var(--radius-lg);padding:22px 20px;margin-bottom:14px;box-shadow:var(--shadow);position:relative;overflow:hidden}
-.house-card:after{content:"";position:absolute;right:-20px;top:-20px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(74,107,62,.10),transparent 70%)}
-.house-eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-mute);margin-bottom:8px;position:relative;z-index:1}
-.house-quote{font-family:var(--serif);font-size:21px;font-style:italic;font-weight:300;line-height:1.35;margin-bottom:14px;position:relative;z-index:1}
-.house-stats{display:flex;gap:25px;position:relative;z-index:1}
-.house-stats .stat{text-align:left}
-.summary-grid,.evo-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.summary-grid .value,.evo-value{font-family:var(--serif);font-size:20px}
-.summary-insight{background:var(--green-soft);border-left:3px solid var(--green);border-radius:14px;padding:13px 15px;font-size:14px;color:var(--green-deep);margin-top:12px}
-.summary-insight.tone-warm{background:var(--terra-soft);color:#6b3f2c;border-left-color:var(--terra)}
-.summary-insight.tone-cool{background:var(--blue-soft);color:#2f4452;border-left-color:var(--blue)}
-.form-group{margin-bottom:16px}
-.form-label{display:block;font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:8px}
-.form-input,.form-textarea{width:100%;padding:13px 14px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-md);font-family:var(--sans);font-size:16px;color:var(--ink);-webkit-appearance:none;appearance:none}
-.form-input:focus,.form-textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(74,107,62,.1)}
-.form-textarea{resize:vertical;min-height:60px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.choice-group{display:grid;gap:8px}
-.cols-3{grid-template-columns:repeat(3,1fr)}
-.cols-4{grid-template-columns:repeat(4,1fr)}
-.choice-btn{padding:12px 8px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-md);font-family:var(--sans);font-size:14px;font-weight:700;color:var(--ink-soft);cursor:pointer;text-align:center}
-.choice-btn.is-active{background:var(--green-soft);border-color:var(--green);color:var(--green-deep)}
-.check-card{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-md);cursor:pointer;user-select:none;margin-bottom:10px}
-.check-box{width:24px;height:24px;border:1.5px solid var(--line);border-radius:7px;flex-shrink:0;position:relative;background:var(--bg-tint)}
-.check-card.is-checked{background:var(--green-soft);border-color:var(--green)}
-.check-card.is-checked .check-box{background:var(--green);border-color:var(--green)}
-.check-card.is-checked .check-box:after{content:"";position:absolute;left:7px;top:3px;width:6px;height:11px;border:solid #f6f4ec;border-width:0 2px 2px 0;transform:rotate(45deg)}
-.check-title{font-weight:700}
-.check-sub{font-size:12px;color:var(--ink-mute)}
-.login-wrap{padding-top:38px}
-.login-title{font-family:var(--serif);font-size:38px;line-height:1.05;font-weight:400;letter-spacing:-.03em;margin:0 0 10px}
-.login-title em{font-style:italic;color:var(--green);font-weight:300}
-.login-sub{color:var(--ink-soft);font-size:15px;margin:0 0 22px}
-.login-list{display:grid;gap:10px}
-.login-btn{justify-content:space-between}
-.records-list{display:flex;flex-direction:column;gap:8px}
-.record-row{background:var(--card);border:1px solid var(--line-soft);border-radius:var(--radius-md);padding:12px 14px;display:flex;align-items:center;gap:12px}
-.rec-date{font-family:var(--serif);font-size:14px;min-width:58px}
-.rec-date small{display:block;font-size:11px;color:var(--ink-mute);font-family:var(--sans);text-transform:uppercase}
-.rec-tags{flex:1;display:flex;gap:6px;flex-wrap:wrap}
-.tag{font-size:11px;padding:3px 8px;border-radius:999px;background:var(--bg-tint);color:var(--ink-soft);font-weight:700}
-.tg-act{background:var(--green-soft);color:var(--green-deep)}
-.tg-clean{background:var(--blue-soft);color:#2f4452}
-.tg-weight{background:#ede6d8;color:#6b5a36}
-.evo-stat{background:var(--card);border:1px solid var(--line-soft);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
-.evo-label{font-size:11px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
-.evo-delta{font-size:12px;color:var(--green);font-weight:700;margin-top:4px}
-#chart-svg{display:block;width:100%;height:180px;overflow:visible}
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#f6f4ec;padding:12px 18px;border-radius:999px;font-size:14px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.2);z-index:200;opacity:0;transition:all .3s;pointer-events:none;max-width:88%;text-align:center}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-@media(max-width:370px){.app{padding-left:14px;padding-right:14px}.brand{font-size:27px}.weight-now{font-size:34px}.house-stats{gap:16px}.choice-btn{font-size:13px;padding:11px 5px}}
-</style>
-</head>
-<body>
-<div class="app">
-
-  <div class="view view-loading is-active" id="view-loading">
-    <div class="login-wrap">
-      <div class="card">
-        <div class="login-title">1101 <em>Fitness</em></div>
-        <p class="login-sub" id="loading-text">Carregando dados...</p>
+    <style>
+      :root {
+        --bg: #f4f1e8;
+        --bg-tint: #eee9da;
+        --card: #ffffff;
+        --ink: #20231d;
+        --ink-soft: #5b6157;
+        --ink-mute: #8a8f82;
+        --line: #e6e1d2;
+        --line-soft: #f0ecdf;
+        --green: #4a6b3e;
+        --green-soft: #e7ede0;
+        --green-deep: #2f4a26;
+        --terra: #b96b4a;
+        --terra-soft: #f3e1d6;
+        --blue: #4a6373;
+        --blue-soft: #dde6ec;
+        --shadow:
+          0 1px 2px rgba(40, 42, 30, 0.04),
+          0 8px 24px -12px rgba(40, 42, 30, 0.12);
+        --radius-lg: 22px;
+        --radius-md: 14px;
+        --serif:
+          "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+        --sans:
+          "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          system-ui, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: 16px;
+        line-height: 1.45;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      body:before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.55;
+        z-index: 0;
+        background-image:
+          radial-gradient(
+            circle at 20% 30%,
+            rgba(74, 107, 62, 0.05),
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 80% 70%,
+            rgba(185, 107, 74, 0.04),
+            transparent 40%
+          );
+      }
+      .app {
+        position: relative;
+        z-index: 1;
+        max-width: 520px;
+        margin: 0 auto;
+        padding: 0 18px 90px;
+        min-height: 100vh;
+      }
+      .view {
+        display: none;
+      }
+      .view.is-active {
+        display: block;
+        animation: fadeIn 0.22s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .app-header {
+        padding: 26px 4px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .brand {
+        font-family: var(--serif);
+        font-weight: 400;
+        font-size: 30px;
+        letter-spacing: -0.03em;
+      }
+      .brand em {
+        font-style: italic;
+        font-weight: 300;
+        color: var(--green);
+      }
+      .greeting {
+        font-size: 15px;
+        color: var(--ink-mute);
+        margin: -4px 4px 18px;
+      }
+      .icon-btn {
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        cursor: pointer;
+        color: var(--ink-soft);
+        box-shadow: var(--shadow);
+        padding: 0;
+      }
+      .icon-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+      .subview-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 22px 4px 14px;
+      }
+      .subview-header .title {
+        font-family: var(--serif);
+        font-size: 23px;
+        font-weight: 400;
+        flex: 1;
+      }
+      .card,
+      .person-card,
+      .summary-card,
+      .chart-card {
+        background: var(--card);
+        border: 1px solid var(--line-soft);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        box-shadow: var(--shadow);
+        margin-bottom: 14px;
+      }
+      .person-card {
+        position: relative;
+        overflow: hidden;
+      }
+      .accent-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--green),
+          var(--green) 60%,
+          transparent
+        );
+      }
+      .person-card.tone-blue .accent-bar {
+        background: linear-gradient(
+          90deg,
+          var(--blue),
+          var(--blue) 60%,
+          transparent
+        );
+      }
+      .person-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .person-name {
+        font-family: var(--serif);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+      }
+      .person-meta {
+        font-size: 12px;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        text-align: right;
+      }
+      .weight-row {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+        margin-bottom: 12px;
+      }
+      .weight-now {
+        font-family: var(--serif);
+        font-size: 38px;
+        line-height: 1;
+        letter-spacing: -0.03em;
+      }
+      .unit {
+        font-size: 14px;
+        color: var(--ink-mute);
+        font-weight: 400;
+        margin-left: 2px;
+      }
+      .weight-aside {
+        font-size: 13px;
+        color: var(--ink-soft);
+      }
+      .label {
+        font-size: 11px;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+      }
+      .progress-bar {
+        height: 7px;
+        background: var(--bg-tint);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, var(--green), #6b8c5e);
+        border-radius: 999px;
+      }
+      .progress-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--ink-mute);
+        margin-top: 7px;
+      }
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin: 15px 0 16px;
+        padding: 12px 0;
+        border-top: 1px solid var(--line-soft);
+        border-bottom: 1px solid var(--line-soft);
+      }
+      .stat {
+        text-align: center;
+      }
+      .stat .num {
+        font-family: var(--serif);
+        font-size: 22px;
+        display: block;
+        line-height: 1.1;
+      }
+      .stat .total {
+        font-size: 15px;
+        color: var(--ink-mute);
+      }
+      .stat-label {
+        font-size: 10px;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-top: 4px;
+        display: block;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 18px;
+        border-radius: var(--radius-md);
+        font-family: var(--sans);
+        font-size: 14px;
+        font-weight: 600;
+        border: 1px solid transparent;
+        cursor: pointer;
+        background: transparent;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .btn:active {
+        transform: scale(0.98);
+      }
+      .btn-primary {
+        background: var(--green);
+        color: #f6f4ec;
+        border-color: var(--green);
+      }
+      .btn-ghost {
+        background: var(--card);
+        border-color: var(--line);
+        color: var(--ink);
+      }
+      .btn-block {
+        width: 100%;
+      }
+      .btn-lg {
+        padding: 15px 18px;
+        font-size: 15px;
+      }
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .actions.single {
+        grid-template-columns: 1fr;
+      }
+      .section-title {
+        font-family: var(--serif);
+        font-weight: 500;
+        font-size: 15px;
+        letter-spacing: 0.05em;
+        color: var(--ink-soft);
+        text-transform: uppercase;
+        margin: 22px 4px 10px;
+      }
+      .muted {
+        color: var(--ink-mute);
+        font-size: 14px;
+      }
+      .error-box {
+        background: #f3ded6;
+        border: 1px solid #e3b8aa;
+        color: #6b3f2c;
+        border-radius: 20px;
+        padding: 18px;
+        margin-bottom: 14px;
+      }
+      .success-box {
+        background: var(--green-soft);
+        border-left: 4px solid var(--green);
+        color: var(--green-deep);
+        border-radius: 16px;
+        padding: 14px 16px;
+        margin: 12px 0;
+        font-size: 14px;
+      }
+      .motivation-box {
+        background: #fbfaf5;
+        border: 1px solid var(--line-soft);
+        border-radius: 18px;
+        padding: 13px 15px;
+        margin: 12px 0 0;
+        font-size: 14px;
+        color: var(--ink-soft);
+        font-style: italic;
+      }
+      .check-list {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .check-pill {
+        background: var(--green-soft);
+        color: var(--green-deep);
+        border-radius: 999px;
+        padding: 7px 10px;
+        font-size: 12px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .house-card {
+        background: linear-gradient(135deg, #f5f1e2, #eee9d8);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+        padding: 22px 20px;
+        margin-bottom: 14px;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+      .house-card:after {
+        content: "";
+        position: absolute;
+        right: -20px;
+        top: -20px;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(74, 107, 62, 0.1),
+          transparent 70%
+        );
+      }
+      .house-eyebrow {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--ink-mute);
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 1;
+      }
+      .house-quote {
+        font-family: var(--serif);
+        font-size: 21px;
+        font-style: italic;
+        font-weight: 300;
+        line-height: 1.35;
+        margin-bottom: 14px;
+        position: relative;
+        z-index: 1;
+      }
+      .house-stats {
+        display: flex;
+        gap: 25px;
+        position: relative;
+        z-index: 1;
+      }
+      .house-stats .stat {
+        text-align: left;
+      }
+      .summary-grid,
+      .evo-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .summary-grid .value,
+      .evo-value {
+        font-family: var(--serif);
+        font-size: 20px;
+      }
+      .summary-name {
+        font-family: var(--serif);
+        font-size: 19px;
+        font-weight: 500;
+        margin-bottom: 12px;
+      }
+      .summary-insight {
+        background: var(--green-soft);
+        border-left: 3px solid var(--green);
+        border-radius: 14px;
+        padding: 13px 15px;
+        font-size: 14px;
+        color: var(--green-deep);
+        margin-top: 12px;
+      }
+      .summary-insight.tone-warm {
+        background: var(--terra-soft);
+        color: #6b3f2c;
+        border-left-color: var(--terra);
+      }
+      .summary-insight.tone-cool {
+        background: var(--blue-soft);
+        color: #2f4452;
+        border-left-color: var(--blue);
+      }
+      .week-list {
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .week-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: center;
+        background: #fbfaf5;
+        border: 1px solid var(--line-soft);
+        border-radius: 15px;
+        padding: 12px 13px;
+      }
+      .week-title {
+        font-weight: 800;
+        font-size: 14px;
+      }
+      .week-dates {
+        font-size: 12px;
+        color: var(--ink-mute);
+        margin-top: 2px;
+      }
+      .week-score {
+        font-family: var(--serif);
+        font-size: 20px;
+        text-align: right;
+      }
+      .week-status {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--ink-mute);
+        text-align: right;
+      }
+      .week-row.done {
+        background: var(--green-soft);
+        border-color: #d5e2cc;
+      }
+      .week-row.done .week-status {
+        color: var(--green-deep);
+      }
+      .week-row.pending {
+        background: var(--terra-soft);
+        border-color: #ead0c2;
+      }
+      .week-row.pending .week-status {
+        color: #6b3f2c;
+      }
+      .form-group {
+        margin-bottom: 16px;
+      }
+      .form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--ink-soft);
+        margin-bottom: 8px;
+      }
+      .form-input,
+      .form-textarea {
+        width: 100%;
+        padding: 13px 14px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        font-family: var(--sans);
+        font-size: 16px;
+        color: var(--ink);
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      .form-input:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px rgba(74, 107, 62, 0.1);
+      }
+      .form-input:disabled {
+        background: #f5f1e7;
+        color: var(--ink-mute);
+      }
+      .form-textarea {
+        resize: vertical;
+        min-height: 60px;
+      }
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .choice-group {
+        display: grid;
+        gap: 8px;
+      }
+      .cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .cols-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .choice-btn {
+        padding: 12px 8px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        font-family: var(--sans);
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--ink-soft);
+        cursor: pointer;
+        text-align: center;
+      }
+      .choice-btn.is-active {
+        background: var(--green-soft);
+        border-color: var(--green);
+        color: var(--green-deep);
+      }
+      .check-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        user-select: none;
+        margin-bottom: 10px;
+      }
+      .check-box {
+        width: 24px;
+        height: 24px;
+        border: 1.5px solid var(--line);
+        border-radius: 7px;
+        flex-shrink: 0;
+        position: relative;
+        background: var(--bg-tint);
+      }
+      .check-card.is-checked {
+        background: var(--green-soft);
+        border-color: var(--green);
+      }
+      .check-card.is-checked .check-box {
+        background: var(--green);
+        border-color: var(--green);
+      }
+      .check-card.is-checked .check-box:after {
+        content: "";
+        position: absolute;
+        left: 7px;
+        top: 3px;
+        width: 6px;
+        height: 11px;
+        border: solid #f6f4ec;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+      .check-title {
+        font-weight: 700;
+      }
+      .check-sub {
+        font-size: 12px;
+        color: var(--ink-mute);
+      }
+      .login-wrap {
+        padding-top: 38px;
+      }
+      .login-title {
+        font-family: var(--serif);
+        font-size: 38px;
+        line-height: 1.05;
+        font-weight: 400;
+        letter-spacing: -0.03em;
+        margin: 0 0 10px;
+      }
+      .login-title em {
+        font-style: italic;
+        color: var(--green);
+        font-weight: 300;
+      }
+      .login-sub {
+        color: var(--ink-soft);
+        font-size: 15px;
+        margin: 0 0 22px;
+      }
+      .login-list {
+        display: grid;
+        gap: 10px;
+      }
+      .login-btn {
+        justify-content: space-between;
+      }
+      .records-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .record-row {
+        background: var(--card);
+        border: 1px solid var(--line-soft);
+        border-radius: var(--radius-md);
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .rec-date {
+        font-family: var(--serif);
+        font-size: 14px;
+        min-width: 58px;
+      }
+      .rec-date small {
+        display: block;
+        font-size: 11px;
+        color: var(--ink-mute);
+        font-family: var(--sans);
+        text-transform: uppercase;
+      }
+      .rec-tags {
+        flex: 1;
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .tag {
+        font-size: 11px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: var(--bg-tint);
+        color: var(--ink-soft);
+        font-weight: 700;
+      }
+      .tg-act {
+        background: var(--green-soft);
+        color: var(--green-deep);
+      }
+      .tg-clean {
+        background: var(--blue-soft);
+        color: #2f4452;
+      }
+      .tg-weight {
+        background: #ede6d8;
+        color: #6b5a36;
+      }
+      .rec-edit {
+        padding: 8px 10px;
+        font-size: 12px;
+        border-radius: 11px;
+        white-space: nowrap;
+      }
+      .evo-stat {
+        background: var(--card);
+        border: 1px solid var(--line-soft);
+        border-radius: 16px;
+        padding: 14px;
+        box-shadow: var(--shadow);
+      }
+      .evo-label {
+        font-size: 11px;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 6px;
+      }
+      .evo-delta {
+        font-size: 12px;
+        color: var(--green);
+        font-weight: 700;
+        margin-top: 4px;
+      }
+      #chart-svg {
+        display: block;
+        width: 100%;
+        height: 180px;
+        overflow: visible;
+      }
+      .toast {
+        position: fixed;
+        bottom: 28px;
+        left: 50%;
+        transform: translateX(-50%) translateY(80px);
+        background: var(--ink);
+        color: #f6f4ec;
+        padding: 12px 18px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 700;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        z-index: 200;
+        opacity: 0;
+        transition: all 0.3s;
+        pointer-events: none;
+        max-width: 88%;
+        text-align: center;
+      }
+      .toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+      @media (max-width: 370px) {
+        .app {
+          padding-left: 14px;
+          padding-right: 14px;
+        }
+        .brand {
+          font-size: 27px;
+        }
+        .weight-now {
+          font-size: 34px;
+        }
+        .house-stats {
+          gap: 16px;
+        }
+        .choice-btn {
+          font-size: 13px;
+          padding: 11px 5px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div class="view view-loading is-active" id="view-loading">
+        <div class="login-wrap">
+          <div class="card">
+            <div class="login-title">1101 <em>Fitness</em></div>
+            <p class="login-sub" id="loading-text">Carregando dados...</p>
+          </div>
+        </div>
+      </div>
+      <div class="view view-login" id="view-login">
+        <div class="login-wrap">
+          <div class="card login-card">
+            <h1 class="login-title">1101 <em>Fitness</em></h1>
+            <p class="login-sub">
+              Escolha o perfil deste celular. Depois disso, ele abre direto no
+              mesmo perfil.
+            </p>
+            <div class="login-list">
+              <button
+                class="btn btn-ghost btn-lg login-btn"
+                data-login="fernanda"
+              >
+                Entrar como Fernanda <span>→</span></button
+              ><button
+                class="btn btn-ghost btn-lg login-btn"
+                data-login="aldeiza"
+              >
+                Entrar como Aldeiza <span>→</span></button
+              ><button
+                class="btn btn-ghost btn-lg login-btn"
+                data-login="admin"
+              >
+                Entrar como Admin <span>→</span>
+              </button>
+            </div>
+            <p class="muted" style="margin-top: 16px">
+              Sem senha. O perfil é lembrado apenas neste navegador.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="view view-setup" id="view-setup">
+        <header class="subview-header">
+          <button
+            class="icon-btn"
+            id="setup-switch"
+            aria-label="Trocar usuário"
+          >
+            ↩
+          </button>
+          <div class="title">Começar desafio</div>
+        </header>
+        <div class="card">
+          <div class="person-name" id="setup-name">Participante</div>
+          <p class="muted">
+            O peso inicial é obrigatório. Ele será a base das metas de 5%, 10% e
+            15% nos 90 dias.
+          </p>
+          <form id="setup-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="setup-date">Data inicial</label
+                ><input
+                  class="form-input"
+                  type="date"
+                  id="setup-date"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="setup-weight">Peso inicial</label
+                ><input
+                  class="form-input"
+                  type="number"
+                  id="setup-weight"
+                  inputmode="decimal"
+                  step="0.1"
+                  placeholder="Ex.: 74,0"
+                  required
+                />
+              </div>
+            </div>
+            <div class="success-box" id="setup-preview">
+              Informe o peso para ver as metas.
+            </div>
+            <button class="btn btn-primary btn-block btn-lg" type="submit">
+              Iniciar desafio
+            </button>
+          </form>
+        </div>
+      </div>
+      <div class="view view-dashboard" id="view-dashboard">
+        <header class="app-header">
+          <div class="brand">1101 <em>Fitness</em></div>
+          <button
+            class="icon-btn"
+            id="btn-open-settings"
+            aria-label="Configurações"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="3"></circle>
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+              ></path>
+            </svg>
+          </button>
+        </header>
+        <p class="greeting" id="dashboard-greeting">
+          Hoje só precisa fazer o básico.
+        </p>
+        <div id="error-area"></div>
+        <div id="people-cards"></div>
+        <div class="house-card">
+          <div class="house-eyebrow">A casa esta semana</div>
+          <div class="house-quote" id="house-quote">
+            A meta é constância, não perfeição.
+          </div>
+          <div class="house-stats">
+            <div class="stat">
+              <span class="num" id="house-records">0</span
+              ><span class="stat-label">Registros</span>
+            </div>
+            <div class="stat">
+              <span class="num" id="house-activities">0</span
+              ><span class="stat-label">Atividades</span>
+            </div>
+            <div class="stat">
+              <span class="num" id="house-clean">0</span
+              ><span class="stat-label">Sem belisco</span>
+            </div>
+          </div>
+        </div>
+        <div class="section-title">Acumulado semana a semana</div>
+        <div id="weekly-summaries"></div>
+      </div>
+      <div class="view view-register" id="view-register">
+        <header class="subview-header">
+          <button class="icon-btn" data-back aria-label="Voltar">←</button>
+          <div class="title" id="register-title">Registrar dia</div>
+        </header>
+        <div class="card">
+          <div class="person-name" id="register-person-name">Participante</div>
+          <p class="muted" id="register-help">
+            Registre o básico. Peso pode ficar em branco se não pesou hoje.
+          </p>
+          <form id="register-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="reg-date">Data</label
+                ><input class="form-input" type="date" id="reg-date" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="reg-weight">Peso</label
+                ><input
+                  class="form-input"
+                  type="number"
+                  id="reg-weight"
+                  inputmode="decimal"
+                  step="0.1"
+                  placeholder="opcional"
+                />
+              </div>
+            </div>
+            <div class="check-card" id="reg-activity-done">
+              <div class="check-box"></div>
+              <div class="check-text">
+                <div class="check-title">Fiz atividade física</div>
+                <div class="check-sub">
+                  Caminhada, academia ou outro movimento intencional.
+                </div>
+              </div>
+            </div>
+            <div class="form-group" id="reg-activity-box" style="display: none">
+              <label class="form-label">Tipo de atividade</label>
+              <div class="choice-group cols-3" id="reg-activity-type">
+                <button type="button" class="choice-btn" data-type="caminhada">
+                  Caminhada</button
+                ><button type="button" class="choice-btn" data-type="academia">
+                  Academia</button
+                ><button type="button" class="choice-btn" data-type="outros">
+                  Outros
+                </button>
+              </div>
+              <div style="height: 8px"></div>
+              <label class="form-label">Tempo</label>
+              <div class="choice-group cols-4" id="reg-activity-minutes">
+                <button type="button" class="choice-btn" data-min="20">
+                  20</button
+                ><button type="button" class="choice-btn" data-min="30">
+                  30</button
+                ><button type="button" class="choice-btn" data-min="45">
+                  45</button
+                ><button type="button" class="choice-btn" data-min="60">
+                  60
+                </button>
+              </div>
+            </div>
+            <div class="check-card" id="reg-clean">
+              <div class="check-box"></div>
+              <div class="check-text">
+                <div class="check-title">Evitei belisco e doce</div>
+                <div class="check-sub">Mesmo que tenha sido difícil.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Como foi a alimentação</label>
+              <div class="choice-group cols-3" id="reg-eating">
+                <button type="button" class="choice-btn" data-eat="ruim">
+                  Ruim</button
+                ><button type="button" class="choice-btn" data-eat="ok">
+                  Ok</button
+                ><button type="button" class="choice-btn" data-eat="boa">
+                  Boa
+                </button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reg-note">Observação rápida</label
+              ><textarea
+                class="form-textarea"
+                id="reg-note"
+                placeholder="opcional"
+              ></textarea>
+            </div>
+            <button
+              class="btn btn-primary btn-block btn-lg"
+              id="register-submit"
+              type="submit"
+            >
+              Salvar registro
+            </button>
+          </form>
+        </div>
+      </div>
+      <div class="view view-evolution" id="view-evolution">
+        <header class="subview-header">
+          <button class="icon-btn" data-back aria-label="Voltar">←</button>
+          <div class="title" id="evo-title">Evolução</div>
+        </header>
+        <div class="evo-stats">
+          <div class="evo-stat">
+            <div class="evo-label">Peso atual</div>
+            <div class="evo-value" id="evo-current"></div>
+            <div class="evo-delta" id="evo-delta"></div>
+          </div>
+          <div class="evo-stat">
+            <div class="evo-label">Meta atual</div>
+            <div class="evo-value" id="evo-goal"></div>
+            <div class="evo-delta" id="evo-percent"></div>
+          </div>
+          <div class="evo-stat">
+            <div class="evo-label">Peso inicial</div>
+            <div class="evo-value" id="evo-start"></div>
+          </div>
+          <div class="evo-stat">
+            <div class="evo-label">Final 90 dias</div>
+            <div class="evo-value" id="evo-final"></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: baseline;
+              margin-bottom: 14px;
+            "
+          >
+            <div class="person-name" style="font-size: 18px">
+              Peso ao longo do tempo
+            </div>
+            <div class="muted" id="chart-period"></div>
+          </div>
+          <svg
+            id="chart-svg"
+            viewBox="0 0 320 180"
+            preserveAspectRatio="none"
+          ></svg>
+        </div>
+        <div class="evo-stats">
+          <div class="evo-stat">
+            <div class="evo-label">Atividades</div>
+            <div class="evo-value" id="evo-acts-week"></div>
+          </div>
+          <div class="evo-stat">
+            <div class="evo-label">Sem belisco</div>
+            <div class="evo-value" id="evo-clean-week"></div>
+          </div>
+          <div class="evo-stat">
+            <div class="evo-label">Registros</div>
+            <div class="evo-value" id="evo-recs-week"></div>
+          </div>
+          <div class="evo-stat">
+            <div class="evo-label">Mês do desafio</div>
+            <div class="evo-value" id="evo-month"></div>
+          </div>
+        </div>
+        <div class="section-title">Últimos registros</div>
+        <div class="records-list" id="evo-records-list"></div>
+      </div>
+      <div class="view view-settings" id="view-settings">
+        <header class="subview-header">
+          <button class="icon-btn" data-back aria-label="Voltar">←</button>
+          <div class="title">Configurações</div>
+        </header>
+        <div class="card">
+          <div
+            class="person-name"
+            style="font-size: 18px; margin-bottom: 4px"
+            id="settings-user"
+          >
+            Usuário
+          </div>
+          <div class="muted" style="margin-bottom: 12px">
+            Este perfil fica salvo neste celular. Se limpar dados do navegador,
+            será necessário escolher novamente.
+          </div>
+          <button class="btn btn-ghost btn-block" id="btn-switch-user">
+            Trocar usuário
+          </button>
+        </div>
+        <div class="section-title">Participantes</div>
+        <div id="settings-people"></div>
       </div>
     </div>
-  </div>
+    <div class="toast" id="toast"></div>
 
-  <div class="view view-login" id="view-login">
-    <div class="login-wrap">
-      <div class="card login-card">
-        <h1 class="login-title">1101 <em>Fitness</em></h1>
-        <p class="login-sub">Escolha o perfil deste celular. Depois disso, ele abre direto no mesmo perfil.</p>
-        <div class="login-list">
-          <button class="btn btn-ghost btn-lg login-btn" data-login="fernanda">Entrar como Fernanda <span>→</span></button>
-          <button class="btn btn-ghost btn-lg login-btn" data-login="aldeiza">Entrar como Aldeiza <span>→</span></button>
-          <button class="btn btn-ghost btn-lg login-btn" data-login="admin">Entrar como Admin <span>→</span></button>
-        </div>
-        <p class="muted" style="margin-top:16px">Sem senha. O perfil é lembrado apenas neste navegador.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="view view-setup" id="view-setup">
-    <header class="subview-header">
-      <button class="icon-btn" id="setup-switch" aria-label="Trocar usuário">↩</button>
-      <div class="title">Começar desafio</div>
-    </header>
-    <div class="card">
-      <div class="person-name" id="setup-name">Participante</div>
-      <p class="muted">O peso inicial é obrigatório. Ele será a base das metas de 5%, 10% e 15% nos 90 dias.</p>
-      <form id="setup-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label" for="setup-date">Data inicial</label>
-            <input class="form-input" type="date" id="setup-date" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="setup-weight">Peso inicial</label>
-            <input class="form-input" type="number" id="setup-weight" inputmode="decimal" step="0.1" placeholder="Ex.: 74,0" required>
-          </div>
-        </div>
-        <div class="success-box" id="setup-preview">Informe o peso para ver as metas.</div>
-        <button class="btn btn-primary btn-block btn-lg" type="submit">Iniciar desafio</button>
-      </form>
-    </div>
-  </div>
-
-  <div class="view view-dashboard" id="view-dashboard">
-    <header class="app-header">
-      <div class="brand">1101 <em>Fitness</em></div>
-      <button class="icon-btn" id="btn-open-settings" aria-label="Configurações">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-      </button>
-    </header>
-    <p class="greeting" id="dashboard-greeting">Hoje só precisa fazer o básico.</p>
-    <div id="error-area"></div>
-    <div id="people-cards"></div>
-    <div class="house-card">
-      <div class="house-eyebrow">A casa esta semana</div>
-      <div class="house-quote" id="house-quote">A meta é constância, não perfeição.</div>
-      <div class="house-stats">
-        <div class="stat"><span class="num" id="house-records">0</span><span class="stat-label">Registros</span></div>
-        <div class="stat"><span class="num" id="house-activities">0</span><span class="stat-label">Atividades</span></div>
-        <div class="stat"><span class="num" id="house-clean">0</span><span class="stat-label">Sem belisco</span></div>
-      </div>
-    </div>
-    <div class="section-title">Resumo da semana</div>
-    <div id="weekly-summaries"></div>
-  </div>
-
-  <div class="view view-register" id="view-register">
-    <header class="subview-header">
-      <button class="icon-btn" data-back aria-label="Voltar">←</button>
-      <div class="title">Registrar dia</div>
-    </header>
-    <div class="card">
-      <div class="person-name" id="register-person-name">Participante</div>
-      <p class="muted">Registre o básico. Peso pode ficar em branco se não pesou hoje.</p>
-      <form id="register-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label" for="reg-date">Data</label>
-            <input class="form-input" type="date" id="reg-date" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="reg-weight">Peso</label>
-            <input class="form-input" type="number" id="reg-weight" inputmode="decimal" step="0.1" placeholder="opcional">
-          </div>
-        </div>
-        <div class="check-card" id="reg-activity-done">
-          <div class="check-box"></div>
-          <div class="check-text"><div class="check-title">Fiz atividade física</div><div class="check-sub">Caminhada, academia ou outro movimento intencional.</div></div>
-        </div>
-        <div class="form-group" id="reg-activity-box" style="display:none">
-          <label class="form-label">Tipo de atividade</label>
-          <div class="choice-group cols-3" id="reg-activity-type">
-            <button type="button" class="choice-btn" data-type="caminhada">Caminhada</button>
-            <button type="button" class="choice-btn" data-type="academia">Academia</button>
-            <button type="button" class="choice-btn" data-type="outros">Outros</button>
-          </div>
-          <div style="height:8px"></div>
-          <label class="form-label">Tempo</label>
-          <div class="choice-group cols-4" id="reg-activity-minutes">
-            <button type="button" class="choice-btn" data-min="20">20</button>
-            <button type="button" class="choice-btn" data-min="30">30</button>
-            <button type="button" class="choice-btn" data-min="45">45</button>
-            <button type="button" class="choice-btn" data-min="60">60</button>
-          </div>
-        </div>
-        <div class="check-card" id="reg-clean">
-          <div class="check-box"></div>
-          <div class="check-text"><div class="check-title">Evitei belisco e doce</div><div class="check-sub">Mesmo que tenha sido difícil.</div></div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Como foi a alimentação</label>
-          <div class="choice-group cols-3" id="reg-eating">
-            <button type="button" class="choice-btn" data-eat="ruim">Ruim</button>
-            <button type="button" class="choice-btn" data-eat="ok">Ok</button>
-            <button type="button" class="choice-btn" data-eat="boa">Boa</button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="reg-note">Observação rápida</label>
-          <textarea class="form-textarea" id="reg-note" placeholder="opcional"></textarea>
-        </div>
-        <button class="btn btn-primary btn-block btn-lg" type="submit">Salvar registro</button>
-      </form>
-    </div>
-  </div>
-
-  <div class="view view-evolution" id="view-evolution">
-    <header class="subview-header">
-      <button class="icon-btn" data-back aria-label="Voltar">←</button>
-      <div class="title" id="evo-title">Evolução</div>
-    </header>
-    <div class="evo-stats">
-      <div class="evo-stat"><div class="evo-label">Peso atual</div><div class="evo-value" id="evo-current"></div><div class="evo-delta" id="evo-delta"></div></div>
-      <div class="evo-stat"><div class="evo-label">Meta atual</div><div class="evo-value" id="evo-goal"></div><div class="evo-delta" id="evo-percent"></div></div>
-      <div class="evo-stat"><div class="evo-label">Peso inicial</div><div class="evo-value" id="evo-start"></div></div>
-      <div class="evo-stat"><div class="evo-label">Final 90 dias</div><div class="evo-value" id="evo-final"></div></div>
-    </div>
-    <div class="chart-card">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
-        <div class="person-name" style="font-size:18px">Peso ao longo do tempo</div>
-        <div class="muted" id="chart-period"></div>
-      </div>
-      <svg id="chart-svg" viewBox="0 0 320 180" preserveAspectRatio="none"></svg>
-    </div>
-    <div class="evo-stats">
-      <div class="evo-stat"><div class="evo-label">Atividades</div><div class="evo-value" id="evo-acts-week"></div></div>
-      <div class="evo-stat"><div class="evo-label">Sem belisco</div><div class="evo-value" id="evo-clean-week"></div></div>
-      <div class="evo-stat"><div class="evo-label">Registros</div><div class="evo-value" id="evo-recs-week"></div></div>
-      <div class="evo-stat"><div class="evo-label">Mês do desafio</div><div class="evo-value" id="evo-month"></div></div>
-    </div>
-    <div class="section-title">Últimos registros</div>
-    <div class="records-list" id="evo-records-list"></div>
-  </div>
-
-  <div class="view view-settings" id="view-settings">
-    <header class="subview-header">
-      <button class="icon-btn" data-back aria-label="Voltar">←</button>
-      <div class="title">Configurações</div>
-    </header>
-    <div class="card">
-      <div class="person-name" style="font-size:18px;margin-bottom:4px" id="settings-user">Usuário</div>
-      <div class="muted" style="margin-bottom:12px">Este perfil fica salvo neste celular. Se limpar dados do navegador, será necessário escolher novamente.</div>
-      <button class="btn btn-ghost btn-block" id="btn-switch-user">Trocar usuário</button>
-    </div>
-    <div class="section-title">Participantes</div>
-    <div id="settings-people"></div>
-  </div>
-
-</div>
-<div class="toast" id="toast"></div>
-
-<script>
-(function(){
-'use strict';
-
-var PROJECT_ID = 'fitness-8ce89';
-var API_KEY = 'AIzaSyBzVg0cpEGoN8ROSvG9EMc9NvfPbLDRxeo';
-var FIRESTORE_BASE = 'https://firestore.googleapis.com/v1/projects/' + PROJECT_ID + '/databases/(default)/documents';
-var LS_USER = 'fitness1101_current_user';
-var CHALLENGE_DAYS = 90;
-var MONTH_DAYS = 30;
-var MONTHLY_LOSS_RATE = 0.05;
-var ACTIVITY_GOAL = 4;
-
-var PARTICIPANTS = [
-  { id:'fernanda', name:'Fernanda', age:30, activityGoal:4 },
-  { id:'aldeiza', name:'Aldeiza', age:64, activityGoal:4 }
-];
-var USERS = [
-  { id:'fernanda', name:'Fernanda', role:'participant' },
-  { id:'aldeiza', name:'Aldeiza', role:'participant' },
-  { id:'admin', name:'Admin', role:'admin' }
-];
-var state = { people:[], records:[] };
-var currentUser = null;
-var currentEvoPerson = null;
-var registerDraft = { personId:null, date:null, weight:'', activityDone:false, activityType:null, activityMinutes:null, avoidedSnack:false, eating:null, note:'' };
-
-var MOTIVATION = {
-  monday:[
-    'Segunda é o melhor dia para votar a favor da sua rotina. Uma atividade hoje já muda a semana.',
-    'Quem acerta a segunda não garante a semana, mas começa com vantagem.',
-    'Começar a semana com movimento é dizer ao corpo: desta vez eu levo a rotina a sério.',
-    'A semana não precisa ser perfeita. Só precisa começar.'
-  ],
-  midweek:[
-    'Metade da semana chegou. Agora é ajustar o rumo, não esperar a próxima segunda.',
-    'Quarta e quinta são dias de proteger o hábito. O resultado vem da repetição sem drama.',
-    'Se a semana saiu do plano, ainda dá tempo. O que conta é voltar rápido.',
-    'Estamos no meio da semana: faça o básico antes de tentar fazer o perfeito.'
-  ],
-  weekend:[
-    'Fim de semana também constrói hábito. Uma atividade curta já mantém a identidade de quem se cuida.',
-    'Sábado e domingo não precisam virar bagunça. Dá para viver e continuar no plano.',
-    'Se já bateu a meta, ir além ajuda o peso. Se não bateu, ainda dá para buscar.',
-    'O fim de semana é onde muita gente perde a semana. Você pode só não abandonar.'
-  ],
-  onPace:[
-    'O peso está andando no ritmo. Não invente moda: continue repetindo o que está funcionando.',
-    'Você está na velocidade certa. O segredo agora é não relaxar porque melhorou.',
-    'Bom sinal: o corpo está respondendo. Agora proteja sono, alimentação e atividade.',
-    'A direção está certa. Continue somando dias bons.'
-  ],
-  behindPace:[
-    'O ritmo do peso ainda está abaixo da meta. Não é motivo para desistir, é sinal para apertar o básico.',
-    'A balança não está acompanhando a meta ainda. Foque nos controles que dependem de você: atividade e beliscos.',
-    'Não precisa compensar com radicalismo. Precisa de mais consistência nos próximos dias.',
-    'Quando o peso atrasa, o caminho é voltar para o simples: rotina, água, atividade e menos belisco.'
-  ],
-  activityDone:[
-    'Meta de atividade batida. Agora isso deixa de ser promessa e começa a virar identidade.',
-    'Quatro dias de atividade na semana: excelente. O hábito está sendo construído.',
-    'Atividade física feita com constância pesa muito no resultado. Continue.',
-    'Você já bateu a meta da semana. Se fizer mais um dia, é bônus para o peso e para a cabeça.'
-  ],
-  activityLow:[
-    'A prioridade agora é movimento. Peso sem hábito costuma não se sustentar.',
-    'Ainda faltam atividades na semana. Uma sessão curta já conta e já mantém o ciclo vivo.',
-    'Não trate atividade como castigo. Trate como o compromisso mínimo com o corpo.',
-    'A meta de atividade existe para construir hábito. O peso é consequência, mas o hábito é o motor.'
-  ],
-  start:[
-    'Primeiro passo registrado. Agora o jogo é repetir o simples por 90 dias.',
-    'Começar é importante. Voltar amanhã é mais importante ainda.',
-    'O objetivo não é sofrer. É criar uma rotina que o corpo consiga sustentar.',
-    'Hoje você colocou uma linha no chão: daqui pra frente é acompanhamento, não achismo.'
-  ],
-  bothDone:[
-    'Meta de peso e atividade em dia. Esse é o cenário ideal: resultado com hábito.',
-    'Peso andando e atividade feita. É exatamente essa combinação que sustenta o progresso.',
-    'Excelente: não é só perder peso, é construir rotina para manter.',
-    'Você está fazendo do jeito certo: comportamento primeiro, resultado acompanhando.'
-  ]
-};
-
-function $(id){ return document.getElementById(id); }
-function todayISO(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-function isoToDate(iso){ var p=String(iso||todayISO()).split('-'); return new Date(parseInt(p[0],10),parseInt(p[1],10)-1,parseInt(p[2],10)); }
-function daysBetween(a,b){ return Math.round((isoToDate(b)-isoToDate(a))/86400000); }
-function startOfWeekISO(){ var d=new Date(); var day=d.getDay(); var diff=(day===0?-6:1-day); d.setDate(d.getDate()+diff); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-function endOfWeekISO(){ var d=isoToDate(startOfWeekISO()); d.setDate(d.getDate()+6); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
-function formatNum(n,dec){ if(n===null||n===undefined||isNaN(n)) return '—'; if(dec===undefined) dec=1; return Number(n).toFixed(dec).replace('.',','); }
-function parseNum(v){ if(v===null||v===undefined||v==='') return null; var n=parseFloat(String(v).replace(',','.')); return isNaN(n)?null:n; }
-function formatDateBR(iso){ var d=isoToDate(iso); var months=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']; return d.getDate()+' '+months[d.getMonth()]; }
-function formatWeekday(iso){ var d=isoToDate(iso); var wd=['dom','seg','ter','qua','qui','sex','sáb']; return wd[d.getDay()]; }
-function escapeHtml(s){ if(s===null||s===undefined) return ''; return String(s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-function uid(prefix){ return (prefix||'id')+'_'+Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3); }
-function toast(msg){ var el=$('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(function(){ el.classList.remove('show'); },2200); }
-function showView(name){ var views=document.querySelectorAll('.view'); for(var i=0;i<views.length;i++) views[i].classList.remove('is-active'); $('view-'+name).classList.add('is-active'); window.scrollTo(0,0); }
-function getUser(id){ for(var i=0;i<USERS.length;i++){ if(USERS[i].id===id) return USERS[i]; } return null; }
-function getPerson(id){ for(var i=0;i<state.people.length;i++){ if(state.people[i].id===id) return state.people[i]; } return null; }
-function getRecords(personId){ var out=[]; for(var i=0;i<state.records.length;i++){ if(state.records[i].personId===personId) out.push(state.records[i]); } out.sort(function(a,b){ return a.date<b.date?-1:(a.date>b.date?1:0); }); return out; }
-function recordsCurrentWeek(personId){ var start=startOfWeekISO(); var end=endOfWeekISO(); var recs=getRecords(personId); var out=[]; for(var i=0;i<recs.length;i++){ if(recs[i].date>=start && recs[i].date<=end) out.push(recs[i]); } return out; }
-function hasActivity(r){ return !!(r.activityDone || r.walked); }
-function countActivities(recs){ var c=0; for(var i=0;i<recs.length;i++){ if(hasActivity(recs[i])) c++; } return c; }
-function countClean(recs){ var c=0; for(var i=0;i<recs.length;i++){ if(recs[i].avoidedSnack) c++; } return c; }
-function countGoodOk(recs){ var c=0; for(var i=0;i<recs.length;i++){ if(recs[i].eating==='boa'||recs[i].eating==='ok') c++; } return c; }
-function latestWeightRecord(personId){ var recs=getRecords(personId); var latest=null; for(var i=0;i<recs.length;i++){ if(recs[i].weight!==null && recs[i].weight!==undefined && !isNaN(recs[i].weight)) latest=recs[i]; } return latest; }
-function getChallengeMonth(person){ if(!person.startDate) return 1; var d=daysBetween(person.startDate,todayISO()); if(d<0) d=0; return clamp(Math.floor(d/MONTH_DAYS)+1,1,3); }
-function getTargetWeight(person){ if(!person.startWeight) return null; return person.startWeight*(1-(MONTHLY_LOSS_RATE*getChallengeMonth(person))); }
-function getFinalTarget(person){ if(!person.startWeight) return null; return person.startWeight*(1-0.15); }
-function getExpectedWeightToday(person){ if(!person.startWeight || !person.startDate) return null; var d=clamp(daysBetween(person.startDate,todayISO()),0,CHALLENGE_DAYS); return person.startWeight*(1-(0.15*(d/CHALLENGE_DAYS))); }
-function getProgressPct(person){ if(!person.startWeight || !person.currentWeight) return 0; var target=getTargetWeight(person); if(!target) return 0; var totalLoss=person.startWeight-target; if(totalLoss<=0) return 0; var done=person.startWeight-person.currentWeight; return clamp((done/totalLoss)*100,0,100); }
-function pickFrom(arr, seedExtra){ var d=new Date(); var seed=d.getFullYear()*1000+(d.getMonth()+1)*31+d.getDate()+(seedExtra||0); return arr[seed%arr.length]; }
-function pickGreeting(){ var h=new Date().getHours(); var prefix='Bom dia'; if(h>=12&&h<18) prefix='Boa tarde'; else if(h>=18||h<5) prefix='Boa noite'; return prefix+(currentUser?', '+currentUser.name:'')+'. Hoje só precisa fazer o básico.'; }
-function houseStatsWeek(){ var a=0,c=0,r=0; for(var i=0;i<state.people.length;i++){ var recs=recordsCurrentWeek(state.people[i].id); r+=recs.length; a+=countActivities(recs); c+=countClean(recs); } return {records:r,activities:a,clean:c}; }
-
-function fsValue(v){
-  if(v===null || v===undefined) return {nullValue:null};
-  if(typeof v==='boolean') return {booleanValue:v};
-  if(typeof v==='number'){
-    if(Math.floor(v)===v) return {integerValue:String(v)};
-    return {doubleValue:v};
-  }
-  return {stringValue:String(v)};
-}
-function toFirestoreFields(obj){ var fields={}; for(var k in obj){ if(obj.hasOwnProperty(k)) fields[k]=fsValue(obj[k]); } return {fields:fields}; }
-function fromFirestoreDoc(doc){
-  var out={};
-  var fields=(doc && doc.fields)?doc.fields:{};
-  for(var k in fields){
-    if(!fields.hasOwnProperty(k)) continue;
-    var v=fields[k];
-    if(v.stringValue!==undefined) out[k]=v.stringValue;
-    else if(v.integerValue!==undefined) out[k]=parseInt(v.integerValue,10);
-    else if(v.doubleValue!==undefined) out[k]=parseFloat(v.doubleValue);
-    else if(v.booleanValue!==undefined) out[k]=!!v.booleanValue;
-    else if(v.nullValue!==undefined) out[k]=null;
-    else if(v.timestampValue!==undefined) out[k]=v.timestampValue;
-  }
-  if(doc && doc.name) out._path=doc.name;
-  return out;
-}
-function fsUrl(path){ return FIRESTORE_BASE + '/' + path + '?key=' + API_KEY; }
-function fsCollectionUrl(path){ return FIRESTORE_BASE + '/' + path + '?key=' + API_KEY; }
-function fetchWithTimeout(url, options, label){
-  var controller = window.AbortController ? new AbortController() : null;
-  var timer = null;
-  options = options || {};
-  if(controller) options.signal = controller.signal;
-  timer = setTimeout(function(){ if(controller) controller.abort(); }, 12000);
-  return fetch(url, options).then(function(res){
-    clearTimeout(timer);
-    if(!res.ok){
-      return res.text().then(function(t){ throw new Error((label||'Firebase')+' falhou: '+res.status+' '+t.slice(0,180)); });
-    }
-    return res.json();
-  }).catch(function(err){
-    clearTimeout(timer);
-    if(err && err.name==='AbortError') throw new Error((label||'Firebase')+' demorou demais. Verifique internet, Firestore Database e regras.');
-    throw err;
-  });
-}
-function readDoc(collectionName, id){
-  return fetchWithTimeout(fsUrl(collectionName+'/'+encodeURIComponent(id)), {}, 'Leitura de '+id)
-    .then(function(doc){ var d=fromFirestoreDoc(doc); d.id=id; return d; })
-    .catch(function(err){ if(String(err.message).indexOf('404')>=0) return null; throw err; });
-}
-function writeDoc(collectionName, id, data){
-  return fetchWithTimeout(fsUrl(collectionName+'/'+encodeURIComponent(id)), {
-    method:'PATCH',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(toFirestoreFields(data))
-  }, 'Gravação de '+id).then(function(doc){ var d=fromFirestoreDoc(doc); d.id=id; return d; });
-}
-function listCollection(collectionName){
-  return fetchWithTimeout(fsCollectionUrl(collectionName), {}, 'Listagem de '+collectionName).then(function(json){
-    var docs=json.documents||[];
-    var arr=[];
-    for(var i=0;i<docs.length;i++){
-      var d=fromFirestoreDoc(docs[i]);
-      var parts=docs[i].name.split('/');
-      d.id=parts[parts.length-1];
-      arr.push(d);
-    }
-    return arr;
-  }).catch(function(err){ if(String(err.message).indexOf('404')>=0) return []; throw err; });
-}
-function ensureParticipants(){
-  var chain=Promise.resolve();
-  for(var i=0;i<PARTICIPANTS.length;i++){
-    (function(base){
-      chain=chain.then(function(){
-        return readDoc('participants',base.id).then(function(existing){
-          var data = existing || {};
-          data.id=base.id;
-          data.name=base.name;
-          data.age=base.age;
-          data.activityGoal=base.activityGoal;
-          data.walkGoal=base.activityGoal;
-          data.active=true;
-          if(data.startWeight===undefined) data.startWeight=null;
-          if(data.currentWeight===undefined) data.currentWeight=null;
-          if(data.goalWeight===undefined) data.goalWeight=null;
-          if(data.startDate===undefined) data.startDate=null;
-          data.updatedAt=new Date().toISOString();
-          return writeDoc('participants',base.id,data);
+    <script>
+      (function () {
+        "use strict";
+        var PROJECT_ID = "fitness-8ce89";
+        var API_KEY = "AIzaSyBzVg0cpEGoN8ROSvG9EMc9NvfPbLDRxeo";
+        var FIRESTORE_BASE =
+          "https://firestore.googleapis.com/v1/projects/" +
+          PROJECT_ID +
+          "/databases/(default)/documents";
+        var LS_USER = "fitness1101_current_user";
+        var CHALLENGE_DAYS = 90,
+          MONTH_DAYS = 30,
+          MONTHLY_LOSS_RATE = 0.05,
+          ACTIVITY_GOAL = 4;
+        var PARTICIPANTS = [
+          { id: "fernanda", name: "Fernanda", age: 30, activityGoal: 4 },
+          { id: "aldeiza", name: "Aldeiza", age: 64, activityGoal: 4 },
+        ];
+        var USERS = [
+          { id: "fernanda", name: "Fernanda", role: "participant" },
+          { id: "aldeiza", name: "Aldeiza", role: "participant" },
+          { id: "admin", name: "Admin", role: "admin" },
+        ];
+        var state = { people: [], records: [] };
+        var currentUser = null,
+          currentEvoPerson = null;
+        var registerDraft = {
+          personId: null,
+          date: null,
+          weight: "",
+          activityDone: false,
+          activityType: null,
+          activityMinutes: null,
+          avoidedSnack: false,
+          eating: null,
+          note: "",
+          editMode: false,
+          editRecordId: null,
+        };
+        var MOTIVATION = {
+          monday: [
+            "Segunda é o melhor dia para votar a favor da sua rotina. Uma atividade hoje já muda a semana.",
+            "Quem acerta a segunda não garante a semana, mas começa com vantagem.",
+            "Começar a semana com movimento é dizer ao corpo: desta vez eu levo a rotina a sério.",
+            "A semana não precisa ser perfeita. Só precisa começar.",
+          ],
+          midweek: [
+            "Metade da semana chegou. Agora é ajustar o rumo, não esperar a próxima segunda.",
+            "Quarta e quinta são dias de proteger o hábito. O resultado vem da repetição sem drama.",
+            "Se a semana saiu do plano, ainda dá tempo. O que conta é voltar rápido.",
+            "Estamos no meio da semana: faça o básico antes de tentar fazer o perfeito.",
+          ],
+          weekend: [
+            "Fim de semana também constrói hábito. Uma atividade curta já mantém a identidade de quem se cuida.",
+            "Sábado e domingo não precisam virar bagunça. Dá para viver e continuar no plano.",
+            "Se já bateu a meta, ir além ajuda o peso. Se não bateu, ainda dá para buscar.",
+            "O fim de semana é onde muita gente perde a semana. Você pode só não abandonar.",
+          ],
+          onPace: [
+            "O peso está andando no ritmo. Não invente moda: continue repetindo o que está funcionando.",
+            "Você está na velocidade certa. O segredo agora é não relaxar porque melhorou.",
+            "Bom sinal: o corpo está respondendo. Agora proteja sono, alimentação e atividade.",
+            "A direção está certa. Continue somando dias bons.",
+          ],
+          behindPace: [
+            "O ritmo do peso ainda está abaixo da meta. Não é motivo para desistir, é sinal para apertar o básico.",
+            "A balança não está acompanhando a meta ainda. Foque nos controles que dependem de você: atividade e beliscos.",
+            "Não precisa compensar com radicalismo. Precisa de mais consistência nos próximos dias.",
+            "Quando o peso atrasa, o caminho é voltar para o simples: rotina, água, atividade e menos belisco.",
+          ],
+          activityDone: [
+            "Meta de atividade batida. Agora isso deixa de ser promessa e começa a virar identidade.",
+            "Quatro dias de atividade na semana: excelente. O hábito está sendo construído.",
+            "Atividade física feita com constância pesa muito no resultado. Continue.",
+            "Você já bateu a meta da semana. Se fizer mais um dia, é bônus para o peso e para a cabeça.",
+          ],
+          activityLow: [
+            "A prioridade agora é movimento. Peso sem hábito costuma não se sustentar.",
+            "Ainda faltam atividades na semana. Uma sessão curta já conta e já mantém o ciclo vivo.",
+            "Não trate atividade como castigo. Trate como o compromisso mínimo com o corpo.",
+            "A meta de atividade existe para construir hábito. O peso é consequência, mas o hábito é o motor.",
+          ],
+          start: [
+            "Primeiro passo registrado. Agora o jogo é repetir o simples por 90 dias.",
+            "Começar é importante. Voltar amanhã é mais importante ainda.",
+            "O objetivo não é sofrer. É criar uma rotina que o corpo consiga sustentar.",
+            "Hoje você colocou uma linha no chão: daqui pra frente é acompanhamento, não achismo.",
+          ],
+          bothDone: [
+            "Meta de peso e atividade em dia. Esse é o cenário ideal: resultado com hábito.",
+            "Peso andando e atividade feita. É exatamente essa combinação que sustenta o progresso.",
+            "Excelente: não é só perder peso, é construir rotina para manter.",
+            "Você está fazendo do jeito certo: comportamento primeiro, resultado acompanhando.",
+          ],
+        };
+        function $(id) {
+          return document.getElementById(id);
+        }
+        function todayISO() {
+          var d = new Date();
+          return (
+            d.getFullYear() +
+            "-" +
+            String(d.getMonth() + 1).padStart(2, "0") +
+            "-" +
+            String(d.getDate()).padStart(2, "0")
+          );
+        }
+        function isoToDate(iso) {
+          var p = String(iso || todayISO()).split("-");
+          return new Date(
+            parseInt(p[0], 10),
+            parseInt(p[1], 10) - 1,
+            parseInt(p[2], 10),
+          );
+        }
+        function dateToISO(d) {
+          return (
+            d.getFullYear() +
+            "-" +
+            String(d.getMonth() + 1).padStart(2, "0") +
+            "-" +
+            String(d.getDate()).padStart(2, "0")
+          );
+        }
+        function addDaysISO(iso, n) {
+          var d = isoToDate(iso);
+          d.setDate(d.getDate() + n);
+          return dateToISO(d);
+        }
+        function daysBetween(a, b) {
+          return Math.round((isoToDate(b) - isoToDate(a)) / 86400000);
+        }
+        function startOfWeekISO() {
+          var d = new Date();
+          var day = d.getDay();
+          var diff = day === 0 ? -6 : 1 - day;
+          d.setDate(d.getDate() + diff);
+          return dateToISO(d);
+        }
+        function endOfWeekISO() {
+          return addDaysISO(startOfWeekISO(), 6);
+        }
+        function clamp(v, min, max) {
+          return Math.max(min, Math.min(max, v));
+        }
+        function formatNum(n, dec) {
+          if (n === null || n === undefined || isNaN(n)) return "—";
+          if (dec === undefined) dec = 1;
+          return Number(n).toFixed(dec).replace(".", ",");
+        }
+        function parseNum(v) {
+          if (v === null || v === undefined || v === "") return null;
+          var n = parseFloat(String(v).replace(",", "."));
+          return isNaN(n) ? null : n;
+        }
+        function formatDateBR(iso) {
+          var d = isoToDate(iso);
+          var m = [
+            "jan",
+            "fev",
+            "mar",
+            "abr",
+            "mai",
+            "jun",
+            "jul",
+            "ago",
+            "set",
+            "out",
+            "nov",
+            "dez",
+          ];
+          return d.getDate() + " " + m[d.getMonth()];
+        }
+        function formatWeekday(iso) {
+          var d = isoToDate(iso);
+          var wd = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+          return wd[d.getDay()];
+        }
+        function escapeHtml(s) {
+          if (s === null || s === undefined) return "";
+          return String(s).replace(/[&<>"']/g, function (c) {
+            return {
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            }[c];
+          });
+        }
+        function toast(msg) {
+          var el = $("toast");
+          el.textContent = msg;
+          el.classList.add("show");
+          setTimeout(function () {
+            el.classList.remove("show");
+          }, 2200);
+        }
+        function showView(name) {
+          var views = document.querySelectorAll(".view");
+          for (var i = 0; i < views.length; i++)
+            views[i].classList.remove("is-active");
+          $("view-" + name).classList.add("is-active");
+          window.scrollTo(0, 0);
+        }
+        function getUser(id) {
+          for (var i = 0; i < USERS.length; i++) {
+            if (USERS[i].id === id) return USERS[i];
+          }
+          return null;
+        }
+        function getPerson(id) {
+          for (var i = 0; i < state.people.length; i++) {
+            if (state.people[i].id === id) return state.people[i];
+          }
+          return null;
+        }
+        function getRecordById(id) {
+          for (var i = 0; i < state.records.length; i++) {
+            if (state.records[i].id === id) return state.records[i];
+          }
+          return null;
+        }
+        function getRecordByPersonDate(personId, date) {
+          return getRecordById(personId + "_" + date);
+        }
+        function getRecords(personId) {
+          var out = [];
+          for (var i = 0; i < state.records.length; i++) {
+            if (state.records[i].personId === personId)
+              out.push(state.records[i]);
+          }
+          out.sort(function (a, b) {
+            return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+          });
+          return out;
+        }
+        function recordsCurrentWeek(personId) {
+          var start = startOfWeekISO(),
+            end = endOfWeekISO(),
+            recs = getRecords(personId),
+            out = [];
+          for (var i = 0; i < recs.length; i++) {
+            if (recs[i].date >= start && recs[i].date <= end) out.push(recs[i]);
+          }
+          return out;
+        }
+        function hasActivity(r) {
+          return !!(r.activityDone || r.walked);
+        }
+        function countActivities(recs) {
+          var c = 0;
+          for (var i = 0; i < recs.length; i++) {
+            if (hasActivity(recs[i])) c++;
+          }
+          return c;
+        }
+        function countClean(recs) {
+          var c = 0;
+          for (var i = 0; i < recs.length; i++) {
+            if (recs[i].avoidedSnack) c++;
+          }
+          return c;
+        }
+        function countGoodOk(recs) {
+          var c = 0;
+          for (var i = 0; i < recs.length; i++) {
+            if (recs[i].eating === "boa" || recs[i].eating === "ok") c++;
+          }
+          return c;
+        }
+        function latestWeightRecord(personId) {
+          var recs = getRecords(personId),
+            latest = null;
+          for (var i = 0; i < recs.length; i++) {
+            if (
+              recs[i].weight !== null &&
+              recs[i].weight !== undefined &&
+              !isNaN(recs[i].weight)
+            )
+              latest = recs[i];
+          }
+          return latest;
+        }
+        function getChallengeMonth(person) {
+          if (!person.startDate) return 1;
+          var d = daysBetween(person.startDate, todayISO());
+          if (d < 0) d = 0;
+          return clamp(Math.floor(d / MONTH_DAYS) + 1, 1, 3);
+        }
+        function getTargetWeight(person) {
+          if (!person.startWeight) return null;
+          return (
+            person.startWeight *
+            (1 - MONTHLY_LOSS_RATE * getChallengeMonth(person))
+          );
+        }
+        function getFinalTarget(person) {
+          if (!person.startWeight) return null;
+          return person.startWeight * (1 - 0.15);
+        }
+        function getExpectedWeightToday(person) {
+          if (!person.startWeight || !person.startDate) return null;
+          var d = clamp(
+            daysBetween(person.startDate, todayISO()),
+            0,
+            CHALLENGE_DAYS,
+          );
+          return person.startWeight * (1 - 0.15 * (d / CHALLENGE_DAYS));
+        }
+        function getProgressPct(person) {
+          if (!person.startWeight || !person.currentWeight) return 0;
+          var target = getTargetWeight(person);
+          if (!target) return 0;
+          var totalLoss = person.startWeight - target;
+          if (totalLoss <= 0) return 0;
+          var done = person.startWeight - person.currentWeight;
+          return clamp((done / totalLoss) * 100, 0, 100);
+        }
+        function pickFrom(arr, seedExtra) {
+          var d = new Date();
+          var seed =
+            d.getFullYear() * 1000 +
+            (d.getMonth() + 1) * 31 +
+            d.getDate() +
+            (seedExtra || 0);
+          return arr[seed % arr.length];
+        }
+        function pickGreeting() {
+          var h = new Date().getHours();
+          var prefix = "Bom dia";
+          if (h >= 12 && h < 18) prefix = "Boa tarde";
+          else if (h >= 18 || h < 5) prefix = "Boa noite";
+          return (
+            prefix +
+            (currentUser ? ", " + currentUser.name : "") +
+            ". Hoje só precisa fazer o básico."
+          );
+        }
+        function houseStatsWeek() {
+          var a = 0,
+            c = 0,
+            r = 0;
+          for (var i = 0; i < state.people.length; i++) {
+            var recs = recordsCurrentWeek(state.people[i].id);
+            r += recs.length;
+            a += countActivities(recs);
+            c += countClean(recs);
+          }
+          return { records: r, activities: a, clean: c };
+        }
+        function fsValue(v) {
+          if (v === null || v === undefined) return { nullValue: null };
+          if (typeof v === "boolean") return { booleanValue: v };
+          if (typeof v === "number") {
+            if (Math.floor(v) === v) return { integerValue: String(v) };
+            return { doubleValue: v };
+          }
+          return { stringValue: String(v) };
+        }
+        function toFirestoreFields(obj) {
+          var fields = {};
+          for (var k in obj) {
+            if (obj.hasOwnProperty(k)) fields[k] = fsValue(obj[k]);
+          }
+          return { fields: fields };
+        }
+        function fromFirestoreDoc(doc) {
+          var out = {},
+            fields = doc && doc.fields ? doc.fields : {};
+          for (var k in fields) {
+            if (!fields.hasOwnProperty(k)) continue;
+            var v = fields[k];
+            if (v.stringValue !== undefined) out[k] = v.stringValue;
+            else if (v.integerValue !== undefined)
+              out[k] = parseInt(v.integerValue, 10);
+            else if (v.doubleValue !== undefined)
+              out[k] = parseFloat(v.doubleValue);
+            else if (v.booleanValue !== undefined) out[k] = !!v.booleanValue;
+            else if (v.nullValue !== undefined) out[k] = null;
+            else if (v.timestampValue !== undefined) out[k] = v.timestampValue;
+          }
+          if (doc && doc.name) out._path = doc.name;
+          return out;
+        }
+        function fsUrl(path) {
+          return FIRESTORE_BASE + "/" + path + "?key=" + API_KEY;
+        }
+        function fsCollectionUrl(path) {
+          return FIRESTORE_BASE + "/" + path + "?key=" + API_KEY;
+        }
+        function fetchWithTimeout(url, options, label) {
+          var controller = window.AbortController
+              ? new AbortController()
+              : null,
+            timer = null;
+          options = options || {};
+          if (controller) options.signal = controller.signal;
+          timer = setTimeout(function () {
+            if (controller) controller.abort();
+          }, 12000);
+          return fetch(url, options)
+            .then(function (res) {
+              clearTimeout(timer);
+              if (!res.ok) {
+                return res.text().then(function (t) {
+                  throw new Error(
+                    (label || "Firebase") +
+                      " falhou: " +
+                      res.status +
+                      " " +
+                      t.slice(0, 180),
+                  );
+                });
+              }
+              return res.json();
+            })
+            .catch(function (err) {
+              clearTimeout(timer);
+              if (err && err.name === "AbortError")
+                throw new Error(
+                  (label || "Firebase") +
+                    " demorou demais. Verifique internet, Firestore Database e regras.",
+                );
+              throw err;
+            });
+        }
+        function readDoc(collectionName, id) {
+          return fetchWithTimeout(
+            fsUrl(collectionName + "/" + encodeURIComponent(id)),
+            {},
+            "Leitura de " + id,
+          )
+            .then(function (doc) {
+              var d = fromFirestoreDoc(doc);
+              d.id = id;
+              return d;
+            })
+            .catch(function (err) {
+              if (String(err.message).indexOf("404") >= 0) return null;
+              throw err;
+            });
+        }
+        function writeDoc(collectionName, id, data) {
+          return fetchWithTimeout(
+            fsUrl(collectionName + "/" + encodeURIComponent(id)),
+            {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(toFirestoreFields(data)),
+            },
+            "Gravação de " + id,
+          ).then(function (doc) {
+            var d = fromFirestoreDoc(doc);
+            d.id = id;
+            return d;
+          });
+        }
+        function listCollection(collectionName) {
+          return fetchWithTimeout(
+            fsCollectionUrl(collectionName),
+            {},
+            "Listagem de " + collectionName,
+          )
+            .then(function (json) {
+              var docs = json.documents || [],
+                arr = [];
+              for (var i = 0; i < docs.length; i++) {
+                var d = fromFirestoreDoc(docs[i]);
+                var parts = docs[i].name.split("/");
+                d.id = parts[parts.length - 1];
+                arr.push(d);
+              }
+              return arr;
+            })
+            .catch(function (err) {
+              if (String(err.message).indexOf("404") >= 0) return [];
+              throw err;
+            });
+        }
+        function ensureParticipants() {
+          var chain = Promise.resolve();
+          for (var i = 0; i < PARTICIPANTS.length; i++) {
+            (function (base) {
+              chain = chain.then(function () {
+                return readDoc("participants", base.id).then(
+                  function (existing) {
+                    var data = existing || {};
+                    data.id = base.id;
+                    data.name = base.name;
+                    data.age = base.age;
+                    data.activityGoal = ACTIVITY_GOAL;
+                    data.walkGoal = ACTIVITY_GOAL;
+                    data.active = true;
+                    if (data.startWeight === undefined) data.startWeight = null;
+                    if (data.currentWeight === undefined)
+                      data.currentWeight = null;
+                    if (data.goalWeight === undefined) data.goalWeight = null;
+                    if (data.startDate === undefined) data.startDate = null;
+                    data.updatedAt = new Date().toISOString();
+                    return writeDoc("participants", base.id, data);
+                  },
+                );
+              });
+            })(PARTICIPANTS[i]);
+          }
+          return chain;
+        }
+        function loadData() {
+          showView("loading");
+          $("loading-text").textContent = "Carregando dados...";
+          return ensureParticipants()
+            .then(function () {
+              var reads = [];
+              for (var i = 0; i < PARTICIPANTS.length; i++)
+                reads.push(readDoc("participants", PARTICIPANTS[i].id));
+              return Promise.all(reads);
+            })
+            .then(function (people) {
+              state.people = [];
+              for (var i = 0; i < people.length; i++) {
+                if (people[i] && people[i].active !== false)
+                  state.people.push(people[i]);
+              }
+              return listCollection("records");
+            })
+            .then(function (records) {
+              state.records = [];
+              for (var i = 0; i < records.length; i++) {
+                if (
+                  records[i].personId === "fernanda" ||
+                  records[i].personId === "aldeiza"
+                )
+                  state.records.push(records[i]);
+              }
+              normalizeCurrentWeights();
+              afterDataLoaded();
+            })
+            .catch(function (err) {
+              showView("dashboard");
+              renderBasicShellError(err.message || String(err));
+            });
+        }
+        function normalizeCurrentWeights() {
+          for (var i = 0; i < state.people.length; i++) {
+            var p = state.people[i],
+              latest = latestWeightRecord(p.id);
+            if (latest && latest.weight !== p.currentWeight) {
+              p.currentWeight = latest.weight;
+            }
+          }
+        }
+        function afterDataLoaded() {
+          if (!currentUser) {
+            showView("login");
+            return;
+          }
+          if (currentUser.role === "participant") {
+            var p = getPerson(currentUser.id);
+            if (!p || !p.startWeight) {
+              renderSetup();
+              showView("setup");
+              return;
+            }
+          }
+          renderDashboard();
+          showView("dashboard");
+        }
+        function renderBasicShellError(msg) {
+          $("dashboard-greeting").textContent =
+            "Hoje só precisa fazer o básico.";
+          $("people-cards").innerHTML = "";
+          $("weekly-summaries").innerHTML = "";
+          $("house-records").textContent = "0";
+          $("house-activities").textContent = "0";
+          $("house-clean").textContent = "0";
+          $("error-area").innerHTML =
+            '<div class="error-box"><strong>Não consegui carregar os dados.</strong><br>O app abriu, mas travou ao buscar/salvar no Firestore. Detalhe técnico: ' +
+            escapeHtml(msg) +
+            '</div><button class="btn btn-ghost btn-block" id="btn-retry">Tentar novamente</button>';
+          var b = $("btn-retry");
+          if (b)
+            b.onclick = function () {
+              loadData();
+            };
+        }
+        function renderSetup() {
+          var p = getPerson(currentUser.id) || { name: currentUser.name };
+          $("setup-name").textContent = p.name;
+          $("setup-date").value = todayISO();
+          $("setup-weight").value = "";
+          $("setup-preview").textContent = "Informe o peso para ver as metas.";
+        }
+        function updateSetupPreview() {
+          var w = parseNum($("setup-weight").value);
+          if (!w) {
+            $("setup-preview").textContent =
+              "Informe o peso para ver as metas.";
+            return;
+          }
+          $("setup-preview").innerHTML =
+            "Mês 1: <strong>" +
+            formatNum(w * 0.95) +
+            " kg</strong> · Mês 2: <strong>" +
+            formatNum(w * 0.9) +
+            " kg</strong> · Final 90 dias: <strong>" +
+            formatNum(w * 0.85) +
+            " kg</strong>";
+        }
+        function renderDashboard() {
+          $("error-area").innerHTML = "";
+          $("dashboard-greeting").textContent = pickGreeting();
+          $("house-quote").textContent = pickFrom([
+            "A meta é constância, não perfeição.",
+            "A rotina possível é a que se sustenta.",
+            "O peso importa, mas o hábito sustenta.",
+            "Hoje é dia de fazer o básico bem feito.",
+          ]);
+          var hs = houseStatsWeek();
+          $("house-records").textContent = hs.records;
+          $("house-activities").textContent = hs.activities;
+          $("house-clean").textContent = hs.clean;
+          renderPeopleCards();
+          renderWeeklySummaries();
+        }
+        function renderPeopleCards() {
+          var holder = $("people-cards");
+          holder.innerHTML = "";
+          for (var i = 0; i < state.people.length; i++) {
+            var p = state.people[i],
+              recs = recordsCurrentWeek(p.id),
+              acts = countActivities(recs),
+              clean = countClean(recs),
+              pct = getProgressPct(p),
+              target = getTargetWeight(p),
+              finalTarget = getFinalTarget(p),
+              togo =
+                target && p.currentWeight
+                  ? Math.max(0, p.currentWeight - target)
+                  : null,
+              lost =
+                p.startWeight && p.currentWeight
+                  ? p.startWeight - p.currentWeight
+                  : null,
+              canRegister =
+                currentUser &&
+                currentUser.role === "participant" &&
+                currentUser.id === p.id,
+              checks = getChecks(p, acts),
+              todayRec = getRecordByPersonDate(p.id, todayISO()),
+              registerLabel = todayRec ? "Editar hoje" : "Registrar hoje";
+            var card = document.createElement("div");
+            card.className = "person-card " + (i % 2 ? "tone-blue" : "");
+            card.innerHTML =
+              '<div class="accent-bar"></div><div class="person-head"><div><div class="person-name">' +
+              escapeHtml(p.name) +
+              '</div><div class="muted">' +
+              (p.age ? p.age + " anos · " : "") +
+              'Meta: 90 dias</div></div><div class="person-meta">' +
+              (lost !== null && lost > 0
+                ? "−" + formatNum(lost) + " kg"
+                : "início") +
+              '</div></div><div class="weight-row"><div class="weight-now">' +
+              formatNum(p.currentWeight) +
+              '<span class="unit"> kg</span></div><div class="weight-aside"><div class="label">Meta atual</div><div>' +
+              formatNum(target) +
+              ' kg</div><div class="label" style="margin-top:4px">Final</div><div>' +
+              formatNum(finalTarget) +
+              ' kg</div></div></div><div class="progress-bar"><div class="progress-fill" style="width:' +
+              pct.toFixed(1) +
+              '%"></div></div><div class="progress-meta"><span>' +
+              pct.toFixed(0) +
+              "% da meta atual</span><span>" +
+              (togo !== null && togo > 0
+                ? "falta " + formatNum(togo) + " kg"
+                : "meta atingida ✓") +
+              '</span></div><div class="stats-row"><div class="stat"><span class="num">' +
+              acts +
+              '<span class="total">/' +
+              ACTIVITY_GOAL +
+              '</span></span><span class="stat-label">Atividades</span></div><div class="stat"><span class="num">' +
+              clean +
+              '<span class="total">/7</span></span><span class="stat-label">Sem belisco</span></div><div class="stat"><span class="num">' +
+              recs.length +
+              '<span class="total">/7</span></span><span class="stat-label">Registros</span></div></div><div class="motivation-box">' +
+              escapeHtml(pickMotivation(p)) +
+              "</div>" +
+              (checks ? '<div class="check-list">' + checks + "</div>" : "") +
+              '<div class="actions ' +
+              (!canRegister ? "single" : "") +
+              '" style="margin-top:14px">' +
+              (canRegister
+                ? '<button class="btn btn-primary" data-action="register" data-id="' +
+                  p.id +
+                  '">' +
+                  registerLabel +
+                  "</button>"
+                : "") +
+              '<button class="btn btn-ghost" data-action="evolve" data-id="' +
+              p.id +
+              '">Ver evolução</button></div>';
+            holder.appendChild(card);
+          }
+        }
+        function getChecks(p, acts) {
+          var html = "",
+            target = getTargetWeight(p);
+          if (target && p.currentWeight && p.currentWeight <= target)
+            html += '<span class="check-pill">✓ Meta de peso</span>';
+          if (acts >= ACTIVITY_GOAL)
+            html += '<span class="check-pill">✓ Atividade da semana</span>';
+          if (acts > ACTIVITY_GOAL)
+            html += '<span class="check-pill">✓ Além da meta</span>';
+          return html;
+        }
+        function pickMotivation(p) {
+          if (!p.startWeight) return pickFrom(MOTIVATION.start, 1);
+          var recs = recordsCurrentWeek(p.id),
+            acts = countActivities(recs),
+            target = getTargetWeight(p),
+            expected = getExpectedWeightToday(p),
+            onPace =
+              expected && p.currentWeight
+                ? p.currentWeight <= expected + 0.15
+                : false,
+            hitWeight =
+              target && p.currentWeight ? p.currentWeight <= target : false,
+            hitActivity = acts >= ACTIVITY_GOAL,
+            day = new Date().getDay();
+          if (hitWeight && hitActivity)
+            return pickFrom(MOTIVATION.bothDone, 20);
+          if (day === 1 && acts === 0) return pickFrom(MOTIVATION.monday, 2);
+          if ((day === 3 || day === 4) && !hitActivity)
+            return pickFrom(MOTIVATION.midweek, 3);
+          if ((day === 5 || day === 6 || day === 0) && hitActivity)
+            return pickFrom(MOTIVATION.weekend, 4);
+          if (hitActivity) return pickFrom(MOTIVATION.activityDone, 5);
+          if (!hitActivity && acts < 2)
+            return pickFrom(MOTIVATION.activityLow, 6);
+          if (onPace) return pickFrom(MOTIVATION.onPace, 7);
+          return pickFrom(MOTIVATION.behindPace, 8);
+        }
+        function getChallengeWeekNumber(person, dateISO) {
+          if (!person.startDate || !dateISO) return null;
+          var d = daysBetween(person.startDate, dateISO);
+          if (d < 0 || d >= CHALLENGE_DAYS) return null;
+          return Math.floor(d / 7) + 1;
+        }
+        function getWeekRange(person, weekNum) {
+          var start = addDaysISO(person.startDate, (weekNum - 1) * 7);
+          var end = addDaysISO(start, 6);
+          var final = addDaysISO(person.startDate, CHALLENGE_DAYS - 1);
+          if (end > final) end = final;
+          return { start: start, end: end };
+        }
+        function getCurrentChallengeWeek(person) {
+          if (!person.startDate) return 1;
+          var d = clamp(
+            daysBetween(person.startDate, todayISO()),
+            0,
+            CHALLENGE_DAYS - 1,
+          );
+          return Math.floor(d / 7) + 1;
+        }
+        function weeklyChallengeRows(person) {
+          var maxWeek = getCurrentChallengeWeek(person),
+            recs = getRecords(person.id),
+            rows = [];
+          for (var w = 1; w <= maxWeek; w++) {
+            var range = getWeekRange(person, w),
+              wr = [];
+            for (var i = 0; i < recs.length; i++) {
+              if (recs[i].date >= range.start && recs[i].date <= range.end)
+                wr.push(recs[i]);
+            }
+            rows.push({
+              week: w,
+              start: range.start,
+              end: range.end,
+              activities: countActivities(wr),
+              records: wr.length,
+              clean: countClean(wr),
+              done: countActivities(wr) >= ACTIVITY_GOAL,
+            });
+          }
+          return rows;
+        }
+        function renderWeeklySummaries() {
+          var holder = $("weekly-summaries");
+          holder.innerHTML = "";
+          for (var i = 0; i < state.people.length; i++) {
+            var p = state.people[i],
+              card = document.createElement("div");
+            card.className = "summary-card";
+            if (!p.startWeight || !p.startDate) {
+              card.innerHTML =
+                '<div class="summary-name">' +
+                escapeHtml(p.name) +
+                '</div><div class="summary-insight tone-cool">Ainda falta iniciar o desafio com o peso inicial.</div>';
+              holder.appendChild(card);
+              continue;
+            }
+            var rows = weeklyChallengeRows(p),
+              doneCount = 0,
+              weekHtml = "";
+            for (var w = 0; w < rows.length; w++) {
+              if (rows[w].done) doneCount++;
+              weekHtml +=
+                '<div class="week-row ' +
+                (rows[w].done ? "done" : "pending") +
+                '"><div><div class="week-title">Semana ' +
+                rows[w].week +
+                '</div><div class="week-dates">' +
+                formatDateBR(rows[w].start) +
+                " a " +
+                formatDateBR(rows[w].end) +
+                " · " +
+                rows[w].records +
+                ' registros</div></div><div><div class="week-score">' +
+                rows[w].activities +
+                " / " +
+                ACTIVITY_GOAL +
+                '</div><div class="week-status">' +
+                (rows[w].done ? "Meta batida" : "Abaixo da meta") +
+                "</div></div></div>";
+            }
+            card.innerHTML =
+              '<div class="summary-name">' +
+              escapeHtml(p.name) +
+              '</div><div class="summary-grid"><div><div class="label">Semanas batidas</div><div class="value">' +
+              doneCount +
+              " / " +
+              rows.length +
+              '</div></div><div><div class="label">Meta semanal</div><div class="value">' +
+              ACTIVITY_GOAL +
+              ' atividades</div></div></div><div class="week-list">' +
+              weekHtml +
+              "</div>";
+            holder.appendChild(card);
+          }
+        }
+        function resetRegisterDraft(personId) {
+          registerDraft = {
+            personId: personId,
+            date: todayISO(),
+            weight: "",
+            activityDone: false,
+            activityType: null,
+            activityMinutes: null,
+            avoidedSnack: false,
+            eating: null,
+            note: "",
+            editMode: false,
+            editRecordId: null,
+          };
+        }
+        function loadDraftFromRecord(record) {
+          registerDraft = {
+            personId: record.personId,
+            date: record.date,
+            weight:
+              record.weight !== null &&
+              record.weight !== undefined &&
+              !isNaN(record.weight)
+                ? String(record.weight).replace(".", ",")
+                : "",
+            activityDone: hasActivity(record),
+            activityType: record.activityType || record.walkType || "caminhada",
+            activityMinutes: record.activityMinutes || record.walkMinutes || 30,
+            avoidedSnack: !!record.avoidedSnack,
+            eating: record.eating || null,
+            note: record.note || "",
+            editMode: true,
+            editRecordId: record.id,
+          };
+        }
+        function syncRegisterUI() {
+          $("reg-date").value = registerDraft.date;
+          $("reg-date").disabled = !!registerDraft.editMode;
+          $("reg-weight").value = registerDraft.weight;
+          $("reg-note").value = registerDraft.note;
+          $("reg-activity-done").classList.toggle(
+            "is-checked",
+            !!registerDraft.activityDone,
+          );
+          $("reg-activity-box").style.display = registerDraft.activityDone
+            ? "block"
+            : "none";
+          $("reg-clean").classList.toggle(
+            "is-checked",
+            !!registerDraft.avoidedSnack,
+          );
+          markChoice(
+            "#reg-activity-type .choice-btn",
+            "data-type",
+            registerDraft.activityType,
+          );
+          markChoice(
+            "#reg-activity-minutes .choice-btn",
+            "data-min",
+            registerDraft.activityMinutes !== null
+              ? String(registerDraft.activityMinutes)
+              : null,
+          );
+          markChoice(
+            "#reg-eating .choice-btn",
+            "data-eat",
+            registerDraft.eating,
+          );
+          $("register-title").textContent = registerDraft.editMode
+            ? "Editar registro"
+            : "Registrar dia";
+          $("register-submit").textContent = registerDraft.editMode
+            ? "Salvar alterações"
+            : "Salvar registro";
+          $("register-help").textContent = registerDraft.editMode
+            ? "Ajuste as informações deste dia. A data fica travada para não duplicar registro."
+            : "Registre o básico. Peso pode ficar em branco se não pesou hoje.";
+        }
+        function markChoice(selector, attr, value) {
+          var btns = document.querySelectorAll(selector);
+          for (var i = 0; i < btns.length; i++)
+            btns[i].classList.toggle(
+              "is-active",
+              value !== null &&
+                String(value) === String(btns[i].getAttribute(attr)),
+            );
+        }
+        function beginRegister(personId) {
+          var existing = getRecordByPersonDate(personId, todayISO());
+          if (existing) {
+            loadDraftFromRecord(existing);
+          } else {
+            resetRegisterDraft(personId);
+          }
+          var p = getPerson(personId);
+          $("register-person-name").textContent = p ? p.name : "Participante";
+          syncRegisterUI();
+          showView("register");
+        }
+        function beginEditRecord(recordId) {
+          var r = getRecordById(recordId);
+          if (!r) {
+            toast("Registro não encontrado");
+            return;
+          }
+          if (
+            currentUser &&
+            currentUser.role === "participant" &&
+            currentUser.id !== r.personId
+          ) {
+            toast("Você só pode editar seu próprio registro");
+            return;
+          }
+          loadDraftFromRecord(r);
+          var p = getPerson(r.personId);
+          $("register-person-name").textContent = p ? p.name : "Participante";
+          syncRegisterUI();
+          showView("register");
+        }
+        function renderEvolution(personId) {
+          currentEvoPerson = personId;
+          var p = getPerson(personId);
+          if (!p) return;
+          $("evo-title").textContent = "Evolução · " + p.name;
+          $("evo-current").innerHTML =
+            formatNum(p.currentWeight) + '<span class="unit"> kg</span>';
+          $("evo-goal").innerHTML =
+            formatNum(getTargetWeight(p)) + '<span class="unit"> kg</span>';
+          $("evo-start").innerHTML =
+            formatNum(p.startWeight) + '<span class="unit"> kg</span>';
+          $("evo-final").innerHTML =
+            formatNum(getFinalTarget(p)) + '<span class="unit"> kg</span>';
+          var lost =
+            p.startWeight && p.currentWeight
+              ? p.startWeight - p.currentWeight
+              : 0;
+          $("evo-delta").textContent =
+            lost > 0
+              ? "−" + formatNum(lost) + " kg desde o início"
+              : "sem perda registrada";
+          $("evo-percent").textContent =
+            getProgressPct(p).toFixed(0) + "% concluído";
+          var recs = recordsCurrentWeek(personId);
+          $("evo-acts-week").innerHTML =
+            countActivities(recs) +
+            '<span class="unit"> / ' +
+            ACTIVITY_GOAL +
+            "</span>";
+          $("evo-clean-week").innerHTML =
+            countClean(recs) + '<span class="unit"> / 7</span>';
+          $("evo-recs-week").innerHTML =
+            recs.length + '<span class="unit"> / 7</span>';
+          $("evo-month").textContent = getChallengeMonth(p) + "º";
+          drawChart(personId);
+          renderRecordsList(personId);
+        }
+        function drawChart(personId) {
+          var p = getPerson(personId),
+            recs = getRecords(personId),
+            pts = [];
+          for (var i = 0; i < recs.length; i++) {
+            if (
+              recs[i].weight !== null &&
+              recs[i].weight !== undefined &&
+              !isNaN(recs[i].weight)
+            )
+              pts.push({ date: recs[i].date, w: parseFloat(recs[i].weight) });
+          }
+          var svg = $("chart-svg");
+          if (pts.length < 2) {
+            svg.innerHTML =
+              '<text x="160" y="90" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" fill="#8a8f82">Registre o peso por alguns dias para ver o gráfico</text>';
+            $("chart-period").textContent = "";
+            return;
+          }
+          var W = 320,
+            H = 180,
+            padL = 8,
+            padR = 8,
+            padT = 16,
+            padB = 22,
+            plotW = W - padL - padR,
+            plotH = H - padT - padB,
+            minW = Infinity,
+            maxW = -Infinity;
+          for (var k = 0; k < pts.length; k++) {
+            if (pts[k].w < minW) minW = pts[k].w;
+            if (pts[k].w > maxW) maxW = pts[k].w;
+          }
+          var target = getFinalTarget(p);
+          if (target && target < minW) minW = target;
+          if (p.startWeight && p.startWeight > maxW) maxW = p.startWeight;
+          var range = maxW - minW;
+          if (range < 1) range = 1;
+          minW -= range * 0.08;
+          maxW += range * 0.08;
+          range = maxW - minW;
+          function x(idx) {
+            return padL + plotW * (idx / (pts.length - 1));
+          }
+          function y(w) {
+            return padT + plotH * (1 - (w - minW) / range);
+          }
+          var d = "M" + x(0).toFixed(1) + "," + y(pts[0].w).toFixed(1);
+          for (var m = 1; m < pts.length; m++)
+            d += " L" + x(m).toFixed(1) + "," + y(pts[m].w).toFixed(1);
+          var html =
+            '<line x1="' +
+            padL +
+            '" y1="' +
+            (padT + plotH) +
+            '" x2="' +
+            (W - padR) +
+            '" y2="' +
+            (padT + plotH) +
+            '" stroke="#e6e1d2" stroke-width="1"/>';
+          if (target) {
+            var gy = y(target);
+            html +=
+              '<line x1="' +
+              padL +
+              '" y1="' +
+              gy.toFixed(1) +
+              '" x2="' +
+              (W - padR) +
+              '" y2="' +
+              gy.toFixed(1) +
+              '" stroke="#4a6b3e" stroke-width="1" stroke-dasharray="3 4" opacity=".55"/><text x="' +
+              (W - padR) +
+              '" y="' +
+              (gy - 4).toFixed(1) +
+              '" text-anchor="end" font-family="DM Sans, sans-serif" font-size="9" fill="#4a6b3e">final ' +
+              formatNum(target) +
+              "</text>";
+          }
+          html +=
+            '<path d="' +
+            d +
+            '" fill="none" stroke="#4a6b3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+          for (var n = 0; n < pts.length; n++)
+            html +=
+              '<circle cx="' +
+              x(n).toFixed(1) +
+              '" cy="' +
+              y(pts[n].w).toFixed(1) +
+              '" r="3" fill="#fff" stroke="#4a6b3e" stroke-width="1.5"/>';
+          html +=
+            '<text x="' +
+            x(0).toFixed(1) +
+            '" y="' +
+            (padT + plotH + 14) +
+            '" text-anchor="start" font-family="DM Sans, sans-serif" font-size="10" fill="#8a8f82">' +
+            formatDateBR(pts[0].date) +
+            '</text><text x="' +
+            x(pts.length - 1).toFixed(1) +
+            '" y="' +
+            (padT + plotH + 14) +
+            '" text-anchor="end" font-family="DM Sans, sans-serif" font-size="10" fill="#8a8f82">' +
+            formatDateBR(pts[pts.length - 1].date) +
+            "</text>";
+          svg.innerHTML = html;
+          $("chart-period").textContent = pts.length + " registros";
+        }
+        function renderRecordsList(personId) {
+          var holder = $("evo-records-list");
+          holder.innerHTML = "";
+          var recs = getRecords(personId).slice().reverse().slice(0, 30);
+          if (recs.length === 0) {
+            holder.innerHTML =
+              '<div class="card muted">Nenhum registro ainda.</div>';
+            return;
+          }
+          var canEdit =
+            currentUser &&
+            (currentUser.role === "admin" || currentUser.id === personId);
+          for (var i = 0; i < recs.length; i++) {
+            var r = recs[i],
+              tags = "";
+            if (r.weight !== null && r.weight !== undefined && r.weight !== "")
+              tags +=
+                '<span class="tag tg-weight">' +
+                formatNum(r.weight) +
+                " kg</span>";
+            if (hasActivity(r))
+              tags +=
+                '<span class="tag tg-act">' +
+                escapeHtml(r.activityType || "atividade") +
+                (r.activityMinutes ? " " + r.activityMinutes + " min" : "") +
+                "</span>";
+            if (r.avoidedSnack)
+              tags += '<span class="tag tg-clean">sem belisco</span>';
+            if (r.eating)
+              tags += '<span class="tag">' + escapeHtml(r.eating) + "</span>";
+            if (!tags) tags = '<span class="tag">sem dados</span>';
+            var row = document.createElement("div");
+            row.className = "record-row";
+            row.innerHTML =
+              '<div class="rec-date">' +
+              formatDateBR(r.date) +
+              "<small>" +
+              formatWeekday(r.date) +
+              '</small></div><div class="rec-tags">' +
+              tags +
+              "</div>" +
+              (canEdit
+                ? '<button class="btn btn-ghost rec-edit" data-action="edit-record" data-record-id="' +
+                  escapeHtml(r.id) +
+                  '">Editar</button>'
+                : "");
+            holder.appendChild(row);
+          }
+        }
+        function renderSettings() {
+          $("settings-user").textContent = currentUser
+            ? "Usuário: " + currentUser.name
+            : "Usuário";
+          var holder = $("settings-people");
+          holder.innerHTML = "";
+          for (var i = 0; i < state.people.length; i++) {
+            var p = state.people[i],
+              card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML =
+              '<div class="person-name" style="font-size:18px">' +
+              escapeHtml(p.name) +
+              '</div><div class="muted">' +
+              (p.age ? p.age + " anos · " : "") +
+              "Meta semanal: " +
+              ACTIVITY_GOAL +
+              ' atividades</div><div style="margin-top:10px;font-size:14px;color:var(--ink-soft)">Inicial: ' +
+              formatNum(p.startWeight) +
+              " kg · Atual: " +
+              formatNum(p.currentWeight) +
+              " kg · Final 90d: " +
+              formatNum(getFinalTarget(p)) +
+              " kg</div>";
+            holder.appendChild(card);
+          }
+        }
+        function saveRecord() {
+          var personId = registerDraft.personId,
+            p = getPerson(personId);
+          if (!p) return Promise.reject(new Error("Pessoa não encontrada"));
+          var date = registerDraft.date,
+            id =
+              registerDraft.editMode && registerDraft.editRecordId
+                ? registerDraft.editRecordId
+                : personId + "_" + date,
+            existing = getRecordById(id),
+            weightVal = parseNum(registerDraft.weight);
+          if (
+            weightVal === null &&
+            existing &&
+            existing.weight !== null &&
+            existing.weight !== undefined
+          )
+            weightVal = existing.weight;
+          var record = {
+            id: id,
+            personId: personId,
+            date: date,
+            weight: weightVal,
+            activityDone: !!registerDraft.activityDone,
+            activityType: registerDraft.activityDone
+              ? registerDraft.activityType || "caminhada"
+              : null,
+            activityMinutes: registerDraft.activityDone
+              ? registerDraft.activityMinutes
+              : null,
+            walked: !!registerDraft.activityDone,
+            walkMinutes: registerDraft.activityDone
+              ? registerDraft.activityMinutes
+              : null,
+            avoidedSnack: !!registerDraft.avoidedSnack,
+            eating: registerDraft.eating,
+            note: registerDraft.note || "",
+            updatedAt: new Date().toISOString(),
+          };
+          return writeDoc("records", id, record)
+            .then(function () {
+              if (weightVal !== null) {
+                p.currentWeight = weightVal;
+                p.goalWeight = getTargetWeight(p);
+                p.updatedAt = new Date().toISOString();
+                return writeDoc("participants", p.id, p);
+              }
+            })
+            .then(function () {
+              return loadData();
+            });
+        }
+        function startChallenge() {
+          var weight = parseNum($("setup-weight").value),
+            date = $("setup-date").value;
+          if (!weight || !date) {
+            toast("Informe data e peso inicial");
+            return;
+          }
+          var p = getPerson(currentUser.id) || {
+            id: currentUser.id,
+            name: currentUser.name,
+          };
+          p.startWeight = weight;
+          p.currentWeight = weight;
+          p.goalWeight = weight * 0.95;
+          p.startDate = date;
+          p.activityGoal = ACTIVITY_GOAL;
+          p.walkGoal = ACTIVITY_GOAL;
+          p.age = p.id === "fernanda" ? 30 : 64;
+          p.active = true;
+          p.updatedAt = new Date().toISOString();
+          var recId = p.id + "_" + date,
+            rec = {
+              id: recId,
+              personId: p.id,
+              date: date,
+              weight: weight,
+              activityDone: false,
+              activityType: null,
+              activityMinutes: null,
+              walked: false,
+              walkMinutes: null,
+              avoidedSnack: false,
+              eating: null,
+              note: "Peso inicial",
+              updatedAt: new Date().toISOString(),
+            };
+          showView("loading");
+          $("loading-text").textContent = "Salvando início do desafio...";
+          writeDoc("participants", p.id, p)
+            .then(function () {
+              return writeDoc("records", recId, rec);
+            })
+            .then(function () {
+              toast("Desafio iniciado");
+              return loadData();
+            })
+            .catch(function (err) {
+              renderBasicShellError(err.message || String(err));
+            });
+        }
+        function switchUser() {
+          localStorage.removeItem(LS_USER);
+          currentUser = null;
+          showView("login");
+        }
+        function boot() {
+          var saved = localStorage.getItem(LS_USER);
+          currentUser = getUser(saved);
+          if (!currentUser) {
+            showView("login");
+            return;
+          }
+          loadData();
+        }
+        document.addEventListener("click", function (e) {
+          var login = e.target.closest
+            ? e.target.closest("[data-login]")
+            : null;
+          if (login) {
+            var id = login.getAttribute("data-login");
+            currentUser = getUser(id);
+            localStorage.setItem(LS_USER, id);
+            loadData();
+            return;
+          }
+          var back = e.target.closest ? e.target.closest("[data-back]") : null;
+          if (back) {
+            renderDashboard();
+            showView("dashboard");
+            return;
+          }
+          var action = e.target.closest
+            ? e.target.closest("[data-action]")
+            : null;
+          if (action) {
+            var act = action.getAttribute("data-action"),
+              id2 = action.getAttribute("data-id");
+            if (act === "register") beginRegister(id2);
+            if (act === "evolve") {
+              renderEvolution(id2);
+              showView("evolution");
+            }
+            if (act === "edit-record")
+              beginEditRecord(action.getAttribute("data-record-id"));
+          }
         });
-      });
-    })(PARTICIPANTS[i]);
-  }
-  return chain;
-}
-function loadData(){
-  showView('loading');
-  $('loading-text').textContent='Carregando dados...';
-  return ensureParticipants().then(function(){
-    var reads=[];
-    for(var i=0;i<PARTICIPANTS.length;i++) reads.push(readDoc('participants',PARTICIPANTS[i].id));
-    return Promise.all(reads);
-  }).then(function(people){
-    state.people=[];
-    for(var i=0;i<people.length;i++){ if(people[i] && people[i].active!==false) state.people.push(people[i]); }
-    return listCollection('records');
-  }).then(function(records){
-    state.records=[];
-    for(var i=0;i<records.length;i++){
-      if(records[i].personId==='fernanda' || records[i].personId==='aldeiza') state.records.push(records[i]);
-    }
-    normalizeCurrentWeights();
-    afterDataLoaded();
-  }).catch(function(err){
-    showView('dashboard');
-    renderBasicShellError(err.message || String(err));
-  });
-}
-function normalizeCurrentWeights(){
-  for(var i=0;i<state.people.length;i++){
-    var p=state.people[i];
-    var latest=latestWeightRecord(p.id);
-    if(latest && latest.weight!==p.currentWeight){ p.currentWeight=latest.weight; }
-  }
-}
-function afterDataLoaded(){
-  if(!currentUser){ showView('login'); return; }
-  if(currentUser.role==='participant'){
-    var p=getPerson(currentUser.id);
-    if(!p || !p.startWeight){ renderSetup(); showView('setup'); return; }
-  }
-  renderDashboard();
-  showView('dashboard');
-}
-function renderBasicShellError(msg){
-  $('dashboard-greeting').textContent='Hoje só precisa fazer o básico.';
-  $('people-cards').innerHTML='';
-  $('weekly-summaries').innerHTML='';
-  $('house-records').textContent='0';
-  $('house-activities').textContent='0';
-  $('house-clean').textContent='0';
-  $('error-area').innerHTML='<div class="error-box"><strong>Não consegui carregar os dados.</strong><br>O app abriu, mas travou ao buscar/salvar no Firestore. Detalhe técnico: '+escapeHtml(msg)+'</div><button class="btn btn-ghost btn-block" id="btn-retry">Tentar novamente</button>';
-  var b=$('btn-retry');
-  if(b) b.onclick=function(){ loadData(); };
-}
-function renderSetup(){
-  var p=getPerson(currentUser.id) || {name:currentUser.name};
-  $('setup-name').textContent=p.name;
-  $('setup-date').value=todayISO();
-  $('setup-weight').value='';
-  $('setup-preview').textContent='Informe o peso para ver as metas.';
-}
-function updateSetupPreview(){
-  var w=parseNum($('setup-weight').value);
-  if(!w){ $('setup-preview').textContent='Informe o peso para ver as metas.'; return; }
-  $('setup-preview').innerHTML='Mês 1: <strong>'+formatNum(w*0.95)+' kg</strong> · Mês 2: <strong>'+formatNum(w*0.90)+' kg</strong> · Final 90 dias: <strong>'+formatNum(w*0.85)+' kg</strong>';
-}
-function renderDashboard(){
-  $('error-area').innerHTML='';
-  $('dashboard-greeting').textContent=pickGreeting();
-  $('house-quote').textContent=pickFrom(['A meta é constância, não perfeição.','A rotina possível é a que se sustenta.','O peso importa, mas o hábito sustenta.','Hoje é dia de fazer o básico bem feito.']);
-  var hs=houseStatsWeek();
-  $('house-records').textContent=hs.records;
-  $('house-activities').textContent=hs.activities;
-  $('house-clean').textContent=hs.clean;
-  renderPeopleCards();
-  renderWeeklySummaries();
-}
-function renderPeopleCards(){
-  var holder=$('people-cards');
-  holder.innerHTML='';
-  for(var i=0;i<state.people.length;i++){
-    var p=state.people[i];
-    var recs=recordsCurrentWeek(p.id);
-    var acts=countActivities(recs);
-    var clean=countClean(recs);
-    var pct=getProgressPct(p);
-    var target=getTargetWeight(p);
-    var finalTarget=getFinalTarget(p);
-    var togo=(target && p.currentWeight)?Math.max(0,p.currentWeight-target):null;
-    var lost=(p.startWeight && p.currentWeight)?p.startWeight-p.currentWeight:null;
-    var canRegister=currentUser && currentUser.role==='participant' && currentUser.id===p.id;
-    var checks=getChecks(p,acts);
-    var card=document.createElement('div');
-    card.className='person-card '+(i%2?'tone-blue':'');
-    card.innerHTML=''
-      +'<div class="accent-bar"></div>'
-      +'<div class="person-head"><div><div class="person-name">'+escapeHtml(p.name)+'</div><div class="muted">'+(p.age? p.age+' anos · ':'')+'Meta: 90 dias</div></div><div class="person-meta">'+(lost!==null && lost>0?'−'+formatNum(lost)+' kg':'início')+'</div></div>'
-      +'<div class="weight-row"><div class="weight-now">'+formatNum(p.currentWeight)+'<span class="unit"> kg</span></div><div class="weight-aside"><div class="label">Meta atual</div><div>'+formatNum(target)+' kg</div><div class="label" style="margin-top:4px">Final</div><div>'+formatNum(finalTarget)+' kg</div></div></div>'
-      +'<div class="progress-bar"><div class="progress-fill" style="width:'+pct.toFixed(1)+'%"></div></div>'
-      +'<div class="progress-meta"><span>'+pct.toFixed(0)+'% da meta atual</span><span>'+(togo!==null && togo>0?'falta '+formatNum(togo)+' kg':'meta atingida ✓')+'</span></div>'
-      +'<div class="stats-row"><div class="stat"><span class="num">'+acts+'<span class="total">/'+(p.activityGoal||ACTIVITY_GOAL)+'</span></span><span class="stat-label">Atividades</span></div><div class="stat"><span class="num">'+clean+'<span class="total">/7</span></span><span class="stat-label">Sem belisco</span></div><div class="stat"><span class="num">'+recs.length+'<span class="total">/7</span></span><span class="stat-label">Registros</span></div></div>'
-      +'<div class="motivation-box">'+escapeHtml(pickMotivation(p))+'</div>'
-      +(checks?'<div class="check-list">'+checks+'</div>':'')
-      +'<div class="actions '+(!canRegister?'single':'')+'" style="margin-top:14px">'+(canRegister?'<button class="btn btn-primary" data-action="register" data-id="'+p.id+'">Registrar hoje</button>':'')+'<button class="btn btn-ghost" data-action="evolve" data-id="'+p.id+'">Ver evolução</button></div>';
-    holder.appendChild(card);
-  }
-}
-function getChecks(p,acts){
-  var html='';
-  var target=getTargetWeight(p);
-  if(target && p.currentWeight && p.currentWeight<=target) html+='<span class="check-pill">✓ Meta de peso</span>';
-  if(acts>=(p.activityGoal||ACTIVITY_GOAL)) html+='<span class="check-pill">✓ Atividade da semana</span>';
-  if(acts>(p.activityGoal||ACTIVITY_GOAL)) html+='<span class="check-pill">✓ Além da meta</span>';
-  return html;
-}
-function pickMotivation(p){
-  if(!p.startWeight) return pickFrom(MOTIVATION.start,1);
-  var recs=recordsCurrentWeek(p.id);
-  var acts=countActivities(recs);
-  var target=getTargetWeight(p);
-  var expected=getExpectedWeightToday(p);
-  var onPace=(expected && p.currentWeight)?p.currentWeight<=expected+0.15:false;
-  var hitWeight=(target && p.currentWeight)?p.currentWeight<=target:false;
-  var hitActivity=acts>=(p.activityGoal||ACTIVITY_GOAL);
-  var day=new Date().getDay();
-  if(hitWeight && hitActivity) return pickFrom(MOTIVATION.bothDone,20);
-  if(day===1 && acts===0) return pickFrom(MOTIVATION.monday,2);
-  if((day===3 || day===4) && !hitActivity) return pickFrom(MOTIVATION.midweek,3);
-  if((day===5 || day===6 || day===0) && hitActivity) return pickFrom(MOTIVATION.weekend,4);
-  if(hitActivity) return pickFrom(MOTIVATION.activityDone,5);
-  if(!hitActivity && acts<2) return pickFrom(MOTIVATION.activityLow,6);
-  if(onPace) return pickFrom(MOTIVATION.onPace,7);
-  return pickFrom(MOTIVATION.behindPace,8);
-}
-function renderWeeklySummaries(){
-  var holder=$('weekly-summaries');
-  holder.innerHTML='';
-  for(var i=0;i<state.people.length;i++){
-    var p=state.people[i];
-    var recs=recordsCurrentWeek(p.id);
-    var acts=countActivities(recs);
-    var clean=countClean(recs);
-    var goodOk=countGoodOk(recs);
-    var insight=weeklyInsight(p,acts,recs.length);
-    var card=document.createElement('div');
-    card.className='summary-card';
-    card.innerHTML=''
-      +'<div class="summary-name">'+escapeHtml(p.name)+'</div>'
-      +'<div class="summary-grid">'
-      +'<div><div class="label">Atividades</div><div class="value">'+acts+' / '+(p.activityGoal||ACTIVITY_GOAL)+'</div></div>'
-      +'<div><div class="label">Sem belisco</div><div class="value">'+clean+' dias</div></div>'
-      +'<div><div class="label">Alimentação ok+</div><div class="value">'+goodOk+' dias</div></div>'
-      +'<div><div class="label">Registros</div><div class="value">'+recs.length+' / 7</div></div>'
-      +'</div><div class="summary-insight '+insight.tone+'">'+escapeHtml(insight.text)+'</div>';
-    holder.appendChild(card);
-  }
-}
-function weeklyInsight(p,acts,registered){
-  if(!p.startWeight) return {tone:'tone-cool',text:'Ainda falta iniciar o desafio com o peso inicial.'};
-  if(registered<=1) return {tone:'tone-cool',text:'Faltaram registros nesta semana. Antes de mudar tudo, tente apenas registrar mais dias.'};
-  if(acts>=(p.activityGoal||ACTIVITY_GOAL)) return {tone:'',text:'Boa semana de atividade física. Esse hábito é o que dá sustentação para o peso cair e não voltar.'};
-  if(new Date().getDay()>=5) return {tone:'tone-warm',text:'Ainda dá para buscar a meta de atividade. Não é sobre queimar calorias, é sobre construir compromisso.'};
-  return {tone:'tone-warm',text:'O foco principal agora é bater a meta de atividade física da semana.'};
-}
-function resetRegisterDraft(personId){
-  registerDraft={personId:personId,date:todayISO(),weight:'',activityDone:false,activityType:null,activityMinutes:null,avoidedSnack:false,eating:null,note:''};
-}
-function syncRegisterUI(){
-  $('reg-date').value=registerDraft.date;
-  $('reg-weight').value=registerDraft.weight;
-  $('reg-note').value=registerDraft.note;
-  $('reg-activity-done').classList.toggle('is-checked',!!registerDraft.activityDone);
-  $('reg-activity-box').style.display=registerDraft.activityDone?'block':'none';
-  $('reg-clean').classList.toggle('is-checked',!!registerDraft.avoidedSnack);
-  markChoice('#reg-activity-type .choice-btn','data-type',registerDraft.activityType);
-  markChoice('#reg-activity-minutes .choice-btn','data-min',registerDraft.activityMinutes!==null?String(registerDraft.activityMinutes):null);
-  markChoice('#reg-eating .choice-btn','data-eat',registerDraft.eating);
-}
-function markChoice(selector,attr,value){
-  var btns=document.querySelectorAll(selector);
-  for(var i=0;i<btns.length;i++) btns[i].classList.toggle('is-active',value!==null && String(value)===String(btns[i].getAttribute(attr)));
-}
-function renderEvolution(personId){
-  currentEvoPerson=personId;
-  var p=getPerson(personId);
-  if(!p) return;
-  $('evo-title').textContent='Evolução · '+p.name;
-  $('evo-current').innerHTML=formatNum(p.currentWeight)+'<span class="unit"> kg</span>';
-  $('evo-goal').innerHTML=formatNum(getTargetWeight(p))+'<span class="unit"> kg</span>';
-  $('evo-start').innerHTML=formatNum(p.startWeight)+'<span class="unit"> kg</span>';
-  $('evo-final').innerHTML=formatNum(getFinalTarget(p))+'<span class="unit"> kg</span>';
-  var lost=(p.startWeight&&p.currentWeight)?p.startWeight-p.currentWeight:0;
-  $('evo-delta').textContent=(lost>0?'−'+formatNum(lost)+' kg desde o início':'sem perda registrada');
-  $('evo-percent').textContent=getProgressPct(p).toFixed(0)+'% concluído';
-  var recs=recordsCurrentWeek(personId);
-  $('evo-acts-week').innerHTML=countActivities(recs)+'<span class="unit"> / '+(p.activityGoal||ACTIVITY_GOAL)+'</span>';
-  $('evo-clean-week').innerHTML=countClean(recs)+'<span class="unit"> / 7</span>';
-  $('evo-recs-week').innerHTML=recs.length+'<span class="unit"> / 7</span>';
-  $('evo-month').textContent=getChallengeMonth(p)+'º';
-  drawChart(personId);
-  renderRecordsList(personId);
-}
-function drawChart(personId){
-  var p=getPerson(personId);
-  var recs=getRecords(personId);
-  var pts=[];
-  for(var i=0;i<recs.length;i++){ if(recs[i].weight!==null && recs[i].weight!==undefined && !isNaN(recs[i].weight)) pts.push({date:recs[i].date,w:parseFloat(recs[i].weight)}); }
-  var svg=$('chart-svg');
-  if(pts.length<2){ svg.innerHTML='<text x="160" y="90" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" fill="#8a8f82">Registre o peso por alguns dias para ver o gráfico</text>'; $('chart-period').textContent=''; return; }
-  var W=320,H=180,padL=8,padR=8,padT=16,padB=22,plotW=W-padL-padR,plotH=H-padT-padB;
-  var minW=Infinity,maxW=-Infinity;
-  for(var k=0;k<pts.length;k++){ if(pts[k].w<minW) minW=pts[k].w; if(pts[k].w>maxW) maxW=pts[k].w; }
-  var target=getFinalTarget(p);
-  if(target && target<minW) minW=target;
-  if(p.startWeight && p.startWeight>maxW) maxW=p.startWeight;
-  var range=maxW-minW; if(range<1) range=1; minW-=range*.08; maxW+=range*.08; range=maxW-minW;
-  function x(idx){ return padL+(plotW*(idx/(pts.length-1))); }
-  function y(w){ return padT+plotH*(1-(w-minW)/range); }
-  var d='M'+x(0).toFixed(1)+','+y(pts[0].w).toFixed(1);
-  for(var m=1;m<pts.length;m++) d+=' L'+x(m).toFixed(1)+','+y(pts[m].w).toFixed(1);
-  var html='<line x1="'+padL+'" y1="'+(padT+plotH)+'" x2="'+(W-padR)+'" y2="'+(padT+plotH)+'" stroke="#e6e1d2" stroke-width="1"/>';
-  if(target){ var gy=y(target); html+='<line x1="'+padL+'" y1="'+gy.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+gy.toFixed(1)+'" stroke="#4a6b3e" stroke-width="1" stroke-dasharray="3 4" opacity=".55"/><text x="'+(W-padR)+'" y="'+(gy-4).toFixed(1)+'" text-anchor="end" font-family="DM Sans, sans-serif" font-size="9" fill="#4a6b3e">final '+formatNum(target)+'</text>'; }
-  html+='<path d="'+d+'" fill="none" stroke="#4a6b3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
-  for(var n=0;n<pts.length;n++) html+='<circle cx="'+x(n).toFixed(1)+'" cy="'+y(pts[n].w).toFixed(1)+'" r="3" fill="#fff" stroke="#4a6b3e" stroke-width="1.5"/>';
-  html+='<text x="'+x(0).toFixed(1)+'" y="'+(padT+plotH+14)+'" text-anchor="start" font-family="DM Sans, sans-serif" font-size="10" fill="#8a8f82">'+formatDateBR(pts[0].date)+'</text>';
-  html+='<text x="'+x(pts.length-1).toFixed(1)+'" y="'+(padT+plotH+14)+'" text-anchor="end" font-family="DM Sans, sans-serif" font-size="10" fill="#8a8f82">'+formatDateBR(pts[pts.length-1].date)+'</text>';
-  svg.innerHTML=html;
-  $('chart-period').textContent=pts.length+' registros';
-}
-function renderRecordsList(personId){
-  var holder=$('evo-records-list');
-  holder.innerHTML='';
-  var recs=getRecords(personId).slice().reverse().slice(0,14);
-  if(recs.length===0){ holder.innerHTML='<div class="card muted">Nenhum registro ainda.</div>'; return; }
-  for(var i=0;i<recs.length;i++){
-    var r=recs[i];
-    var tags='';
-    if(r.weight!==null && r.weight!==undefined && r.weight!=='') tags+='<span class="tag tg-weight">'+formatNum(r.weight)+' kg</span>';
-    if(hasActivity(r)) tags+='<span class="tag tg-act">'+escapeHtml(r.activityType||'atividade')+(r.activityMinutes?' '+r.activityMinutes+' min':'')+'</span>';
-    if(r.avoidedSnack) tags+='<span class="tag tg-clean">sem belisco</span>';
-    if(r.eating) tags+='<span class="tag">'+escapeHtml(r.eating)+'</span>';
-    if(!tags) tags='<span class="tag">sem dados</span>';
-    var row=document.createElement('div');
-    row.className='record-row';
-    row.innerHTML='<div class="rec-date">'+formatDateBR(r.date)+'<small>'+formatWeekday(r.date)+'</small></div><div class="rec-tags">'+tags+'</div>';
-    holder.appendChild(row);
-  }
-}
-function renderSettings(){
-  $('settings-user').textContent=currentUser?'Usuário: '+currentUser.name:'Usuário';
-  var holder=$('settings-people');
-  holder.innerHTML='';
-  for(var i=0;i<state.people.length;i++){
-    var p=state.people[i];
-    var card=document.createElement('div');
-    card.className='card';
-    card.innerHTML='<div class="person-name" style="font-size:18px">'+escapeHtml(p.name)+'</div><div class="muted">'+(p.age?p.age+' anos · ':'')+'Meta semanal: '+(p.activityGoal||ACTIVITY_GOAL)+' atividades</div><div style="margin-top:10px;font-size:14px;color:var(--ink-soft)">Inicial: '+formatNum(p.startWeight)+' kg · Atual: '+formatNum(p.currentWeight)+' kg · Final 90d: '+formatNum(getFinalTarget(p))+' kg</div>';
-    holder.appendChild(card);
-  }
-}
-function beginRegister(personId){
-  resetRegisterDraft(personId);
-  var p=getPerson(personId);
-  $('register-person-name').textContent=p?p.name:'Participante';
-  syncRegisterUI();
-  showView('register');
-}
-function saveRecord(){
-  var personId=registerDraft.personId;
-  var p=getPerson(personId);
-  if(!p) return Promise.reject(new Error('Pessoa não encontrada'));
-  var date=registerDraft.date;
-  var id=personId+'_'+date;
-  var existing=null;
-  for(var i=0;i<state.records.length;i++){ if(state.records[i].id===id){ existing=state.records[i]; break; } }
-  var weightVal=parseNum(registerDraft.weight);
-  if(weightVal===null && existing && existing.weight!==null && existing.weight!==undefined) weightVal=existing.weight;
-  var record={
-    id:id,
-    personId:personId,
-    date:date,
-    weight:weightVal,
-    activityDone:!!registerDraft.activityDone,
-    activityType:registerDraft.activityDone?(registerDraft.activityType||'caminhada'):null,
-    activityMinutes:registerDraft.activityDone?registerDraft.activityMinutes:null,
-    walked:!!registerDraft.activityDone,
-    walkMinutes:registerDraft.activityDone?registerDraft.activityMinutes:null,
-    avoidedSnack:!!registerDraft.avoidedSnack,
-    eating:registerDraft.eating,
-    note:registerDraft.note||'',
-    updatedAt:new Date().toISOString()
-  };
-  return writeDoc('records',id,record).then(function(){
-    if(weightVal!==null){
-      p.currentWeight=weightVal;
-      p.goalWeight=getTargetWeight(p);
-      p.updatedAt=new Date().toISOString();
-      return writeDoc('participants',p.id,p);
-    }
-  }).then(function(){ return loadData(); });
-}
-function startChallenge(){
-  var weight=parseNum($('setup-weight').value);
-  var date=$('setup-date').value;
-  if(!weight || !date){ toast('Informe data e peso inicial'); return; }
-  var p=getPerson(currentUser.id) || {id:currentUser.id,name:currentUser.name};
-  p.startWeight=weight;
-  p.currentWeight=weight;
-  p.goalWeight=weight*0.95;
-  p.startDate=date;
-  p.activityGoal=ACTIVITY_GOAL;
-  p.walkGoal=ACTIVITY_GOAL;
-  p.age=(p.id==='fernanda'?30:64);
-  p.active=true;
-  p.updatedAt=new Date().toISOString();
-  var recId=p.id+'_'+date;
-  var rec={id:recId,personId:p.id,date:date,weight:weight,activityDone:false,activityType:null,activityMinutes:null,walked:false,walkMinutes:null,avoidedSnack:false,eating:null,note:'Peso inicial',updatedAt:new Date().toISOString()};
-  showView('loading');
-  $('loading-text').textContent='Salvando início do desafio...';
-  writeDoc('participants',p.id,p).then(function(){ return writeDoc('records',recId,rec); }).then(function(){ toast('Desafio iniciado'); return loadData(); }).catch(function(err){ renderBasicShellError(err.message || String(err)); });
-}
-function switchUser(){
-  localStorage.removeItem(LS_USER);
-  currentUser=null;
-  showView('login');
-}
-function boot(){
-  var saved=localStorage.getItem(LS_USER);
-  currentUser=getUser(saved);
-  if(!currentUser){ showView('login'); return; }
-  loadData();
-}
-
-document.addEventListener('click',function(e){
-  var login=e.target.closest?e.target.closest('[data-login]'):null;
-  if(login){
-    var id=login.getAttribute('data-login');
-    currentUser=getUser(id);
-    localStorage.setItem(LS_USER,id);
-    loadData();
-    return;
-  }
-  var back=e.target.closest?e.target.closest('[data-back]'):null;
-  if(back){ renderDashboard(); showView('dashboard'); return; }
-  var action=e.target.closest?e.target.closest('[data-action]'):null;
-  if(action){
-    var act=action.getAttribute('data-action');
-    var id2=action.getAttribute('data-id');
-    if(act==='register') beginRegister(id2);
-    if(act==='evolve'){ renderEvolution(id2); showView('evolution'); }
-  }
-});
-$('btn-open-settings').addEventListener('click',function(){ renderSettings(); showView('settings'); });
-$('btn-switch-user').addEventListener('click',switchUser);
-$('setup-switch').addEventListener('click',switchUser);
-$('setup-weight').addEventListener('input',updateSetupPreview);
-$('setup-form').addEventListener('submit',function(e){ e.preventDefault(); startChallenge(); });
-$('reg-date').addEventListener('change',function(e){ registerDraft.date=e.target.value; });
-$('reg-weight').addEventListener('input',function(e){ registerDraft.weight=e.target.value; });
-$('reg-note').addEventListener('input',function(e){ registerDraft.note=e.target.value; });
-$('reg-activity-done').addEventListener('click',function(){ registerDraft.activityDone=!registerDraft.activityDone; if(!registerDraft.activityDone){ registerDraft.activityType=null; registerDraft.activityMinutes=null; } else { registerDraft.activityType=registerDraft.activityType||'caminhada'; registerDraft.activityMinutes=registerDraft.activityMinutes||30; } syncRegisterUI(); });
-$('reg-clean').addEventListener('click',function(){ registerDraft.avoidedSnack=!registerDraft.avoidedSnack; syncRegisterUI(); });
-$('reg-activity-type').addEventListener('click',function(e){ var b=e.target.closest?e.target.closest('[data-type]'):null; if(!b) return; registerDraft.activityType=b.getAttribute('data-type'); syncRegisterUI(); });
-$('reg-activity-minutes').addEventListener('click',function(e){ var b=e.target.closest?e.target.closest('[data-min]'):null; if(!b) return; registerDraft.activityMinutes=parseInt(b.getAttribute('data-min'),10); syncRegisterUI(); });
-$('reg-eating').addEventListener('click',function(e){ var b=e.target.closest?e.target.closest('[data-eat]'):null; if(!b) return; registerDraft.eating=b.getAttribute('data-eat'); syncRegisterUI(); });
-$('register-form').addEventListener('submit',function(e){ e.preventDefault(); showView('loading'); $('loading-text').textContent='Salvando registro...'; saveRecord().then(function(){ toast('Registro salvo'); }).catch(function(err){ renderBasicShellError(err.message || String(err)); }); });
-
-boot();
-
-})();
-</script>
-</body>
+        $("btn-open-settings").addEventListener("click", function () {
+          renderSettings();
+          showView("settings");
+        });
+        $("btn-switch-user").addEventListener("click", switchUser);
+        $("setup-switch").addEventListener("click", switchUser);
+        $("setup-weight").addEventListener("input", updateSetupPreview);
+        $("setup-form").addEventListener("submit", function (e) {
+          e.preventDefault();
+          startChallenge();
+        });
+        $("reg-date").addEventListener("change", function (e) {
+          registerDraft.date = e.target.value;
+        });
+        $("reg-weight").addEventListener("input", function (e) {
+          registerDraft.weight = e.target.value;
+        });
+        $("reg-note").addEventListener("input", function (e) {
+          registerDraft.note = e.target.value;
+        });
+        $("reg-activity-done").addEventListener("click", function () {
+          registerDraft.activityDone = !registerDraft.activityDone;
+          if (!registerDraft.activityDone) {
+            registerDraft.activityType = null;
+            registerDraft.activityMinutes = null;
+          } else {
+            registerDraft.activityType =
+              registerDraft.activityType || "caminhada";
+            registerDraft.activityMinutes = registerDraft.activityMinutes || 30;
+          }
+          syncRegisterUI();
+        });
+        $("reg-clean").addEventListener("click", function () {
+          registerDraft.avoidedSnack = !registerDraft.avoidedSnack;
+          syncRegisterUI();
+        });
+        $("reg-activity-type").addEventListener("click", function (e) {
+          var b = e.target.closest ? e.target.closest("[data-type]") : null;
+          if (!b) return;
+          registerDraft.activityType = b.getAttribute("data-type");
+          syncRegisterUI();
+        });
+        $("reg-activity-minutes").addEventListener("click", function (e) {
+          var b = e.target.closest ? e.target.closest("[data-min]") : null;
+          if (!b) return;
+          registerDraft.activityMinutes = parseInt(
+            b.getAttribute("data-min"),
+            10,
+          );
+          syncRegisterUI();
+        });
+        $("reg-eating").addEventListener("click", function (e) {
+          var b = e.target.closest ? e.target.closest("[data-eat]") : null;
+          if (!b) return;
+          registerDraft.eating = b.getAttribute("data-eat");
+          syncRegisterUI();
+        });
+        $("register-form").addEventListener("submit", function (e) {
+          e.preventDefault();
+          showView("loading");
+          $("loading-text").textContent = registerDraft.editMode
+            ? "Salvando alterações..."
+            : "Salvando registro...";
+          saveRecord()
+            .then(function () {
+              toast(
+                registerDraft.editMode ? "Alterações salvas" : "Registro salvo",
+              );
+            })
+            .catch(function (err) {
+              renderBasicShellError(err.message || String(err));
+            });
+        });
+        boot();
+      })();
+    </script>
+  </body>
 </html>
