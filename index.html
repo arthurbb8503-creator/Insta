@@ -1601,26 +1601,44 @@
           });
         }
         function listCollection(collectionName) {
-          return fetchWithTimeout(
-            fsCollectionUrl(collectionName),
-            {},
-            "Listagem de " + collectionName,
-          )
-            .then(function (json) {
-              var docs = json.documents || [],
-                arr = [];
+          // CORREÇÃO: a API REST do Firestore retorna no máximo ~100
+          // documentos por página. Antes, o app lia só a primeira página,
+          // então registros mais recentes "sumiam" quando o total passava
+          // de ~100. Agora pede 300 por página e segue o nextPageToken
+          // até trazer TODOS os documentos.
+          var all = [];
+          function fetchPage(pageToken) {
+            var url =
+              FIRESTORE_BASE +
+              "/" +
+              collectionName +
+              "?key=" +
+              API_KEY +
+              "&pageSize=300";
+            if (pageToken)
+              url += "&pageToken=" + encodeURIComponent(pageToken);
+            return fetchWithTimeout(
+              url,
+              {},
+              "Listagem de " + collectionName,
+            ).then(function (json) {
+              var docs = json.documents || [];
               for (var i = 0; i < docs.length; i++) {
                 var d = fromFirestoreDoc(docs[i]);
                 var parts = docs[i].name.split("/");
                 d.id = parts[parts.length - 1];
-                arr.push(d);
+                all.push(d);
               }
-              return arr;
-            })
-            .catch(function (err) {
-              if (String(err.message).indexOf("404") >= 0) return [];
-              throw err;
+              if (json.nextPageToken) {
+                return fetchPage(json.nextPageToken);
+              }
+              return all;
             });
+          }
+          return fetchPage(null).catch(function (err) {
+            if (String(err.message).indexOf("404") >= 0) return all;
+            throw err;
+          });
         }
         function ensureParticipants() {
           var chain = Promise.resolve();
