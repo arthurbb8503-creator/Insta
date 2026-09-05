@@ -1,2568 +1,1099 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
-    <meta name="theme-color" content="#f4f1e8" />
-    <title>1101 Fitness</title>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#7a2f1f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Festa São Matheus Moreira</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=DM+Sans:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-    <style>
-      :root {
-        --bg: #f4f1e8;
-        --bg-tint: #eee9da;
-        --card: #ffffff;
-        --ink: #20231d;
-        --ink-soft: #5b6157;
-        --ink-mute: #8a8f82;
-        --line: #e6e1d2;
-        --line-soft: #f0ecdf;
-        --green: #4a6b3e;
-        --green-soft: #e7ede0;
-        --green-deep: #2f4a26;
-        --terra: #b96b4a;
-        --terra-soft: #f3e1d6;
-        --blue: #4a6373;
-        --blue-soft: #dde6ec;
-        --shadow:
-          0 1px 2px rgba(40, 42, 30, 0.04),
-          0 8px 24px -12px rgba(40, 42, 30, 0.12);
-        --radius-lg: 22px;
-        --radius-md: 14px;
-        --serif:
-          "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-        --sans:
-          "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          system-ui, sans-serif;
-      }
-      * {
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-      }
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-      }
-      body {
-        background: var(--bg);
-        color: var(--ink);
-        font-family: var(--sans);
-        font-size: 16px;
-        line-height: 1.45;
-        min-height: 100vh;
-        -webkit-font-smoothing: antialiased;
-        padding-bottom: env(safe-area-inset-bottom);
-      }
-      body:before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        opacity: 0.55;
-        z-index: 0;
-        background-image:
-          radial-gradient(
-            circle at 20% 30%,
-            rgba(74, 107, 62, 0.05),
-            transparent 40%
-          ),
-          radial-gradient(
-            circle at 80% 70%,
-            rgba(185, 107, 74, 0.04),
-            transparent 40%
-          );
-      }
-      .app {
-        position: relative;
-        z-index: 1;
-        max-width: 520px;
-        margin: 0 auto;
-        padding: 0 18px 90px;
-        min-height: 100vh;
-      }
-      .view {
-        display: none;
-      }
-      .view.is-active {
-        display: block;
-        animation: fadeIn 0.22s ease;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(6px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .app-header {
-        padding: 26px 4px 18px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-      }
-      .brand {
-        font-family: var(--serif);
-        font-weight: 400;
-        font-size: 30px;
-        letter-spacing: -0.03em;
-      }
-      .brand em {
-        font-style: italic;
-        font-weight: 300;
-        color: var(--green);
-      }
-      .greeting {
-        font-size: 15px;
-        color: var(--ink-mute);
-        margin: -4px 4px 18px;
-      }
-      .icon-btn {
-        width: 42px;
-        height: 42px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: 50%;
-        cursor: pointer;
-        color: var(--ink-soft);
-        box-shadow: var(--shadow);
-        padding: 0;
-      }
-      .icon-btn svg {
-        width: 20px;
-        height: 20px;
-      }
-      .subview-header {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 22px 4px 14px;
-      }
-      .subview-header .title {
-        font-family: var(--serif);
-        font-size: 23px;
-        font-weight: 400;
-        flex: 1;
-      }
-      .card,
-      .person-card,
-      .summary-card,
-      .chart-card {
-        background: var(--card);
-        border: 1px solid var(--line-soft);
-        border-radius: var(--radius-lg);
-        padding: 20px;
-        box-shadow: var(--shadow);
-        margin-bottom: 14px;
-      }
-      .person-card {
-        position: relative;
-        overflow: hidden;
-      }
-      .accent-bar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(
-          90deg,
-          var(--green),
-          var(--green) 60%,
-          transparent
-        );
-      }
-      .person-card.tone-blue .accent-bar {
-        background: linear-gradient(
-          90deg,
-          var(--blue),
-          var(--blue) 60%,
-          transparent
-        );
-      }
-      .person-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 10px;
-        margin-bottom: 14px;
-      }
-      .person-name {
-        font-family: var(--serif);
-        font-size: 22px;
-        font-weight: 500;
-        letter-spacing: -0.02em;
-      }
-      .person-meta {
-        font-size: 12px;
-        color: var(--ink-mute);
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        text-align: right;
-      }
-      .weight-row {
-        display: flex;
-        align-items: baseline;
-        gap: 14px;
-        margin-bottom: 12px;
-      }
-      .weight-now {
-        font-family: var(--serif);
-        font-size: 38px;
-        line-height: 1;
-        letter-spacing: -0.03em;
-      }
-      .unit {
-        font-size: 14px;
-        color: var(--ink-mute);
-        font-weight: 400;
-        margin-left: 2px;
-      }
-      .weight-aside {
-        font-size: 13px;
-        color: var(--ink-soft);
-      }
-      .label {
-        font-size: 11px;
-        color: var(--ink-mute);
-        text-transform: uppercase;
-        letter-spacing: 0.07em;
-      }
-      .progress-bar {
-        height: 7px;
-        background: var(--bg-tint);
-        border-radius: 999px;
-        overflow: hidden;
-      }
-      .progress-fill {
-        height: 100%;
-        width: 0;
-        background: linear-gradient(90deg, var(--green), #6b8c5e);
-        border-radius: 999px;
-      }
-      .progress-meta {
-        display: flex;
-        justify-content: space-between;
-        gap: 8px;
-        font-size: 12px;
-        color: var(--ink-mute);
-        margin-top: 7px;
-      }
-      .stats-row {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        margin: 15px 0 16px;
-        padding: 12px 0;
-        border-top: 1px solid var(--line-soft);
-        border-bottom: 1px solid var(--line-soft);
-      }
-      .stat {
-        text-align: center;
-      }
-      .stat .num {
-        font-family: var(--serif);
-        font-size: 22px;
-        display: block;
-        line-height: 1.1;
-      }
-      .stat .total {
-        font-size: 15px;
-        color: var(--ink-mute);
-      }
-      .stat-label {
-        font-size: 10px;
-        color: var(--ink-mute);
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        margin-top: 4px;
-        display: block;
-      }
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 12px 18px;
-        border-radius: var(--radius-md);
-        font-family: var(--sans);
-        font-size: 14px;
-        font-weight: 600;
-        border: 1px solid transparent;
-        cursor: pointer;
-        background: transparent;
-        color: var(--ink);
-        text-decoration: none;
-      }
-      .btn:active {
-        transform: scale(0.98);
-      }
-      .btn-primary {
-        background: var(--green);
-        color: #f6f4ec;
-        border-color: var(--green);
-      }
-      .btn-ghost {
-        background: var(--card);
-        border-color: var(--line);
-        color: var(--ink);
-      }
-      .btn-block {
-        width: 100%;
-      }
-      .btn-lg {
-        padding: 15px 18px;
-        font-size: 15px;
-      }
-      .actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
-      .actions.single {
-        grid-template-columns: 1fr;
-      }
-      .section-title {
-        font-family: var(--serif);
-        font-weight: 500;
-        font-size: 15px;
-        letter-spacing: 0.05em;
-        color: var(--ink-soft);
-        text-transform: uppercase;
-        margin: 22px 4px 10px;
-      }
-      .muted {
-        color: var(--ink-mute);
-        font-size: 14px;
-      }
-      .error-box {
-        background: #f3ded6;
-        border: 1px solid #e3b8aa;
-        color: #6b3f2c;
-        border-radius: 20px;
-        padding: 18px;
-        margin-bottom: 14px;
-      }
-      .success-box {
-        background: var(--green-soft);
-        border-left: 4px solid var(--green);
-        color: var(--green-deep);
-        border-radius: 16px;
-        padding: 14px 16px;
-        margin: 12px 0;
-        font-size: 14px;
-      }
-      .motivation-box {
-        background: #fbfaf5;
-        border: 1px solid var(--line-soft);
-        border-radius: 18px;
-        padding: 13px 15px;
-        margin: 12px 0 0;
-        font-size: 14px;
-        color: var(--ink-soft);
-        font-style: italic;
-      }
-      .check-list {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-top: 10px;
-      }
-      .check-pill {
-        background: var(--green-soft);
-        color: var(--green-deep);
-        border-radius: 999px;
-        padding: 7px 10px;
-        font-size: 12px;
-        font-weight: 700;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .house-card {
-        background: linear-gradient(135deg, #f5f1e2, #eee9d8);
-        border: 1px solid var(--line);
-        border-radius: var(--radius-lg);
-        padding: 22px 20px;
-        margin-bottom: 14px;
-        box-shadow: var(--shadow);
-        position: relative;
-        overflow: hidden;
-      }
-      .house-card:after {
-        content: "";
-        position: absolute;
-        right: -20px;
-        top: -20px;
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        background: radial-gradient(
-          circle,
-          rgba(74, 107, 62, 0.1),
-          transparent 70%
-        );
-      }
-      .house-eyebrow {
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: var(--ink-mute);
-        margin-bottom: 8px;
-        position: relative;
-        z-index: 1;
-      }
-      .house-quote {
-        font-family: var(--serif);
-        font-size: 21px;
-        font-style: italic;
-        font-weight: 300;
-        line-height: 1.35;
-        margin-bottom: 14px;
-        position: relative;
-        z-index: 1;
-      }
-      .house-stats {
-        display: flex;
-        gap: 25px;
-        position: relative;
-        z-index: 1;
-      }
-      .house-stats .stat {
-        text-align: left;
-      }
-      .summary-grid,
-      .evo-stats {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-      }
-      .summary-grid .value,
-      .evo-value {
-        font-family: var(--serif);
-        font-size: 20px;
-      }
-      .summary-name {
-        font-family: var(--serif);
-        font-size: 19px;
-        font-weight: 500;
-        margin-bottom: 12px;
-      }
-      .summary-insight {
-        background: var(--green-soft);
-        border-left: 3px solid var(--green);
-        border-radius: 14px;
-        padding: 13px 15px;
-        font-size: 14px;
-        color: var(--green-deep);
-        margin-top: 12px;
-      }
-      .summary-insight.tone-warm {
-        background: var(--terra-soft);
-        color: #6b3f2c;
-        border-left-color: var(--terra);
-      }
-      .summary-insight.tone-cool {
-        background: var(--blue-soft);
-        color: #2f4452;
-        border-left-color: var(--blue);
-      }
-      .week-list {
-        display: grid;
-        gap: 8px;
-        margin-top: 12px;
-      }
-      .week-row {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 10px;
-        align-items: center;
-        background: #fbfaf5;
-        border: 1px solid var(--line-soft);
-        border-radius: 15px;
-        padding: 12px 13px;
-      }
-      .week-title {
-        font-weight: 800;
-        font-size: 14px;
-      }
-      .week-dates {
-        font-size: 12px;
-        color: var(--ink-mute);
-        margin-top: 2px;
-      }
-      .week-score {
-        font-family: var(--serif);
-        font-size: 20px;
-        text-align: right;
-      }
-      .week-status {
-        font-size: 11px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--ink-mute);
-        text-align: right;
-      }
-      .week-row.done {
-        background: var(--green-soft);
-        border-color: #d5e2cc;
-      }
-      .week-row.done .week-status {
-        color: var(--green-deep);
-      }
-      .week-row.pending {
-        background: var(--terra-soft);
-        border-color: #ead0c2;
-      }
-      .week-row.pending .week-status {
-        color: #6b3f2c;
-      }
-      .form-group {
-        margin-bottom: 16px;
-      }
-      .form-label {
-        display: block;
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--ink-soft);
-        margin-bottom: 8px;
-      }
-      .form-input,
-      .form-textarea {
-        width: 100%;
-        padding: 13px 14px;
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: var(--radius-md);
-        font-family: var(--sans);
-        font-size: 16px;
-        color: var(--ink);
-        -webkit-appearance: none;
-        appearance: none;
-      }
-      .form-input:focus,
-      .form-textarea:focus {
-        outline: none;
-        border-color: var(--green);
-        box-shadow: 0 0 0 3px rgba(74, 107, 62, 0.1);
-      }
-      .form-input:disabled {
-        background: #f5f1e7;
-        color: var(--ink-mute);
-      }
-      .form-textarea {
-        resize: vertical;
-        min-height: 60px;
-      }
-      .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-      .choice-group {
-        display: grid;
-        gap: 8px;
-      }
-      .cols-3 {
-        grid-template-columns: repeat(3, 1fr);
-      }
-      .cols-4 {
-        grid-template-columns: repeat(4, 1fr);
-      }
-      .choice-btn {
-        padding: 12px 8px;
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: var(--radius-md);
-        font-family: var(--sans);
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--ink-soft);
-        cursor: pointer;
-        text-align: center;
-      }
-      .choice-btn.is-active {
-        background: var(--green-soft);
-        border-color: var(--green);
-        color: var(--green-deep);
-      }
-      .check-card {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 14px 16px;
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: var(--radius-md);
-        cursor: pointer;
-        user-select: none;
-        margin-bottom: 10px;
-      }
-      .check-box {
-        width: 24px;
-        height: 24px;
-        border: 1.5px solid var(--line);
-        border-radius: 7px;
-        flex-shrink: 0;
-        position: relative;
-        background: var(--bg-tint);
-      }
-      .check-card.is-checked {
-        background: var(--green-soft);
-        border-color: var(--green);
-      }
-      .check-card.is-checked .check-box {
-        background: var(--green);
-        border-color: var(--green);
-      }
-      .check-card.is-checked .check-box:after {
-        content: "";
-        position: absolute;
-        left: 7px;
-        top: 3px;
-        width: 6px;
-        height: 11px;
-        border: solid #f6f4ec;
-        border-width: 0 2px 2px 0;
-        transform: rotate(45deg);
-      }
-      .check-title {
-        font-weight: 700;
-      }
-      .check-sub {
-        font-size: 12px;
-        color: var(--ink-mute);
-      }
-      .login-wrap {
-        padding-top: 38px;
-      }
-      .login-title {
-        font-family: var(--serif);
-        font-size: 38px;
-        line-height: 1.05;
-        font-weight: 400;
-        letter-spacing: -0.03em;
-        margin: 0 0 10px;
-      }
-      .login-title em {
-        font-style: italic;
-        color: var(--green);
-        font-weight: 300;
-      }
-      .login-sub {
-        color: var(--ink-soft);
-        font-size: 15px;
-        margin: 0 0 22px;
-      }
-      .login-list {
-        display: grid;
-        gap: 10px;
-      }
-      .login-btn {
-        justify-content: space-between;
-      }
-      .records-list {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-      .record-row {
-        background: var(--card);
-        border: 1px solid var(--line-soft);
-        border-radius: var(--radius-md);
-        padding: 12px 14px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      .rec-date {
-        font-family: var(--serif);
-        font-size: 14px;
-        min-width: 58px;
-      }
-      .rec-date small {
-        display: block;
-        font-size: 11px;
-        color: var(--ink-mute);
-        font-family: var(--sans);
-        text-transform: uppercase;
-      }
-      .rec-tags {
-        flex: 1;
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-      }
-      .tag {
-        font-size: 11px;
-        padding: 3px 8px;
-        border-radius: 999px;
-        background: var(--bg-tint);
-        color: var(--ink-soft);
-        font-weight: 700;
-      }
-      .tg-act {
-        background: var(--green-soft);
-        color: var(--green-deep);
-      }
-      .tg-clean {
-        background: var(--blue-soft);
-        color: #2f4452;
-      }
-      .tg-weight {
-        background: #ede6d8;
-        color: #6b5a36;
-      }
-      .rec-edit {
-        padding: 8px 10px;
-        font-size: 12px;
-        border-radius: 11px;
-        white-space: nowrap;
-      }
-      .evo-stat {
-        background: var(--card);
-        border: 1px solid var(--line-soft);
-        border-radius: 16px;
-        padding: 14px;
-        box-shadow: var(--shadow);
-      }
-      .evo-label {
-        font-size: 11px;
-        color: var(--ink-mute);
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        margin-bottom: 6px;
-      }
-      .evo-delta {
-        font-size: 12px;
-        color: var(--green);
-        font-weight: 700;
-        margin-top: 4px;
-      }
-      #chart-svg {
-        display: block;
-        width: 100%;
-        height: 180px;
-        overflow: visible;
-      }
-      .toast {
-        position: fixed;
-        bottom: 28px;
-        left: 50%;
-        transform: translateX(-50%) translateY(80px);
-        background: var(--ink);
-        color: #f6f4ec;
-        padding: 12px 18px;
-        border-radius: 999px;
-        font-size: 14px;
-        font-weight: 700;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-        z-index: 200;
-        opacity: 0;
-        transition: all 0.3s;
-        pointer-events: none;
-        max-width: 88%;
-        text-align: center;
-      }
-      .toast.show {
-        transform: translateX(-50%) translateY(0);
-        opacity: 1;
-      }
-      @media (max-width: 370px) {
-        .app {
-          padding-left: 14px;
-          padding-right: 14px;
-        }
-        .brand {
-          font-size: 27px;
-        }
-        .weight-now {
-          font-size: 34px;
-        }
-        .house-stats {
-          gap: 16px;
-        }
-        .choice-btn {
-          font-size: 13px;
-          padding: 11px 5px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="app">
-      <div class="view view-loading is-active" id="view-loading">
-        <div class="login-wrap">
-          <div class="card">
-            <div class="login-title">1101 <em>Fitness</em></div>
-            <p class="login-sub" id="loading-text">Carregando dados...</p>
-          </div>
-        </div>
-      </div>
-      <div class="view view-login" id="view-login">
-        <div class="login-wrap">
-          <div class="card login-card">
-            <h1 class="login-title">1101 <em>Fitness</em></h1>
-            <p class="login-sub">
-              Escolha o perfil deste celular. Depois disso, ele abre direto no
-              mesmo perfil.
-            </p>
-            <div class="login-list">
-              <button
-                class="btn btn-ghost btn-lg login-btn"
-                data-login="fernanda"
-              >
-                Entrar como Fernanda <span>→</span></button
-              ><button
-                class="btn btn-ghost btn-lg login-btn"
-                data-login="aldeiza"
-              >
-                Entrar como Aldeiza <span>→</span></button
-              ><button
-                class="btn btn-ghost btn-lg login-btn"
-                data-login="admin"
-              >
-                Entrar como Admin <span>→</span>
-              </button>
-            </div>
-            <p class="muted" style="margin-top: 16px">
-              Sem senha. O perfil é lembrado apenas neste navegador.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="view view-setup" id="view-setup">
-        <header class="subview-header">
-          <button
-            class="icon-btn"
-            id="setup-switch"
-            aria-label="Trocar usuário"
-          >
-            ↩
-          </button>
-          <div class="title">Começar desafio</div>
-        </header>
-        <div class="card">
-          <div class="person-name" id="setup-name">Participante</div>
-          <p class="muted">
-            O peso inicial é obrigatório. Ele será a base das metas de 5%, 10% e
-            15% nos 90 dias.
-          </p>
-          <form id="setup-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="setup-date">Data inicial</label
-                ><input
-                  class="form-input"
-                  type="date"
-                  id="setup-date"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="setup-weight">Peso inicial</label
-                ><input
-                  class="form-input"
-                  type="number"
-                  id="setup-weight"
-                  inputmode="decimal"
-                  step="0.1"
-                  placeholder="Ex.: 74,0"
-                  required
-                />
-              </div>
-            </div>
-            <div class="success-box" id="setup-preview">
-              Informe o peso para ver as metas.
-            </div>
-            <button class="btn btn-primary btn-block btn-lg" type="submit">
-              Iniciar desafio
-            </button>
-          </form>
-        </div>
-      </div>
-      <div class="view view-dashboard" id="view-dashboard">
-        <header class="app-header">
-          <div class="brand">1101 <em>Fitness</em></div>
-          <button
-            class="icon-btn"
-            id="btn-open-settings"
-            aria-label="Configurações"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="12" cy="12" r="3"></circle>
-              <path
-                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
-              ></path>
-            </svg>
-          </button>
-        </header>
-        <p class="greeting" id="dashboard-greeting">
-          Hoje só precisa fazer o básico.
-        </p>
-        <div id="error-area"></div>
-        <div id="people-cards"></div>
-        <div class="house-card">
-          <div class="house-eyebrow">A casa esta semana</div>
-          <div class="house-quote" id="house-quote">
-            A meta é constância, não perfeição.
-          </div>
-          <div class="house-stats">
-            <div class="stat">
-              <span class="num" id="house-records">0</span
-              ><span class="stat-label">Registros</span>
-            </div>
-            <div class="stat">
-              <span class="num" id="house-activities">0</span
-              ><span class="stat-label">Atividades</span>
-            </div>
-            <div class="stat">
-              <span class="num" id="house-clean">0</span
-              ><span class="stat-label">Sem belisco</span>
-            </div>
-          </div>
-        </div>
-        <div class="section-title">Acumulado semana a semana</div>
-        <div id="weekly-summaries"></div>
-      </div>
-      <div class="view view-register" id="view-register">
-        <header class="subview-header">
-          <button class="icon-btn" data-back aria-label="Voltar">←</button>
-          <div class="title" id="register-title">Registrar dia</div>
-        </header>
-        <div class="card">
-          <div class="person-name" id="register-person-name">Participante</div>
-          <p class="muted" id="register-help">
-            Registre o básico. Peso pode ficar em branco se não pesou hoje.
-          </p>
-          <form id="register-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="reg-date">Data</label
-                ><input class="form-input" type="date" id="reg-date" required />
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="reg-weight">Peso</label
-                ><input
-                  class="form-input"
-                  type="number"
-                  id="reg-weight"
-                  inputmode="decimal"
-                  step="0.1"
-                  placeholder="opcional"
-                />
-              </div>
-            </div>
-            <div class="check-card" id="reg-activity-done">
-              <div class="check-box"></div>
-              <div class="check-text">
-                <div class="check-title">Fiz atividade física</div>
-                <div class="check-sub">
-                  Caminhada, academia ou outro movimento intencional.
-                </div>
-              </div>
-            </div>
-            <div class="form-group" id="reg-activity-box" style="display: none">
-              <label class="form-label">Tipo de atividade</label>
-              <div class="choice-group cols-3" id="reg-activity-type">
-                <button type="button" class="choice-btn" data-type="caminhada">
-                  Caminhada</button
-                ><button type="button" class="choice-btn" data-type="academia">
-                  Academia</button
-                ><button type="button" class="choice-btn" data-type="outros">
-                  Outros
-                </button>
-              </div>
-              <div style="height: 8px"></div>
-              <label class="form-label">Tempo</label>
-              <div class="choice-group cols-4" id="reg-activity-minutes">
-                <button type="button" class="choice-btn" data-min="20">
-                  20</button
-                ><button type="button" class="choice-btn" data-min="30">
-                  30</button
-                ><button type="button" class="choice-btn" data-min="45">
-                  45</button
-                ><button type="button" class="choice-btn" data-min="60">
-                  60
-                </button>
-              </div>
-            </div>
-            <div class="check-card" id="reg-clean">
-              <div class="check-box"></div>
-              <div class="check-text">
-                <div class="check-title">Evitei belisco e doce</div>
-                <div class="check-sub">Mesmo que tenha sido difícil.</div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Como foi a alimentação</label>
-              <div class="choice-group cols-3" id="reg-eating">
-                <button type="button" class="choice-btn" data-eat="ruim">
-                  Ruim</button
-                ><button type="button" class="choice-btn" data-eat="ok">
-                  Ok</button
-                ><button type="button" class="choice-btn" data-eat="boa">
-                  Boa
-                </button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="reg-note">Observação rápida</label
-              ><textarea
-                class="form-textarea"
-                id="reg-note"
-                placeholder="opcional"
-              ></textarea>
-            </div>
-            <button
-              class="btn btn-primary btn-block btn-lg"
-              id="register-submit"
-              type="submit"
-            >
-              Salvar registro
-            </button>
-          </form>
-        </div>
-      </div>
-      <div class="view view-evolution" id="view-evolution">
-        <header class="subview-header">
-          <button class="icon-btn" data-back aria-label="Voltar">←</button>
-          <div class="title" id="evo-title">Evolução</div>
-        </header>
-        <div class="evo-stats">
-          <div class="evo-stat">
-            <div class="evo-label">Peso atual</div>
-            <div class="evo-value" id="evo-current"></div>
-            <div class="evo-delta" id="evo-delta"></div>
-          </div>
-          <div class="evo-stat">
-            <div class="evo-label">Meta atual</div>
-            <div class="evo-value" id="evo-goal"></div>
-            <div class="evo-delta" id="evo-percent"></div>
-          </div>
-          <div class="evo-stat">
-            <div class="evo-label">Peso inicial</div>
-            <div class="evo-value" id="evo-start"></div>
-          </div>
-          <div class="evo-stat">
-            <div class="evo-label">Final 90 dias</div>
-            <div class="evo-value" id="evo-final"></div>
-          </div>
-        </div>
-        <div class="chart-card">
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: baseline;
-              margin-bottom: 14px;
-            "
-          >
-            <div class="person-name" style="font-size: 18px">
-              Peso ao longo do tempo
-            </div>
-            <div class="muted" id="chart-period"></div>
-          </div>
-          <svg
-            id="chart-svg"
-            viewBox="0 0 320 180"
-            preserveAspectRatio="none"
-          ></svg>
-        </div>
-        <div class="evo-stats">
-          <div class="evo-stat">
-            <div class="evo-label">Atividades</div>
-            <div class="evo-value" id="evo-acts-week"></div>
-          </div>
-          <div class="evo-stat">
-            <div class="evo-label">Sem belisco</div>
-            <div class="evo-value" id="evo-clean-week"></div>
-          </div>
-          <div class="evo-stat">
-            <div class="evo-label">Registros</div>
-            <div class="evo-value" id="evo-recs-week"></div>
-          </div>
-          <div class="evo-stat">
-            <div class="evo-label">Mês do desafio</div>
-            <div class="evo-value" id="evo-month"></div>
-          </div>
-        </div>
-        <div class="section-title">Últimos registros</div>
-        <div class="records-list" id="evo-records-list"></div>
-      </div>
-      <div class="view view-settings" id="view-settings">
-        <header class="subview-header">
-          <button class="icon-btn" data-back aria-label="Voltar">←</button>
-          <div class="title">Configurações</div>
-        </header>
-        <div class="card">
-          <div
-            class="person-name"
-            style="font-size: 18px; margin-bottom: 4px"
-            id="settings-user"
-          >
-            Usuário
-          </div>
-          <div class="muted" style="margin-bottom: 12px">
-            Este perfil fica salvo neste celular. Se limpar dados do navegador,
-            será necessário escolher novamente.
-          </div>
-          <button class="btn btn-ghost btn-block" id="btn-switch-user">
-            Trocar usuário
-          </button>
-        </div>
-        <div class="section-title">Participantes</div>
-        <div id="settings-people"></div>
-      </div>
+<style>
+:root{
+  --bg:#f5f1e8; --surface:#ffffff; --ink:#241a16; --ink-soft:#6b5a52; --line:#e5dbcc;
+  --brand:#7a2f1f; --brand-d:#5c2116; --brand-soft:#f5e7e2;
+  --gold:#c4922f; --ok:#1f7a4d; --danger:#b3261e;
+  --radius:16px; --shadow:0 2px 0 rgba(36,26,22,.04), 0 8px 24px rgba(36,26,22,.08);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation;overscroll-behavior:none;overflow-x:hidden}
+html,body{margin:0;height:100%;width:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--ink);font-size:16px;line-height:1.35;-webkit-font-smoothing:antialiased;
+  padding-bottom:env(safe-area-inset-bottom);overscroll-behavior:none;overflow-x:hidden;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea{-webkit-user-select:text;user-select:text}
+button{font-family:inherit;font-size:16px;cursor:pointer;border:none;background:none;color:inherit;touch-action:manipulation}
+input,select{font-family:inherit;font-size:16px;max-width:100%}
+.hidden{display:none !important}
+
+#app{max-width:560px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:30;background:var(--brand);color:#fff;
+  padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;display:flex;align-items:center;gap:10px}
+.topbar .brand{font-weight:800;font-size:16px;display:flex;align-items:center;gap:8px;line-height:1.1}
+.topbar .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.topbar .spacer{flex:1}
+.topbar .who{font-size:12px;opacity:.95;text-align:right;line-height:1.15}
+.topbar .who b{display:block;font-size:14px}
+.iconbtn{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.16);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
+.modepill{font-size:10px;font-weight:700;background:rgba(255,255,255,.18);padding:3px 7px;border-radius:999px}
+.modepill.live{background:var(--gold);color:#3a2c08}
+.modepill.off{background:#e9b44c;color:#4a3200}
+
+.view{flex:1;padding:14px 14px 92px}
+.section-title{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-soft);font-weight:700;margin:4px 2px 10px}
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:40;background:var(--surface);border-top:1px solid var(--line);
+  display:flex;max-width:560px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom)}
+.nav button{flex:1;padding:9px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink-soft);font-size:11px;font-weight:600}
+.nav button .ic{font-size:20px;line-height:1}
+.nav button.active{color:var(--brand)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);margin-bottom:14px}
+.card h4{margin:0 0 10px;font-size:15px}
+.muted{color:var(--ink-soft);font-size:13px}
+.center{text-align:center}
+.empty{text-align:center;color:var(--ink-soft);padding:36px 20px}
+.empty .em{font-size:38px;margin-bottom:8px}
+
+/* ---------- Vender ---------- */
+.meuprod{background:var(--brand);color:#fff;border-radius:var(--radius);padding:16px;text-align:center;margin-bottom:14px;box-shadow:var(--shadow)}
+.meuprod .lb{font-size:12px;opacity:.85;font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+.meuprod .nm{font-size:22px;font-weight:800;margin-top:3px;line-height:1.15}
+.visor{background:var(--surface);border:2px solid var(--line);border-radius:var(--radius);padding:18px 16px;text-align:center;margin-bottom:12px}
+.visor .cifra{font-size:14px;color:var(--ink-soft);font-weight:700}
+.visor .val{font-size:44px;font-weight:800;line-height:1.05;letter-spacing:-1px}
+.visor .val.zero{color:var(--line)}
+.teclado{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:12px}
+.teclado button{height:62px;border-radius:14px;background:var(--surface);border:1px solid var(--line);
+  font-size:24px;font-weight:700;box-shadow:var(--shadow)}
+.teclado button:active{background:var(--brand-soft)}
+.teclado button.aux{font-size:18px;color:var(--ink-soft)}
+.atalhos{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.atalhos button{height:44px;border-radius:12px;background:var(--surface);border:1px solid var(--line);font-weight:700;font-size:14px}
+.btn{height:58px;border-radius:14px;font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.btn.primary{background:var(--brand);color:#fff;box-shadow:var(--shadow)}
+.btn.primary:active{background:var(--brand-d)}
+.btn.ok{background:var(--ok);color:#fff;box-shadow:var(--shadow)}
+.btn.ghost{background:var(--surface);border:1px solid var(--line);color:var(--ink)}
+.btn.danger{background:var(--danger);color:#fff}
+.btn:disabled{opacity:.4}
+.btn-row{display:flex;gap:10px;margin-top:10px}
+
+.resumo{display:flex;gap:10px;margin-bottom:14px}
+.resumo .box{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center;box-shadow:var(--shadow)}
+.resumo .box .lb{font-size:11px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.resumo .box .vl{font-size:21px;font-weight:800;color:var(--brand-d);margin-top:2px}
+
+/* ---------- Listas ---------- */
+.venda{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);
+  border-radius:14px;padding:11px 13px;margin-bottom:8px;box-shadow:var(--shadow)}
+.venda.canc{opacity:.45}
+.venda .v-i{flex:1;min-width:0}
+.venda .v-t{font-weight:700;font-size:16px}
+.venda .v-s{font-size:12px;color:var(--ink-soft);margin-top:2px}
+.venda .v-x{font-size:12px;color:var(--danger);font-weight:700;padding:8px 10px;border:1px solid #f7d9d6;border-radius:10px;background:#fdf1f0}
+.tagx{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#f7d9d6;color:var(--danger)}
+
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
+.kpi .k-label{font-size:12px;color:var(--ink-soft);font-weight:600}
+.kpi .k-val{font-size:23px;font-weight:800;margin-top:4px;color:var(--brand-d)}
+.kpi.g .k-val{color:var(--ok)}
+
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;padding:9px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:600;font-size:14px;color:var(--ink-soft)}
+.chip.active{background:var(--brand);border-color:var(--brand);color:#fff}
+
+.linha{display:flex;align-items:center;gap:10px;padding:11px 2px;border-bottom:1px solid var(--line)}
+.linha:last-child{border-bottom:none}
+.linha .l-i{flex:1;min-width:0}
+.linha .l-n{font-weight:700;font-size:15px}
+.linha .l-s{font-size:12px;color:var(--ink-soft);margin-top:2px}
+.linha .l-v{text-align:right;white-space:nowrap}
+.linha .l-v b{font-size:16px;color:var(--brand-d)}
+.linha .l-v span{display:block;font-size:12px;color:var(--ok);font-weight:700}
+.barra{height:6px;background:var(--bg);border-radius:3px;overflow:hidden;margin-top:5px}
+.barra i{display:block;height:100%;background:var(--brand);border-radius:3px}
+
+.field{margin-bottom:12px}
+.field label{display:block;font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:5px}
+.field input,.field select{width:100%;height:48px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:0 12px}
+.field.two{display:flex;gap:10px}
+.field.two>div{flex:1}
+.mini{height:38px;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:0 8px;font-size:14px;width:76px;text-align:right}
+.r-edit{font-size:13px;color:var(--brand-d);font-weight:700;padding:8px 10px;border:1px solid var(--brand-soft);border-radius:10px;background:var(--brand-soft)}
+
+.sheet{position:fixed;inset:0;z-index:60;background:rgba(20,14,12,.5);display:none;align-items:flex-end}
+.sheet.show{display:flex}
+.sheet .panel{background:var(--bg);width:100%;max-width:560px;margin:0 auto;border-radius:20px 20px 0 0;max-height:88vh;display:flex;flex-direction:column}
+.sheet .grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:8px auto 0}
+.sheet .ph{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 8px}
+.sheet .ph h3{margin:0;font-size:18px}
+.sheet .pb{padding:0 16px 16px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+
+/* ---------- Login ---------- */
+#login{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:24px;max-width:420px;margin:0 auto}
+#login .logo{text-align:center;margin-bottom:24px}
+#login .logo .mk{font-size:25px;font-weight:900;color:var(--brand-d);line-height:1.15}
+#login .logo .sub{color:var(--ink-soft);font-size:14px;margin-top:6px}
+.userpick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.userpick button{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 8px;font-weight:700;
+  box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:5px;font-size:14px}
+.userpick .av{width:38px;height:38px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
+.userpick .pd{font-size:11px;color:var(--ink-soft);font-weight:600;line-height:1.1}
+.pindots{display:flex;gap:12px;justify-content:center;margin:14px 0}
+.pindots span{width:14px;height:14px;border-radius:50%;background:var(--line)}
+.pindots span.f{background:var(--brand)}
+.keys{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.keys button{height:58px;border-radius:14px;background:var(--surface);border:1px solid var(--line);font-size:22px;font-weight:700;box-shadow:var(--shadow)}
+
+#toast{position:fixed;left:50%;bottom:110px;z-index:90;background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;
+  font-weight:700;opacity:0;transition:opacity .2s,transform .2s;max-width:88%;text-align:center;transform:translateX(-50%) translateY(20px)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.ok{background:var(--ok)} #toast.err{background:var(--danger)}
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="login">
+  <div class="logo">
+    <div class="mk">Festa do Padroeiro<br>São Matheus Moreira</div>
+    <div class="sub" id="loginSub">Toque no seu nome para entrar</div>
+    <div class="sub" id="loginVer" style="font-size:11px;opacity:.6;margin-top:6px"></div>
+  </div>
+
+  <div id="userpick" class="userpick"></div>
+  <div id="linkCadastro">
+    <button class="btn ghost" onclick="App.abrirCadastro()">Sou novo — criar meu acesso</button>
+  </div>
+
+  <div id="pinarea" class="hidden">
+    <div class="center"><div class="muted" id="pinTitle"></div>
+      <div class="pindots" id="pindots"></div></div>
+    <div class="keys" id="keys"></div>
+    <button class="btn ghost" style="margin-top:12px" onclick="App.cancelPin()">Voltar</button>
+  </div>
+
+  <div id="areaCadastro" class="hidden">
+    <div class="field"><label>Seu nome</label><input id="rg_nome" placeholder="Como te chamam"></div>
+    <div class="field"><label>O que você vende</label><input id="rg_prod" placeholder="Ex: Churrasquinho, Bolos da Dona Ana"></div>
+    <div class="field"><label>Crie uma senha de 4 dígitos</label>
+      <input id="rg_pin" inputmode="numeric" maxlength="4" placeholder="0000"></div>
+    <div class="muted" style="margin:-4px 0 12px">Anote a senha. Você vai usar ela toda vez que abrir.</div>
+    <button class="btn primary" onclick="App.criarAcesso()">Criar e começar a vender</button>
+    <button class="btn ghost" style="margin-top:10px" onclick="App.fecharCadastro()">Voltar</button>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app" class="hidden">
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span> São Matheus <span id="modePill" class="modepill">DEMO</span></div>
+    <div class="spacer"></div>
+    <div class="who"><b id="whoName">—</b><span id="whoRole"></span></div>
+    <button class="iconbtn" onclick="App.openSettings()">⚙︎</button>
+  </div>
+
+  <!-- VENDER (fornecedor) -->
+  <div id="view-vender" class="view hidden">
+    <div class="meuprod"><div class="lb">Você está vendendo</div><div class="nm" id="meuProduto">—</div></div>
+    <div class="visor"><div class="cifra">R$</div><div class="val zero" id="visor">0,00</div></div>
+    <div class="atalhos" id="atalhos"></div>
+    <div class="teclado" id="teclado"></div>
+    <button class="btn ok" id="btnRegistrar" onclick="App.registrarVenda()">Registrar venda</button>
+    <div class="resumo" style="margin-top:14px">
+      <div class="box"><div class="lb">Hoje</div><div class="vl" id="meuHoje">R$ 0,00</div></div>
+      <div class="box"><div class="lb">Vendas</div><div class="vl" id="meuQtd">0</div></div>
     </div>
-    <div class="toast" id="toast"></div>
+  </div>
 
-    <script>
-      (function () {
-        "use strict";
-        var PROJECT_ID = "fitness-8ce89";
-        var API_KEY = "AIzaSyBzVg0cpEGoN8ROSvG9EMc9NvfPbLDRxeo";
-        var FIRESTORE_BASE =
-          "https://firestore.googleapis.com/v1/projects/" +
-          PROJECT_ID +
-          "/databases/(default)/documents";
-        var LS_USER = "fitness1101_current_user";
-        var CHALLENGE_DAYS = 90,
-          MONTH_DAYS = 30,
-          MONTHLY_LOSS_RATE = 0.05,
-          ACTIVITY_GOAL = 4;
-        var PARTICIPANTS = [
-          { id: "fernanda", name: "Fernanda", age: 30, activityGoal: 4 },
-          { id: "aldeiza", name: "Aldeiza", age: 64, activityGoal: 4 },
-        ];
-        var USERS = [
-          { id: "fernanda", name: "Fernanda", role: "participant" },
-          { id: "aldeiza", name: "Aldeiza", role: "participant" },
-          { id: "admin", name: "Admin", role: "admin" },
-        ];
-        var state = { people: [], records: [] };
-        var currentUser = null,
-          currentEvoPerson = null;
-        var registerDraft = {
-          personId: null,
-          date: null,
-          weight: "",
-          activityDone: false,
-          activityType: null,
-          activityMinutes: null,
-          avoidedSnack: false,
-          eating: null,
-          note: "",
-          editMode: false,
-          editRecordId: null,
-        };
-        var MOTIVATION = {
-          monday: [
-            "Segunda é o melhor dia para votar a favor da sua rotina. Uma atividade hoje já muda a semana.",
-            "Quem acerta a segunda não garante a semana, mas começa com vantagem.",
-            "Começar a semana com movimento é dizer ao corpo: desta vez eu levo a rotina a sério.",
-            "A semana não precisa ser perfeita. Só precisa começar.",
-          ],
-          midweek: [
-            "Metade da semana chegou. Agora é ajustar o rumo, não esperar a próxima segunda.",
-            "Quarta e quinta são dias de proteger o hábito. O resultado vem da repetição sem drama.",
-            "Se a semana saiu do plano, ainda dá tempo. O que conta é voltar rápido.",
-            "Estamos no meio da semana: faça o básico antes de tentar fazer o perfeito.",
-          ],
-          weekend: [
-            "Fim de semana também constrói hábito. Uma atividade curta já mantém a identidade de quem se cuida.",
-            "Sábado e domingo não precisam virar bagunça. Dá para viver e continuar no plano.",
-            "Se já bateu a meta, ir além ajuda o peso. Se não bateu, ainda dá para buscar.",
-            "O fim de semana é onde muita gente perde a semana. Você pode só não abandonar.",
-          ],
-          onPace: [
-            "O peso está andando no ritmo. Não invente moda: continue repetindo o que está funcionando.",
-            "Você está na velocidade certa. O segredo agora é não relaxar porque melhorou.",
-            "Bom sinal: o corpo está respondendo. Agora proteja sono, alimentação e atividade.",
-            "A direção está certa. Continue somando dias bons.",
-          ],
-          behindPace: [
-            "O ritmo do peso ainda está abaixo da meta. Não é motivo para desistir, é sinal para apertar o básico.",
-            "A balança não está acompanhando a meta ainda. Foque nos controles que dependem de você: atividade e beliscos.",
-            "Não precisa compensar com radicalismo. Precisa de mais consistência nos próximos dias.",
-            "Quando o peso atrasa, o caminho é voltar para o simples: rotina, água, atividade e menos belisco.",
-          ],
-          activityDone: [
-            "Meta de atividade batida. Agora isso deixa de ser promessa e começa a virar identidade.",
-            "Quatro dias de atividade na semana: excelente. O hábito está sendo construído.",
-            "Atividade física feita com constância pesa muito no resultado. Continue.",
-            "Você já bateu a meta da semana. Se fizer mais um dia, é bônus para o peso e para a cabeça.",
-          ],
-          activityLow: [
-            "A prioridade agora é movimento. Peso sem hábito costuma não se sustentar.",
-            "Ainda faltam atividades na semana. Uma sessão curta já conta e já mantém o ciclo vivo.",
-            "Não trate atividade como castigo. Trate como o compromisso mínimo com o corpo.",
-            "A meta de atividade existe para construir hábito. O peso é consequência, mas o hábito é o motor.",
-          ],
-          start: [
-            "Primeiro passo registrado. Agora o jogo é repetir o simples por 90 dias.",
-            "Começar é importante. Voltar amanhã é mais importante ainda.",
-            "O objetivo não é sofrer. É criar uma rotina que o corpo consiga sustentar.",
-            "Hoje você colocou uma linha no chão: daqui pra frente é acompanhamento, não achismo.",
-          ],
-          bothDone: [
-            "Meta de peso e atividade em dia. Esse é o cenário ideal: resultado com hábito.",
-            "Peso andando e atividade feita. É exatamente essa combinação que sustenta o progresso.",
-            "Excelente: não é só perder peso, é construir rotina para manter.",
-            "Você está fazendo do jeito certo: comportamento primeiro, resultado acompanhando.",
-          ],
-        };
-        function $(id) {
-          return document.getElementById(id);
-        }
-        function todayISO() {
-          var d = new Date();
-          return (
-            d.getFullYear() +
-            "-" +
-            String(d.getMonth() + 1).padStart(2, "0") +
-            "-" +
-            String(d.getDate()).padStart(2, "0")
-          );
-        }
-        function isoToDate(iso) {
-          var p = String(iso || todayISO()).split("-");
-          return new Date(
-            parseInt(p[0], 10),
-            parseInt(p[1], 10) - 1,
-            parseInt(p[2], 10),
-          );
-        }
-        function dateToISO(d) {
-          return (
-            d.getFullYear() +
-            "-" +
-            String(d.getMonth() + 1).padStart(2, "0") +
-            "-" +
-            String(d.getDate()).padStart(2, "0")
-          );
-        }
-        function addDaysISO(iso, n) {
-          var d = isoToDate(iso);
-          d.setDate(d.getDate() + n);
-          return dateToISO(d);
-        }
-        function daysBetween(a, b) {
-          return Math.round((isoToDate(b) - isoToDate(a)) / 86400000);
-        }
-        function startOfWeekISO() {
-          var d = new Date();
-          var day = d.getDay();
-          var diff = day === 0 ? -6 : 1 - day;
-          d.setDate(d.getDate() + diff);
-          return dateToISO(d);
-        }
-        function endOfWeekISO() {
-          return addDaysISO(startOfWeekISO(), 6);
-        }
-        function clamp(v, min, max) {
-          return Math.max(min, Math.min(max, v));
-        }
-        function formatNum(n, dec) {
-          if (n === null || n === undefined || isNaN(n)) return "—";
-          if (dec === undefined) dec = 1;
-          return Number(n).toFixed(dec).replace(".", ",");
-        }
-        function parseNum(v) {
-          if (v === null || v === undefined || v === "") return null;
-          var n = parseFloat(String(v).replace(",", "."));
-          return isNaN(n) ? null : n;
-        }
-        function formatDateBR(iso) {
-          var d = isoToDate(iso);
-          var m = [
-            "jan",
-            "fev",
-            "mar",
-            "abr",
-            "mai",
-            "jun",
-            "jul",
-            "ago",
-            "set",
-            "out",
-            "nov",
-            "dez",
-          ];
-          return d.getDate() + " " + m[d.getMonth()];
-        }
-        function formatWeekday(iso) {
-          var d = isoToDate(iso);
-          var wd = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
-          return wd[d.getDay()];
-        }
-        function escapeHtml(s) {
-          if (s === null || s === undefined) return "";
-          return String(s).replace(/[&<>"']/g, function (c) {
-            return {
-              "&": "&amp;",
-              "<": "&lt;",
-              ">": "&gt;",
-              '"': "&quot;",
-              "'": "&#39;",
-            }[c];
-          });
-        }
-        function toast(msg) {
-          var el = $("toast");
-          el.textContent = msg;
-          el.classList.add("show");
-          setTimeout(function () {
-            el.classList.remove("show");
-          }, 2200);
-        }
-        function showView(name) {
-          var views = document.querySelectorAll(".view");
-          for (var i = 0; i < views.length; i++)
-            views[i].classList.remove("is-active");
-          $("view-" + name).classList.add("is-active");
-          window.scrollTo(0, 0);
-        }
-        function getUser(id) {
-          for (var i = 0; i < USERS.length; i++) {
-            if (USERS[i].id === id) return USERS[i];
-          }
-          return null;
-        }
-        function getPerson(id) {
-          for (var i = 0; i < state.people.length; i++) {
-            if (state.people[i].id === id) return state.people[i];
-          }
-          return null;
-        }
-        function getRecordById(id) {
-          for (var i = 0; i < state.records.length; i++) {
-            if (state.records[i].id === id) return state.records[i];
-          }
-          return null;
-        }
-        function getRecordByPersonDate(personId, date) {
-          return getRecordById(personId + "_" + date);
-        }
-        function getRecords(personId) {
-          var out = [];
-          for (var i = 0; i < state.records.length; i++) {
-            if (state.records[i].personId === personId)
-              out.push(state.records[i]);
-          }
-          out.sort(function (a, b) {
-            return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
-          });
-          return out;
-        }
-        function recordsCurrentWeek(personId) {
-          var start = startOfWeekISO(),
-            end = endOfWeekISO(),
-            recs = getRecords(personId),
-            out = [];
-          for (var i = 0; i < recs.length; i++) {
-            if (recs[i].date >= start && recs[i].date <= end) out.push(recs[i]);
-          }
-          return out;
-        }
-        function hasActivity(r) {
-          return !!(r.activityDone || r.walked);
-        }
-        function countActivities(recs) {
-          var c = 0;
-          for (var i = 0; i < recs.length; i++) {
-            if (hasActivity(recs[i])) c++;
-          }
-          return c;
-        }
-        function countClean(recs) {
-          var c = 0;
-          for (var i = 0; i < recs.length; i++) {
-            if (recs[i].avoidedSnack) c++;
-          }
-          return c;
-        }
-        function countGoodOk(recs) {
-          var c = 0;
-          for (var i = 0; i < recs.length; i++) {
-            if (recs[i].eating === "boa" || recs[i].eating === "ok") c++;
-          }
-          return c;
-        }
-        function latestWeightRecord(personId) {
-          var recs = getRecords(personId),
-            latest = null;
-          for (var i = 0; i < recs.length; i++) {
-            if (
-              recs[i].weight !== null &&
-              recs[i].weight !== undefined &&
-              !isNaN(recs[i].weight)
-            )
-              latest = recs[i];
-          }
-          return latest;
-        }
-        function getChallengeMonth(person) {
-          if (!person.startDate) return 1;
-          var d = daysBetween(person.startDate, todayISO());
-          if (d < 0) d = 0;
-          return clamp(Math.floor(d / MONTH_DAYS) + 1, 1, 3);
-        }
-        function getTargetWeight(person) {
-          if (!person.startWeight) return null;
-          return (
-            person.startWeight *
-            (1 - MONTHLY_LOSS_RATE * getChallengeMonth(person))
-          );
-        }
-        function getFinalTarget(person) {
-          if (!person.startWeight) return null;
-          return person.startWeight * (1 - 0.15);
-        }
-        function getExpectedWeightToday(person) {
-          if (!person.startWeight || !person.startDate) return null;
-          var d = clamp(
-            daysBetween(person.startDate, todayISO()),
-            0,
-            CHALLENGE_DAYS,
-          );
-          return person.startWeight * (1 - 0.15 * (d / CHALLENGE_DAYS));
-        }
-        function getProgressPct(person) {
-          if (!person.startWeight || !person.currentWeight) return 0;
-          var target = getTargetWeight(person);
-          if (!target) return 0;
-          var totalLoss = person.startWeight - target;
-          if (totalLoss <= 0) return 0;
-          var done = person.startWeight - person.currentWeight;
-          return clamp((done / totalLoss) * 100, 0, 100);
-        }
-        function pickFrom(arr, seedExtra) {
-          var d = new Date();
-          var seed =
-            d.getFullYear() * 1000 +
-            (d.getMonth() + 1) * 31 +
-            d.getDate() +
-            (seedExtra || 0);
-          return arr[seed % arr.length];
-        }
-        function pickGreeting() {
-          var h = new Date().getHours();
-          var prefix = "Bom dia";
-          if (h >= 12 && h < 18) prefix = "Boa tarde";
-          else if (h >= 18 || h < 5) prefix = "Boa noite";
-          return (
-            prefix +
-            (currentUser ? ", " + currentUser.name : "") +
-            ". Hoje só precisa fazer o básico."
-          );
-        }
-        function houseStatsWeek() {
-          var a = 0,
-            c = 0,
-            r = 0;
-          for (var i = 0; i < state.people.length; i++) {
-            var recs = recordsCurrentWeek(state.people[i].id);
-            r += recs.length;
-            a += countActivities(recs);
-            c += countClean(recs);
-          }
-          return { records: r, activities: a, clean: c };
-        }
-        function fsValue(v) {
-          if (v === null || v === undefined) return { nullValue: null };
-          if (typeof v === "boolean") return { booleanValue: v };
-          if (typeof v === "number") {
-            if (Math.floor(v) === v) return { integerValue: String(v) };
-            return { doubleValue: v };
-          }
-          return { stringValue: String(v) };
-        }
-        function toFirestoreFields(obj) {
-          var fields = {};
-          for (var k in obj) {
-            if (obj.hasOwnProperty(k)) fields[k] = fsValue(obj[k]);
-          }
-          return { fields: fields };
-        }
-        function fromFirestoreDoc(doc) {
-          var out = {},
-            fields = doc && doc.fields ? doc.fields : {};
-          for (var k in fields) {
-            if (!fields.hasOwnProperty(k)) continue;
-            var v = fields[k];
-            if (v.stringValue !== undefined) out[k] = v.stringValue;
-            else if (v.integerValue !== undefined)
-              out[k] = parseInt(v.integerValue, 10);
-            else if (v.doubleValue !== undefined)
-              out[k] = parseFloat(v.doubleValue);
-            else if (v.booleanValue !== undefined) out[k] = !!v.booleanValue;
-            else if (v.nullValue !== undefined) out[k] = null;
-            else if (v.timestampValue !== undefined) out[k] = v.timestampValue;
-          }
-          if (doc && doc.name) out._path = doc.name;
-          return out;
-        }
-        function fsUrl(path) {
-          return FIRESTORE_BASE + "/" + path + "?key=" + API_KEY;
-        }
-        function fsCollectionUrl(path) {
-          return FIRESTORE_BASE + "/" + path + "?key=" + API_KEY;
-        }
-        function fetchWithTimeout(url, options, label) {
-          var controller = window.AbortController
-              ? new AbortController()
-              : null,
-            timer = null;
-          options = options || {};
-          if (controller) options.signal = controller.signal;
-          timer = setTimeout(function () {
-            if (controller) controller.abort();
-          }, 12000);
-          return fetch(url, options)
-            .then(function (res) {
-              clearTimeout(timer);
-              if (!res.ok) {
-                return res.text().then(function (t) {
-                  throw new Error(
-                    (label || "Firebase") +
-                      " falhou: " +
-                      res.status +
-                      " " +
-                      t.slice(0, 180),
-                  );
-                });
-              }
-              return res.json();
-            })
-            .catch(function (err) {
-              clearTimeout(timer);
-              if (err && err.name === "AbortError")
-                throw new Error(
-                  (label || "Firebase") +
-                    " demorou demais. Verifique internet, Firestore Database e regras.",
-                );
-              throw err;
-            });
-        }
-        function readDoc(collectionName, id) {
-          return fetchWithTimeout(
-            fsUrl(collectionName + "/" + encodeURIComponent(id)),
-            {},
-            "Leitura de " + id,
-          )
-            .then(function (doc) {
-              var d = fromFirestoreDoc(doc);
-              d.id = id;
-              return d;
-            })
-            .catch(function (err) {
-              if (String(err.message).indexOf("404") >= 0) return null;
-              throw err;
-            });
-        }
-        function writeDoc(collectionName, id, data) {
-          return fetchWithTimeout(
-            fsUrl(collectionName + "/" + encodeURIComponent(id)),
-            {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(toFirestoreFields(data)),
-            },
-            "Gravação de " + id,
-          ).then(function (doc) {
-            var d = fromFirestoreDoc(doc);
-            d.id = id;
-            return d;
-          });
-        }
-        function listCollection(collectionName) {
-          // CORREÇÃO: a API REST do Firestore retorna no máximo ~100
-          // documentos por página. Antes, o app lia só a primeira página,
-          // então registros mais recentes "sumiam" quando o total passava
-          // de ~100. Agora pede 300 por página e segue o nextPageToken
-          // até trazer TODOS os documentos.
-          var all = [];
-          function fetchPage(pageToken) {
-            var url =
-              FIRESTORE_BASE +
-              "/" +
-              collectionName +
-              "?key=" +
-              API_KEY +
-              "&pageSize=300";
-            if (pageToken)
-              url += "&pageToken=" + encodeURIComponent(pageToken);
-            return fetchWithTimeout(
-              url,
-              {},
-              "Listagem de " + collectionName,
-            ).then(function (json) {
-              var docs = json.documents || [];
-              for (var i = 0; i < docs.length; i++) {
-                var d = fromFirestoreDoc(docs[i]);
-                var parts = docs[i].name.split("/");
-                d.id = parts[parts.length - 1];
-                all.push(d);
-              }
-              if (json.nextPageToken) {
-                return fetchPage(json.nextPageToken);
-              }
-              return all;
-            });
-          }
-          return fetchPage(null).catch(function (err) {
-            if (String(err.message).indexOf("404") >= 0) return all;
-            throw err;
-          });
-        }
-        function ensureParticipants() {
-          var chain = Promise.resolve();
-          for (var i = 0; i < PARTICIPANTS.length; i++) {
-            (function (base) {
-              chain = chain.then(function () {
-                return readDoc("participants", base.id).then(
-                  function (existing) {
-                    var data = existing || {};
-                    data.id = base.id;
-                    data.name = base.name;
-                    data.age = base.age;
-                    data.activityGoal = ACTIVITY_GOAL;
-                    data.walkGoal = ACTIVITY_GOAL;
-                    data.active = true;
-                    if (data.startWeight === undefined) data.startWeight = null;
-                    if (data.currentWeight === undefined)
-                      data.currentWeight = null;
-                    if (data.goalWeight === undefined) data.goalWeight = null;
-                    if (data.startDate === undefined) data.startDate = null;
-                    data.updatedAt = new Date().toISOString();
-                    return writeDoc("participants", base.id, data);
-                  },
-                );
-              });
-            })(PARTICIPANTS[i]);
-          }
-          return chain;
-        }
-        function loadData() {
-          showView("loading");
-          $("loading-text").textContent = "Carregando dados...";
-          return ensureParticipants()
-            .then(function () {
-              var reads = [];
-              for (var i = 0; i < PARTICIPANTS.length; i++)
-                reads.push(readDoc("participants", PARTICIPANTS[i].id));
-              return Promise.all(reads);
-            })
-            .then(function (people) {
-              state.people = [];
-              for (var i = 0; i < people.length; i++) {
-                if (people[i] && people[i].active !== false)
-                  state.people.push(people[i]);
-              }
-              return listCollection("records");
-            })
-            .then(function (records) {
-              state.records = [];
-              for (var i = 0; i < records.length; i++) {
-                if (
-                  records[i].personId === "fernanda" ||
-                  records[i].personId === "aldeiza"
-                )
-                  state.records.push(records[i]);
-              }
-              normalizeCurrentWeights();
-              afterDataLoaded();
-            })
-            .catch(function (err) {
-              showView("dashboard");
-              renderBasicShellError(err.message || String(err));
-            });
-        }
-        function normalizeCurrentWeights() {
-          for (var i = 0; i < state.people.length; i++) {
-            var p = state.people[i],
-              latest = latestWeightRecord(p.id);
-            if (latest && latest.weight !== p.currentWeight) {
-              p.currentWeight = latest.weight;
-            }
-          }
-        }
-        function afterDataLoaded() {
-          if (!currentUser) {
-            showView("login");
-            return;
-          }
-          if (currentUser.role === "participant") {
-            var p = getPerson(currentUser.id);
-            if (!p || !p.startWeight) {
-              renderSetup();
-              showView("setup");
-              return;
-            }
-          }
-          renderDashboard();
-          showView("dashboard");
-        }
-        function renderBasicShellError(msg) {
-          $("dashboard-greeting").textContent =
-            "Hoje só precisa fazer o básico.";
-          $("people-cards").innerHTML = "";
-          $("weekly-summaries").innerHTML = "";
-          $("house-records").textContent = "0";
-          $("house-activities").textContent = "0";
-          $("house-clean").textContent = "0";
-          $("error-area").innerHTML =
-            '<div class="error-box"><strong>Não consegui carregar os dados.</strong><br>O app abriu, mas travou ao buscar/salvar no Firestore. Detalhe técnico: ' +
-            escapeHtml(msg) +
-            '</div><button class="btn btn-ghost btn-block" id="btn-retry">Tentar novamente</button>';
-          var b = $("btn-retry");
-          if (b)
-            b.onclick = function () {
-              loadData();
-            };
-        }
-        function renderSetup() {
-          var p = getPerson(currentUser.id) || { name: currentUser.name };
-          $("setup-name").textContent = p.name;
-          $("setup-date").value = todayISO();
-          $("setup-weight").value = "";
-          $("setup-preview").textContent = "Informe o peso para ver as metas.";
-        }
-        function updateSetupPreview() {
-          var w = parseNum($("setup-weight").value);
-          if (!w) {
-            $("setup-preview").textContent =
-              "Informe o peso para ver as metas.";
-            return;
-          }
-          $("setup-preview").innerHTML =
-            "Mês 1: <strong>" +
-            formatNum(w * 0.95) +
-            " kg</strong> · Mês 2: <strong>" +
-            formatNum(w * 0.9) +
-            " kg</strong> · Final 90 dias: <strong>" +
-            formatNum(w * 0.85) +
-            " kg</strong>";
-        }
-        function renderDashboard() {
-          $("error-area").innerHTML = "";
-          $("dashboard-greeting").textContent = pickGreeting();
-          $("house-quote").textContent = pickFrom([
-            "A meta é constância, não perfeição.",
-            "A rotina possível é a que se sustenta.",
-            "O peso importa, mas o hábito sustenta.",
-            "Hoje é dia de fazer o básico bem feito.",
-          ]);
-          var hs = houseStatsWeek();
-          $("house-records").textContent = hs.records;
-          $("house-activities").textContent = hs.activities;
-          $("house-clean").textContent = hs.clean;
-          renderPeopleCards();
-          renderWeeklySummaries();
-        }
-        function renderPeopleCards() {
-          var holder = $("people-cards");
-          holder.innerHTML = "";
-          for (var i = 0; i < state.people.length; i++) {
-            var p = state.people[i],
-              recs = recordsCurrentWeek(p.id),
-              acts = countActivities(recs),
-              clean = countClean(recs),
-              pct = getProgressPct(p),
-              target = getTargetWeight(p),
-              finalTarget = getFinalTarget(p),
-              togo =
-                target && p.currentWeight
-                  ? Math.max(0, p.currentWeight - target)
-                  : null,
-              lost =
-                p.startWeight && p.currentWeight
-                  ? p.startWeight - p.currentWeight
-                  : null,
-              canRegister =
-                currentUser &&
-                currentUser.role === "participant" &&
-                currentUser.id === p.id,
-              checks = getChecks(p, acts),
-              todayRec = getRecordByPersonDate(p.id, todayISO()),
-              registerLabel = todayRec ? "Editar hoje" : "Registrar hoje";
-            var card = document.createElement("div");
-            card.className = "person-card " + (i % 2 ? "tone-blue" : "");
-            card.innerHTML =
-              '<div class="accent-bar"></div><div class="person-head"><div><div class="person-name">' +
-              escapeHtml(p.name) +
-              '</div><div class="muted">' +
-              (p.age ? p.age + " anos · " : "") +
-              'Meta: 90 dias</div></div><div class="person-meta">' +
-              (lost !== null && lost > 0
-                ? "−" + formatNum(lost) + " kg"
-                : "início") +
-              '</div></div><div class="weight-row"><div class="weight-now">' +
-              formatNum(p.currentWeight) +
-              '<span class="unit"> kg</span></div><div class="weight-aside"><div class="label">Meta atual</div><div>' +
-              formatNum(target) +
-              ' kg</div><div class="label" style="margin-top:4px">Final</div><div>' +
-              formatNum(finalTarget) +
-              ' kg</div></div></div><div class="progress-bar"><div class="progress-fill" style="width:' +
-              pct.toFixed(1) +
-              '%"></div></div><div class="progress-meta"><span>' +
-              pct.toFixed(0) +
-              "% da meta atual</span><span>" +
-              (togo !== null && togo > 0
-                ? "falta " + formatNum(togo) + " kg"
-                : "meta atingida ✓") +
-              '</span></div><div class="stats-row"><div class="stat"><span class="num">' +
-              acts +
-              '<span class="total">/' +
-              ACTIVITY_GOAL +
-              '</span></span><span class="stat-label">Atividades</span></div><div class="stat"><span class="num">' +
-              clean +
-              '<span class="total">/7</span></span><span class="stat-label">Sem belisco</span></div><div class="stat"><span class="num">' +
-              recs.length +
-              '<span class="total">/7</span></span><span class="stat-label">Registros</span></div></div><div class="motivation-box">' +
-              escapeHtml(pickMotivation(p)) +
-              "</div>" +
-              (checks ? '<div class="check-list">' + checks + "</div>" : "") +
-              '<div class="actions ' +
-              (!canRegister ? "single" : "") +
-              '" style="margin-top:14px">' +
-              (canRegister
-                ? '<button class="btn btn-primary" data-action="register" data-id="' +
-                  p.id +
-                  '">' +
-                  registerLabel +
-                  "</button>"
-                : "") +
-              '<button class="btn btn-ghost" data-action="evolve" data-id="' +
-              p.id +
-              '">Ver evolução</button></div>';
-            holder.appendChild(card);
-          }
-        }
-        function getChecks(p, acts) {
-          var html = "",
-            target = getTargetWeight(p);
-          if (target && p.currentWeight && p.currentWeight <= target)
-            html += '<span class="check-pill">✓ Meta de peso</span>';
-          if (acts >= ACTIVITY_GOAL)
-            html += '<span class="check-pill">✓ Atividade da semana</span>';
-          if (acts > ACTIVITY_GOAL)
-            html += '<span class="check-pill">✓ Além da meta</span>';
-          return html;
-        }
-        function pickMotivation(p) {
-          if (!p.startWeight) return pickFrom(MOTIVATION.start, 1);
-          var recs = recordsCurrentWeek(p.id),
-            acts = countActivities(recs),
-            target = getTargetWeight(p),
-            expected = getExpectedWeightToday(p),
-            onPace =
-              expected && p.currentWeight
-                ? p.currentWeight <= expected + 0.15
-                : false,
-            hitWeight =
-              target && p.currentWeight ? p.currentWeight <= target : false,
-            hitActivity = acts >= ACTIVITY_GOAL,
-            day = new Date().getDay();
-          if (hitWeight && hitActivity)
-            return pickFrom(MOTIVATION.bothDone, 20);
-          if (day === 1 && acts === 0) return pickFrom(MOTIVATION.monday, 2);
-          if ((day === 3 || day === 4) && !hitActivity)
-            return pickFrom(MOTIVATION.midweek, 3);
-          if ((day === 5 || day === 6 || day === 0) && hitActivity)
-            return pickFrom(MOTIVATION.weekend, 4);
-          if (hitActivity) return pickFrom(MOTIVATION.activityDone, 5);
-          if (!hitActivity && acts < 2)
-            return pickFrom(MOTIVATION.activityLow, 6);
-          if (onPace) return pickFrom(MOTIVATION.onPace, 7);
-          return pickFrom(MOTIVATION.behindPace, 8);
-        }
-        function getChallengeWeekNumber(person, dateISO) {
-          if (!person.startDate || !dateISO) return null;
-          var d = daysBetween(person.startDate, dateISO);
-          if (d < 0 || d >= CHALLENGE_DAYS) return null;
-          return Math.floor(d / 7) + 1;
-        }
-        function getWeekRange(person, weekNum) {
-          var start = addDaysISO(person.startDate, (weekNum - 1) * 7);
-          var end = addDaysISO(start, 6);
-          var final = addDaysISO(person.startDate, CHALLENGE_DAYS - 1);
-          if (end > final) end = final;
-          return { start: start, end: end };
-        }
-        function getCurrentChallengeWeek(person) {
-          if (!person.startDate) return 1;
-          var d = clamp(
-            daysBetween(person.startDate, todayISO()),
-            0,
-            CHALLENGE_DAYS - 1,
-          );
-          return Math.floor(d / 7) + 1;
-        }
-        function weeklyChallengeRows(person) {
-          var maxWeek = getCurrentChallengeWeek(person),
-            recs = getRecords(person.id),
-            rows = [];
-          for (var w = 1; w <= maxWeek; w++) {
-            var range = getWeekRange(person, w),
-              wr = [];
-            for (var i = 0; i < recs.length; i++) {
-              if (recs[i].date >= range.start && recs[i].date <= range.end)
-                wr.push(recs[i]);
-            }
-            rows.push({
-              week: w,
-              start: range.start,
-              end: range.end,
-              activities: countActivities(wr),
-              records: wr.length,
-              clean: countClean(wr),
-              done: countActivities(wr) >= ACTIVITY_GOAL,
-            });
-          }
-          return rows;
-        }
-        function renderWeeklySummaries() {
-          var holder = $("weekly-summaries");
-          holder.innerHTML = "";
-          for (var i = 0; i < state.people.length; i++) {
-            var p = state.people[i],
-              card = document.createElement("div");
-            card.className = "summary-card";
-            if (!p.startWeight || !p.startDate) {
-              card.innerHTML =
-                '<div class="summary-name">' +
-                escapeHtml(p.name) +
-                '</div><div class="summary-insight tone-cool">Ainda falta iniciar o desafio com o peso inicial.</div>';
-              holder.appendChild(card);
-              continue;
-            }
-            var rows = weeklyChallengeRows(p),
-              doneCount = 0,
-              weekHtml = "";
-            for (var w = 0; w < rows.length; w++) {
-              if (rows[w].done) doneCount++;
-              weekHtml +=
-                '<div class="week-row ' +
-                (rows[w].done ? "done" : "pending") +
-                '"><div><div class="week-title">Semana ' +
-                rows[w].week +
-                '</div><div class="week-dates">' +
-                formatDateBR(rows[w].start) +
-                " a " +
-                formatDateBR(rows[w].end) +
-                " · " +
-                rows[w].records +
-                ' registros</div></div><div><div class="week-score">' +
-                rows[w].activities +
-                " / " +
-                ACTIVITY_GOAL +
-                '</div><div class="week-status">' +
-                (rows[w].done ? "Meta batida" : "Abaixo da meta") +
-                "</div></div></div>";
-            }
-            card.innerHTML =
-              '<div class="summary-name">' +
-              escapeHtml(p.name) +
-              '</div><div class="summary-grid"><div><div class="label">Semanas batidas</div><div class="value">' +
-              doneCount +
-              " / " +
-              rows.length +
-              '</div></div><div><div class="label">Meta semanal</div><div class="value">' +
-              ACTIVITY_GOAL +
-              ' atividades</div></div></div><div class="week-list">' +
-              weekHtml +
-              "</div>";
-            holder.appendChild(card);
-          }
-        }
-        function resetRegisterDraft(personId) {
-          registerDraft = {
-            personId: personId,
-            date: todayISO(),
-            weight: "",
-            activityDone: false,
-            activityType: null,
-            activityMinutes: null,
-            avoidedSnack: false,
-            eating: null,
-            note: "",
-            editMode: false,
-            editRecordId: null,
-          };
-        }
-        function loadDraftFromRecord(record) {
-          registerDraft = {
-            personId: record.personId,
-            date: record.date,
-            weight:
-              record.weight !== null &&
-              record.weight !== undefined &&
-              !isNaN(record.weight)
-                ? String(record.weight).replace(".", ",")
-                : "",
-            activityDone: hasActivity(record),
-            activityType: record.activityType || record.walkType || "caminhada",
-            activityMinutes: record.activityMinutes || record.walkMinutes || 30,
-            avoidedSnack: !!record.avoidedSnack,
-            eating: record.eating || null,
-            note: record.note || "",
-            editMode: true,
-            editRecordId: record.id,
-          };
-        }
-        function syncRegisterUI() {
-          $("reg-date").value = registerDraft.date;
-          $("reg-date").disabled = !!registerDraft.editMode;
-          $("reg-weight").value = registerDraft.weight;
-          $("reg-note").value = registerDraft.note;
-          $("reg-activity-done").classList.toggle(
-            "is-checked",
-            !!registerDraft.activityDone,
-          );
-          $("reg-activity-box").style.display = registerDraft.activityDone
-            ? "block"
-            : "none";
-          $("reg-clean").classList.toggle(
-            "is-checked",
-            !!registerDraft.avoidedSnack,
-          );
-          markChoice(
-            "#reg-activity-type .choice-btn",
-            "data-type",
-            registerDraft.activityType,
-          );
-          markChoice(
-            "#reg-activity-minutes .choice-btn",
-            "data-min",
-            registerDraft.activityMinutes !== null
-              ? String(registerDraft.activityMinutes)
-              : null,
-          );
-          markChoice(
-            "#reg-eating .choice-btn",
-            "data-eat",
-            registerDraft.eating,
-          );
-          $("register-title").textContent = registerDraft.editMode
-            ? "Editar registro"
-            : "Registrar dia";
-          $("register-submit").textContent = registerDraft.editMode
-            ? "Salvar alterações"
-            : "Salvar registro";
-          $("register-help").textContent = registerDraft.editMode
-            ? "Ajuste as informações deste dia. A data fica travada para não duplicar registro."
-            : "Registre o básico. Peso pode ficar em branco se não pesou hoje.";
-        }
-        function markChoice(selector, attr, value) {
-          var btns = document.querySelectorAll(selector);
-          for (var i = 0; i < btns.length; i++)
-            btns[i].classList.toggle(
-              "is-active",
-              value !== null &&
-                String(value) === String(btns[i].getAttribute(attr)),
-            );
-        }
-        function beginRegister(personId) {
-          var existing = getRecordByPersonDate(personId, todayISO());
-          if (existing) {
-            loadDraftFromRecord(existing);
-          } else {
-            resetRegisterDraft(personId);
-          }
-          var p = getPerson(personId);
-          $("register-person-name").textContent = p ? p.name : "Participante";
-          syncRegisterUI();
-          showView("register");
-        }
-        function beginEditRecord(recordId) {
-          var r = getRecordById(recordId);
-          if (!r) {
-            toast("Registro não encontrado");
-            return;
-          }
-          if (
-            currentUser &&
-            currentUser.role === "participant" &&
-            currentUser.id !== r.personId
-          ) {
-            toast("Você só pode editar seu próprio registro");
-            return;
-          }
-          loadDraftFromRecord(r);
-          var p = getPerson(r.personId);
-          $("register-person-name").textContent = p ? p.name : "Participante";
-          syncRegisterUI();
-          showView("register");
-        }
-        function renderEvolution(personId) {
-          currentEvoPerson = personId;
-          var p = getPerson(personId);
-          if (!p) return;
-          $("evo-title").textContent = "Evolução · " + p.name;
-          $("evo-current").innerHTML =
-            formatNum(p.currentWeight) + '<span class="unit"> kg</span>';
-          $("evo-goal").innerHTML =
-            formatNum(getTargetWeight(p)) + '<span class="unit"> kg</span>';
-          $("evo-start").innerHTML =
-            formatNum(p.startWeight) + '<span class="unit"> kg</span>';
-          $("evo-final").innerHTML =
-            formatNum(getFinalTarget(p)) + '<span class="unit"> kg</span>';
-          var lost =
-            p.startWeight && p.currentWeight
-              ? p.startWeight - p.currentWeight
-              : 0;
-          $("evo-delta").textContent =
-            lost > 0
-              ? "−" + formatNum(lost) + " kg desde o início"
-              : "sem perda registrada";
-          $("evo-percent").textContent =
-            getProgressPct(p).toFixed(0) + "% concluído";
-          var recs = recordsCurrentWeek(personId);
-          $("evo-acts-week").innerHTML =
-            countActivities(recs) +
-            '<span class="unit"> / ' +
-            ACTIVITY_GOAL +
-            "</span>";
-          $("evo-clean-week").innerHTML =
-            countClean(recs) + '<span class="unit"> / 7</span>';
-          $("evo-recs-week").innerHTML =
-            recs.length + '<span class="unit"> / 7</span>';
-          $("evo-month").textContent = getChallengeMonth(p) + "º";
-          drawChart(personId);
-          renderRecordsList(personId);
-        }
-        function drawChart(personId) {
-          var p = getPerson(personId),
-            recs = getRecords(personId),
-            pts = [];
-          for (var i = 0; i < recs.length; i++) {
-            if (
-              recs[i].weight !== null &&
-              recs[i].weight !== undefined &&
-              !isNaN(recs[i].weight)
-            )
-              pts.push({ date: recs[i].date, w: parseFloat(recs[i].weight) });
-          }
-          var svg = $("chart-svg");
-          if (pts.length < 2) {
-            svg.innerHTML =
-              '<text x="160" y="90" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" fill="#8a8f82">Registre o peso por alguns dias para ver o gráfico</text>';
-            $("chart-period").textContent = "";
-            return;
-          }
-          var W = 320,
-            H = 180,
-            padL = 8,
-            padR = 8,
-            padT = 16,
-            padB = 22,
-            plotW = W - padL - padR,
-            plotH = H - padT - padB,
-            minW = Infinity,
-            maxW = -Infinity;
-          for (var k = 0; k < pts.length; k++) {
-            if (pts[k].w < minW) minW = pts[k].w;
-            if (pts[k].w > maxW) maxW = pts[k].w;
-          }
-          var target = getFinalTarget(p);
-          if (target && target < minW) minW = target;
-          if (p.startWeight && p.startWeight > maxW) maxW = p.startWeight;
-          var range = maxW - minW;
-          if (range < 1) range = 1;
-          minW -= range * 0.08;
-          maxW += range * 0.08;
-          range = maxW - minW;
-          function x(idx) {
-            return padL + plotW * (idx / (pts.length - 1));
-          }
-          function y(w) {
-            return padT + plotH * (1 - (w - minW) / range);
-          }
-          var d = "M" + x(0).toFixed(1) + "," + y(pts[0].w).toFixed(1);
-          for (var m = 1; m < pts.length; m++)
-            d += " L" + x(m).toFixed(1) + "," + y(pts[m].w).toFixed(1);
-          var html =
-            '<line x1="' +
-            padL +
-            '" y1="' +
-            (padT + plotH) +
-            '" x2="' +
-            (W - padR) +
-            '" y2="' +
-            (padT + plotH) +
-            '" stroke="#e6e1d2" stroke-width="1"/>';
-          if (target) {
-            var gy = y(target);
-            html +=
-              '<line x1="' +
-              padL +
-              '" y1="' +
-              gy.toFixed(1) +
-              '" x2="' +
-              (W - padR) +
-              '" y2="' +
-              gy.toFixed(1) +
-              '" stroke="#4a6b3e" stroke-width="1" stroke-dasharray="3 4" opacity=".55"/><text x="' +
-              (W - padR) +
-              '" y="' +
-              (gy - 4).toFixed(1) +
-              '" text-anchor="end" font-family="DM Sans, sans-serif" font-size="9" fill="#4a6b3e">final ' +
-              formatNum(target) +
-              "</text>";
-          }
-          html +=
-            '<path d="' +
-            d +
-            '" fill="none" stroke="#4a6b3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
-          for (var n = 0; n < pts.length; n++)
-            html +=
-              '<circle cx="' +
-              x(n).toFixed(1) +
-              '" cy="' +
-              y(pts[n].w).toFixed(1) +
-              '" r="3" fill="#fff" stroke="#4a6b3e" stroke-width="1.5"/>';
-          html +=
-            '<text x="' +
-            x(0).toFixed(1) +
-            '" y="' +
-            (padT + plotH + 14) +
-            '" text-anchor="start" font-family="DM Sans, sans-serif" font-size="10" fill="#8a8f82">' +
-            formatDateBR(pts[0].date) +
-            '</text><text x="' +
-            x(pts.length - 1).toFixed(1) +
-            '" y="' +
-            (padT + plotH + 14) +
-            '" text-anchor="end" font-family="DM Sans, sans-serif" font-size="10" fill="#8a8f82">' +
-            formatDateBR(pts[pts.length - 1].date) +
-            "</text>";
-          svg.innerHTML = html;
-          $("chart-period").textContent = pts.length + " registros";
-        }
-        function renderRecordsList(personId) {
-          var holder = $("evo-records-list");
-          holder.innerHTML = "";
-          var recs = getRecords(personId).slice().reverse().slice(0, 30);
-          if (recs.length === 0) {
-            holder.innerHTML =
-              '<div class="card muted">Nenhum registro ainda.</div>';
-            return;
-          }
-          var canEdit =
-            currentUser &&
-            (currentUser.role === "admin" || currentUser.id === personId);
-          for (var i = 0; i < recs.length; i++) {
-            var r = recs[i],
-              tags = "";
-            if (r.weight !== null && r.weight !== undefined && r.weight !== "")
-              tags +=
-                '<span class="tag tg-weight">' +
-                formatNum(r.weight) +
-                " kg</span>";
-            if (hasActivity(r))
-              tags +=
-                '<span class="tag tg-act">' +
-                escapeHtml(r.activityType || "atividade") +
-                (r.activityMinutes ? " " + r.activityMinutes + " min" : "") +
-                "</span>";
-            if (r.avoidedSnack)
-              tags += '<span class="tag tg-clean">sem belisco</span>';
-            if (r.eating)
-              tags += '<span class="tag">' + escapeHtml(r.eating) + "</span>";
-            if (!tags) tags = '<span class="tag">sem dados</span>';
-            var row = document.createElement("div");
-            row.className = "record-row";
-            row.innerHTML =
-              '<div class="rec-date">' +
-              formatDateBR(r.date) +
-              "<small>" +
-              formatWeekday(r.date) +
-              '</small></div><div class="rec-tags">' +
-              tags +
-              "</div>" +
-              (canEdit
-                ? '<button class="btn btn-ghost rec-edit" data-action="edit-record" data-record-id="' +
-                  escapeHtml(r.id) +
-                  '">Editar</button>'
-                : "");
-            holder.appendChild(row);
-          }
-        }
-        function renderSettings() {
-          $("settings-user").textContent = currentUser
-            ? "Usuário: " + currentUser.name
-            : "Usuário";
-          var holder = $("settings-people");
-          holder.innerHTML = "";
-          for (var i = 0; i < state.people.length; i++) {
-            var p = state.people[i],
-              card = document.createElement("div");
-            card.className = "card";
-            card.innerHTML =
-              '<div class="person-name" style="font-size:18px">' +
-              escapeHtml(p.name) +
-              '</div><div class="muted">' +
-              (p.age ? p.age + " anos · " : "") +
-              "Meta semanal: " +
-              ACTIVITY_GOAL +
-              ' atividades</div><div style="margin-top:10px;font-size:14px;color:var(--ink-soft)">Inicial: ' +
-              formatNum(p.startWeight) +
-              " kg · Atual: " +
-              formatNum(p.currentWeight) +
-              " kg · Final 90d: " +
-              formatNum(getFinalTarget(p)) +
-              " kg</div>";
-            holder.appendChild(card);
-          }
-        }
-        function saveRecord() {
-          var personId = registerDraft.personId,
-            p = getPerson(personId);
-          if (!p) return Promise.reject(new Error("Pessoa não encontrada"));
-          var date = registerDraft.date,
-            id =
-              registerDraft.editMode && registerDraft.editRecordId
-                ? registerDraft.editRecordId
-                : personId + "_" + date,
-            existing = getRecordById(id),
-            weightVal = parseNum(registerDraft.weight);
-          if (
-            weightVal === null &&
-            existing &&
-            existing.weight !== null &&
-            existing.weight !== undefined
-          )
-            weightVal = existing.weight;
-          var record = {
-            id: id,
-            personId: personId,
-            date: date,
-            weight: weightVal,
-            activityDone: !!registerDraft.activityDone,
-            activityType: registerDraft.activityDone
-              ? registerDraft.activityType || "caminhada"
-              : null,
-            activityMinutes: registerDraft.activityDone
-              ? registerDraft.activityMinutes
-              : null,
-            walked: !!registerDraft.activityDone,
-            walkMinutes: registerDraft.activityDone
-              ? registerDraft.activityMinutes
-              : null,
-            avoidedSnack: !!registerDraft.avoidedSnack,
-            eating: registerDraft.eating,
-            note: registerDraft.note || "",
-            updatedAt: new Date().toISOString(),
-          };
-          return writeDoc("records", id, record)
-            .then(function () {
-              if (weightVal !== null) {
-                p.currentWeight = weightVal;
-                p.goalWeight = getTargetWeight(p);
-                p.updatedAt = new Date().toISOString();
-                return writeDoc("participants", p.id, p);
-              }
-            })
-            .then(function () {
-              return loadData();
-            });
-        }
-        function startChallenge() {
-          var weight = parseNum($("setup-weight").value),
-            date = $("setup-date").value;
-          if (!weight || !date) {
-            toast("Informe data e peso inicial");
-            return;
-          }
-          var p = getPerson(currentUser.id) || {
-            id: currentUser.id,
-            name: currentUser.name,
-          };
-          p.startWeight = weight;
-          p.currentWeight = weight;
-          p.goalWeight = weight * 0.95;
-          p.startDate = date;
-          p.activityGoal = ACTIVITY_GOAL;
-          p.walkGoal = ACTIVITY_GOAL;
-          p.age = p.id === "fernanda" ? 30 : 64;
-          p.active = true;
-          p.updatedAt = new Date().toISOString();
-          var recId = p.id + "_" + date,
-            rec = {
-              id: recId,
-              personId: p.id,
-              date: date,
-              weight: weight,
-              activityDone: false,
-              activityType: null,
-              activityMinutes: null,
-              walked: false,
-              walkMinutes: null,
-              avoidedSnack: false,
-              eating: null,
-              note: "Peso inicial",
-              updatedAt: new Date().toISOString(),
-            };
-          showView("loading");
-          $("loading-text").textContent = "Salvando início do desafio...";
-          writeDoc("participants", p.id, p)
-            .then(function () {
-              return writeDoc("records", recId, rec);
-            })
-            .then(function () {
-              toast("Desafio iniciado");
-              return loadData();
-            })
-            .catch(function (err) {
-              renderBasicShellError(err.message || String(err));
-            });
-        }
-        function switchUser() {
-          localStorage.removeItem(LS_USER);
-          currentUser = null;
-          showView("login");
-        }
-        function boot() {
-          var saved = localStorage.getItem(LS_USER);
-          currentUser = getUser(saved);
-          if (!currentUser) {
-            showView("login");
-            return;
-          }
-          loadData();
-        }
-        document.addEventListener("click", function (e) {
-          var login = e.target.closest
-            ? e.target.closest("[data-login]")
-            : null;
-          if (login) {
-            var id = login.getAttribute("data-login");
-            currentUser = getUser(id);
-            localStorage.setItem(LS_USER, id);
-            loadData();
-            return;
-          }
-          var back = e.target.closest ? e.target.closest("[data-back]") : null;
-          if (back) {
-            renderDashboard();
-            showView("dashboard");
-            return;
-          }
-          var action = e.target.closest
-            ? e.target.closest("[data-action]")
-            : null;
-          if (action) {
-            var act = action.getAttribute("data-action"),
-              id2 = action.getAttribute("data-id");
-            if (act === "register") beginRegister(id2);
-            if (act === "evolve") {
-              renderEvolution(id2);
-              showView("evolution");
-            }
-            if (act === "edit-record")
-              beginEditRecord(action.getAttribute("data-record-id"));
-          }
+  <!-- MINHAS VENDAS (fornecedor) -->
+  <div id="view-minhas" class="view hidden">
+    <div class="section-title">Minhas vendas</div>
+    <div id="chipsMinhas" class="chips"></div>
+    <div id="minhas"></div>
+  </div>
+
+  <!-- PAINEL (master) -->
+  <div id="view-painel" class="view hidden">
+    <div class="section-title">Acompanhamento</div>
+    <div id="chipsPainel" class="chips"></div>
+    <div id="painel"></div>
+  </div>
+
+  <!-- FORNECEDORES (master) -->
+  <div id="view-forn" class="view hidden">
+    <div class="section-title">Fornecedores</div>
+    <div id="forn"></div>
+  </div>
+
+  <!-- VENDAS (master) -->
+  <div id="view-vendas" class="view hidden">
+    <div class="section-title">Todas as vendas</div>
+    <div id="chipsVendas" class="chips"></div>
+    <div id="vendas"></div>
+  </div>
+
+  <div class="nav" id="nav"></div>
+</div>
+
+<!-- ================= SHEETS ================= -->
+<div id="sheetSettings" class="sheet">
+  <div class="panel">
+    <div class="grab"></div>
+    <div class="ph"><h3>Configurações</h3><button class="iconbtn" style="background:var(--line);color:var(--ink)" onclick="App.closeSheet('sheetSettings')">✕</button></div>
+    <div class="pb">
+      <div class="card"><h4>Conexão</h4><div id="connInfo" class="muted"></div></div>
+
+      <div class="card" id="cardMeuProd">
+        <h4>Meu produto</h4>
+        <div class="field"><label>O que você vende</label><input id="cfg_prod"></div>
+        <button class="btn ghost" onclick="App.salvarMeuProduto()">Salvar</button>
+      </div>
+
+      <div class="card" id="cardMaster">
+        <h4>Criar conta master</h4>
+        <div class="muted" style="margin-bottom:10px">Master acompanha tudo e não vende. Fornecedores se cadastram sozinhos na tela de entrada.</div>
+        <div class="field two">
+          <div><label>Nome</label><input id="nm_nome" placeholder="Nome"></div>
+          <div><label>Senha (4 díg.)</label><input id="nm_pin" inputmode="numeric" maxlength="4" placeholder="0000"></div>
+        </div>
+        <button class="btn ghost" onclick="App.criarMaster()">Criar master</button>
+      </div>
+
+      <div class="card" id="cardComissao">
+        <h4>Comissão padrão</h4>
+        <div class="muted" style="margin-bottom:10px">Aplicada a quem se cadastrar a partir de agora. Cada fornecedor pode ter a sua, na aba Fornecedores.</div>
+        <div class="field"><label>Percentual (%)</label><input id="cfg_com" inputmode="decimal" placeholder="10"></div>
+        <button class="btn ghost" onclick="App.salvarComissao()">Salvar</button>
+      </div>
+
+      <div class="card" id="cardLimpeza" style="border-color:#f0d0cc;background:#fffaf9">
+        <h4 style="color:var(--danger)">Limpar dados</h4>
+        <div class="muted" style="margin-bottom:10px">Apaga vendas antigas. <b>Não dá para desfazer.</b> Contas e senhas não são tocadas.</div>
+        <div class="field"><label>Apagar vendas ANTES de</label><input id="lp_data" type="date" onchange="App.previewLimpeza()"></div>
+        <div id="lp_preview" class="muted" style="margin:-4px 0 12px"></div>
+        <button class="btn ghost" style="color:var(--danger)" onclick="App.limparHistorico()">Apagar vendas anteriores</button>
+      </div>
+
+      <button class="btn ghost" onclick="App.logout()">Sair</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG FIREBASE
+   ============================================================ */
+var FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDDnh3ZAEQEuF-ySU0xIDAzgymJxhN2Vlo",
+  authDomain: "igreja-d280e.firebaseapp.com",
+  projectId: "igreja-d280e",
+  storageBucket: "igreja-d280e.firebasestorage.app",
+  messagingSenderId: "737925800815",
+  appId: "1:737925800815:web:cef086b646263df3e27e9a"
+};
+
+var APP_VERSION = '3.0';
+
+/* Conta master inicial. Só é criada se não houver NENHUM usuário. */
+var SEED_USERS = [ {name:'Arthur', pin:'0611', role:'master'} ];
+
+/* Coleções separadas das do ECC — nada se mistura. */
+var COL_USERS = 'festa_users';
+var COL_SALES = 'festa_sales';
+var COL_CFG   = 'festa_config';
+
+/* ---------- util ---------- */
+function money(n){ return (Number(n)||0).toFixed(2).replace('.',','); }
+function norm(s){ return (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(); }
+function dayKey(d){ return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
+function tsDate(o){
+  if(!o) return null;
+  if(o.createdAt && o.createdAt.toDate) return o.createdAt.toDate();
+  if(o.createdAt instanceof Date) return o.createdAt;
+  if(o.localAt) return new Date(o.localAt);
+  if(o.createdAt) return new Date(o.createdAt);
+  return null;
+}
+function toMillis(o){ var d=tsDate(o); return d? d.getTime():0; }
+function fmtHora(o){ var d=tsDate(o); if(!d) return '—';
+  return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); }
+function fmtDia(o){ var d=tsDate(o); if(!d) return '';
+  return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2); }
+function diaExtenso(k){
+  var p=k.split('-'), d=new Date(+p[0],+p[1]-1,+p[2]);
+  var sem=['domingo','segunda','terça','quarta','quinta','sexta','sábado'][d.getDay()];
+  var hj=dayKey(new Date());
+  var ont=dayKey(new Date(Date.now()-864e5));
+  var ant=dayKey(new Date(Date.now()-2*864e5));
+  if(k===hj) return 'Hoje';
+  if(k===ont) return 'Ontem';
+  if(k===ant) return 'Anteontem';
+  return sem+', '+p[2]+'/'+p[1];
+}
+function uid(){ return 'id'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* sessão de 180 dias: localStorage e, se bloqueado, cookie */
+var DIAS_LOGADO=180;
+function setCookie(k,v,dias){ var d=new Date(); d.setTime(d.getTime()+dias*864e5);
+  document.cookie=k+'='+encodeURIComponent(v)+';expires='+d.toUTCString()+';path=/;SameSite=Lax'; }
+function getCookie(k){ var ps=document.cookie.split(';');
+  for(var i=0;i<ps.length;i++){ var p=ps[i].replace(/^\s+/,'');
+    if(p.indexOf(k+'=')===0) return decodeURIComponent(p.substring(k.length+1)); } return null; }
+function delCookie(k){ document.cookie=k+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'; }
+function safeGet(k){ try{ var v=localStorage.getItem(k); if(v!=null) return v; }catch(e){} return getCookie(k); }
+function safeSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} setCookie(k,v,DIAS_LOGADO); }
+function safeDel(k){ try{ localStorage.removeItem(k); }catch(e){} delCookie(k); }
+
+function ehMaster(u){ return u && (u.role==='master' || u.role==='admin'); }
+
+/* ============================================================
+   STORE
+   ============================================================ */
+var Store=(function(){
+  var mode='demo', db=null, seeded=false, online=true;
+  var users=[], sales=[];
+  var config={comissaoPadrao:10};
+  var cbU=function(){}, cbS=function(){}, cbC=function(){};
+
+  function fbReady(){
+    return (typeof firebase!=='undefined') && firebase && firebase.firestore &&
+      FIREBASE_CONFIG.projectId && FIREBASE_CONFIG.projectId.indexOf('COLE_AQUI')<0;
+  }
+  function erro(e){ App.toast('Erro ao salvar: '+e.message,'err'); }
+  function novoId(c){ return db.collection(c).doc().id; }
+
+  function seedDemo(){
+    users=SEED_USERS.map(function(u){ return {id:uid(),name:u.name,pin:u.pin,role:u.role,produto:'',comissao:0,active:true}; });
+    users.push({id:uid(),name:'Dona Ana',pin:'1111',role:'vendedor',produto:'Bolos da Dona Ana',comissao:10,active:true});
+    sales=[];
+  }
+
+  function init(cbDone){
+    if(fbReady()){
+      try{
+        firebase.initializeApp(FIREBASE_CONFIG);
+        db=firebase.firestore();
+        db.enablePersistence({synchronizeTabs:true}).catch(function(){});
+        mode='firebase'; ligar(cbDone); vigiarRede(); return;
+      }catch(e){ console.warn('Firebase falhou → demo',e); }
+    }
+    mode='demo'; seedDemo(); cbDone(mode); emitir();
+  }
+  function vigiarRede(){
+    online=navigator.onLine!==false;
+    window.addEventListener('online',function(){ online=true; App.setNet(); });
+    window.addEventListener('offline',function(){ online=false; App.setNet(); });
+  }
+  function isOnline(){ return online; }
+
+  function ligar(cbDone){
+    db.collection(COL_USERS).onSnapshot(function(s){
+      users=s.docs.map(function(d){ var o=d.data(); o.id=d.id; return o; });
+      if(users.length===0 && !seeded){
+        seeded=true;
+        var b=db.batch();
+        SEED_USERS.forEach(function(u){
+          b.set(db.collection(COL_USERS).doc(), {name:u.name,pin:u.pin,role:u.role,produto:'',comissao:0,active:true});
         });
-        $("btn-open-settings").addEventListener("click", function () {
-          renderSettings();
-          showView("settings");
+        b.commit().catch(function(){ seeded=false; });
+      }
+      cbU(users);
+      if(cbDone){ var f=cbDone; cbDone=null; f(mode); }
+    }, function(e){ App.toast('Erro: '+e.message,'err'); });
+
+    db.collection(COL_SALES).limit(3000).onSnapshot(function(s){
+      sales=s.docs.map(function(d){ var o=d.data(); o.id=d.id; return o; });
+      cbS(sales);
+    }, function(){});
+
+    db.collection(COL_CFG).doc('geral').onSnapshot(function(d){
+      if(d.exists){ var o=d.data(); if(o.comissaoPadrao!=null) config.comissaoPadrao=o.comissaoPadrao; cbC(config); }
+    }, function(){});
+  }
+  function emitir(){ cbU(users); cbS(sales); cbC(config); }
+
+  function onUsers(cb){ cbU=cb; cb(users); }
+  function onSales(cb){ cbS=cb; cb(sales); }
+  function onConfig(cb){ cbC=cb; cb(config); }
+  function getUsers(){ return users; }
+  function getSales(){ return sales; }
+  function getConfig(){ return config; }
+  function getMode(){ return mode; }
+
+  function addUser(u,done){
+    if(mode==='firebase'){
+      var id=novoId(COL_USERS);
+      db.collection(COL_USERS).doc(id).set(u).catch(erro);
+      u.id=id; users.push(u); cbU(users); done&&done(u); return;
+    }
+    u.id=uid(); users.push(u); cbU(users); done&&done(u);
+  }
+  function updateUser(id,patch,done){
+    if(mode==='firebase'){ db.collection(COL_USERS).doc(id).update(patch).catch(erro); }
+    for(var i=0;i<users.length;i++){ if(users[i].id===id) Object.assign(users[i],patch); }
+    cbU(users); done&&done();
+  }
+  function removeUser(id,done){
+    if(mode==='firebase'){ db.collection(COL_USERS).doc(id).delete().catch(erro); }
+    users=users.filter(function(u){ return u.id!==id; }); cbU(users); done&&done();
+  }
+
+  function addSale(v,done){
+    v.localAt=Date.now(); v.canceled=false;
+    if(mode==='firebase'){
+      v.createdAt=firebase.firestore.FieldValue.serverTimestamp();
+      var id=novoId(COL_SALES);
+      db.collection(COL_SALES).doc(id).set(v).catch(erro);
+      v.id=id; sales.push(v); cbS(sales); done&&done(true); return;
+    }
+    v.id=uid(); v.createdAt=new Date(); sales.push(v); cbS(sales); done&&done(true);
+  }
+  function cancelSale(id,done){
+    if(mode==='firebase'){ db.collection(COL_SALES).doc(id).update({canceled:true}).catch(erro); }
+    for(var i=0;i<sales.length;i++){ if(sales[i].id===id) sales[i].canceled=true; }
+    cbS(sales); done&&done(true);
+  }
+  function saveConfig(patch,done){
+    for(var k in patch) config[k]=patch[k];
+    if(mode==='firebase'){ db.collection(COL_CFG).doc('geral').set(config,{merge:true}).catch(erro); }
+    cbC(config); done&&done();
+  }
+
+  function contarAntesDe(ms){
+    var n=0,sd=0;
+    sales.forEach(function(s){ var t=toMillis(s); if(!t) sd++; else if(t<ms) n++; });
+    return {vendas:n, semData:sd};
+  }
+  function apagarAntesDe(ms,done){
+    var alvo=sales.filter(function(s){ var t=toMillis(s); return t && t<ms; });
+    if(mode==='firebase'){
+      var i=0;
+      while(i<alvo.length){
+        var b=db.batch();
+        alvo.slice(i,i+400).forEach(function(s){ b.delete(db.collection(COL_SALES).doc(s.id)); });
+        b.commit().catch(erro); i+=400;
+      }
+    }
+    var ids={}; alvo.forEach(function(s){ ids[s.id]=1; });
+    sales=sales.filter(function(s){ return !ids[s.id]; });
+    cbS(sales); done&&done(alvo.length);
+  }
+
+  return {init:init,onUsers:onUsers,onSales:onSales,onConfig:onConfig,
+    getUsers:getUsers,getSales:getSales,getConfig:getConfig,getMode:getMode,isOnline:isOnline,
+    addUser:addUser,updateUser:updateUser,removeUser:removeUser,
+    addSale:addSale,cancelSale:cancelSale,saveConfig:saveConfig,
+    contarAntesDe:contarAntesDe,apagarAntesDe:apagarAntesDe};
+})();
+
+/* ============================================================
+   APP
+   ============================================================ */
+var App=(function(){
+  var me=null, aba='', digitado='';
+  var pinBuffer='', pinUser=null, pinMode='enter', pinFirst='';
+  var conectado=false, watchdog=null;
+  var periodo='hoje';   // hoje | ontem | anteontem | 7d | tudo
+
+  var PERIODOS=[['hoje','Hoje'],['ontem','Ontem'],['anteontem','Anteontem'],['7d','7 dias'],['tudo','Tudo']];
+
+  function boot(){
+    document.getElementById('loginVer').textContent='versão '+APP_VERSION;
+    document.getElementById('userpick').innerHTML=
+      '<div class="muted center" style="grid-column:1/-1;padding:10px">Conectando…</div>';
+    watchdog=setTimeout(function(){
+      if(conectado) return;
+      document.getElementById('userpick').innerHTML=
+        '<div class="muted center" style="grid-column:1/-1;padding:10px">Não conseguiu conectar.<br>Verifique a internet.</div>'+
+        '<button class="btn primary" style="grid-column:1/-1" onclick="App.recarregar()">Recarregar</button>';
+    },8000);
+
+    Store.onUsers(function(){ renderUserPicker(); if(aba==='forn') renderForn(); });
+    Store.onSales(function(){ refresh(); });
+    Store.onConfig(function(){});
+    Store.init(function(){
+      conectado=true; if(watchdog) clearTimeout(watchdog);
+      setNet(); renderUserPicker(); restaurar();
+    });
+    montarTeclado(); montarKeys();
+  }
+  function recarregar(){ window.location.href=window.location.pathname+'?r='+Date.now(); }
+  function setNet(){
+    var p=document.getElementById('modePill');
+    if(Store.getMode()!=='firebase'){ p.textContent='DEMO'; p.className='modepill'; return; }
+    if(Store.isOnline()){ p.textContent='ONLINE'; p.className='modepill live'; }
+    else { p.textContent='SEM REDE'; p.className='modepill off'; }
+  }
+  function restaurar(){
+    var sv=safeGet('festa_user'); if(!sv) return;
+    var u=JSON.parse(sv), lista=Store.getUsers();
+    for(var i=0;i<lista.length;i++){ if(lista[i].id===u.id){ me=lista[i]; entrar(); return; } }
+  }
+
+  /* ---------- LOGIN ---------- */
+  function renderUserPicker(){
+    var el=document.getElementById('userpick'); if(!el) return;
+    var us=Store.getUsers().filter(function(u){ return u.active!==false; })
+      .sort(function(a,b){ return (ehMaster(b)?1:0)-(ehMaster(a)?1:0) || a.name.localeCompare(b.name); });
+    if(us.length===0){ el.innerHTML='<div class="muted center" style="grid-column:1/-1">Ninguém cadastrado ainda.</div>'; return; }
+    el.innerHTML=us.map(function(u){
+      return '<button onclick="App.pickUser(\''+u.id+'\')">'+
+        '<span class="av">'+esc((u.name||'?').charAt(0).toUpperCase())+'</span>'+esc(u.name)+
+        '<span class="pd">'+esc(ehMaster(u)?'master':(u.produto||'—'))+'</span></button>';
+    }).join('');
+  }
+  function pickUser(id){
+    var us=Store.getUsers(); pinUser=null;
+    for(var i=0;i<us.length;i++){ if(us[i].id===id) pinUser=us[i]; }
+    if(!pinUser) return;
+    pinBuffer=''; pinFirst=''; pinMode=pinUser.pin?'enter':'create';
+    document.getElementById('userpick').classList.add('hidden');
+    document.getElementById('linkCadastro').classList.add('hidden');
+    document.getElementById('pinarea').classList.remove('hidden');
+    drawPin();
+  }
+  function cancelPin(){
+    pinUser=null; pinBuffer=''; pinMode='enter';
+    document.getElementById('pinarea').classList.add('hidden');
+    document.getElementById('userpick').classList.remove('hidden');
+    document.getElementById('linkCadastro').classList.remove('hidden');
+  }
+  function montarKeys(){
+    var k=['1','2','3','4','5','6','7','8','9','','0','⌫'];
+    document.getElementById('keys').innerHTML=k.map(function(n){
+      return n===''? '<button disabled></button>' : '<button onclick="App.pinKey(\''+n+'\')">'+n+'</button>';
+    }).join('');
+  }
+  function pinKey(n){
+    if(n==='⌫'){ pinBuffer=pinBuffer.slice(0,-1); drawPin(); return; }
+    if(pinBuffer.length>=4) return;
+    pinBuffer+=n; drawPin(); if(pinBuffer.length===4) setTimeout(checkPin,120);
+  }
+  function drawPin(){
+    var h=''; for(var i=0;i<4;i++) h+='<span class="'+(i<pinBuffer.length?'f':'')+'"></span>';
+    document.getElementById('pindots').innerHTML=h;
+    var t=document.getElementById('pinTitle');
+    if(!pinUser) return;
+    t.innerHTML = pinMode==='create' ? 'Crie uma senha de 4 dígitos'
+                : pinMode==='confirm' ? 'Digite de novo para confirmar'
+                : 'Senha de <b>'+esc(pinUser.name)+'</b>';
+  }
+  function checkPin(){
+    if(!pinUser) return;
+    if(pinMode==='create'){ pinFirst=pinBuffer; pinBuffer=''; pinMode='confirm'; drawPin(); return; }
+    if(pinMode==='confirm'){
+      if(pinBuffer===pinFirst){
+        var novo=pinFirst;
+        Store.updateUser(pinUser.id,{pin:novo},function(){
+          pinUser.pin=novo; me=pinUser; entrar();
         });
-        $("btn-switch-user").addEventListener("click", switchUser);
-        $("setup-switch").addEventListener("click", switchUser);
-        $("setup-weight").addEventListener("input", updateSetupPreview);
-        $("setup-form").addEventListener("submit", function (e) {
-          e.preventDefault();
-          startChallenge();
-        });
-        $("reg-date").addEventListener("change", function (e) {
-          registerDraft.date = e.target.value;
-        });
-        $("reg-weight").addEventListener("input", function (e) {
-          registerDraft.weight = e.target.value;
-        });
-        $("reg-note").addEventListener("input", function (e) {
-          registerDraft.note = e.target.value;
-        });
-        $("reg-activity-done").addEventListener("click", function () {
-          registerDraft.activityDone = !registerDraft.activityDone;
-          if (!registerDraft.activityDone) {
-            registerDraft.activityType = null;
-            registerDraft.activityMinutes = null;
-          } else {
-            registerDraft.activityType =
-              registerDraft.activityType || "caminhada";
-            registerDraft.activityMinutes = registerDraft.activityMinutes || 30;
-          }
-          syncRegisterUI();
-        });
-        $("reg-clean").addEventListener("click", function () {
-          registerDraft.avoidedSnack = !registerDraft.avoidedSnack;
-          syncRegisterUI();
-        });
-        $("reg-activity-type").addEventListener("click", function (e) {
-          var b = e.target.closest ? e.target.closest("[data-type]") : null;
-          if (!b) return;
-          registerDraft.activityType = b.getAttribute("data-type");
-          syncRegisterUI();
-        });
-        $("reg-activity-minutes").addEventListener("click", function (e) {
-          var b = e.target.closest ? e.target.closest("[data-min]") : null;
-          if (!b) return;
-          registerDraft.activityMinutes = parseInt(
-            b.getAttribute("data-min"),
-            10,
-          );
-          syncRegisterUI();
-        });
-        $("reg-eating").addEventListener("click", function (e) {
-          var b = e.target.closest ? e.target.closest("[data-eat]") : null;
-          if (!b) return;
-          registerDraft.eating = b.getAttribute("data-eat");
-          syncRegisterUI();
-        });
-        $("register-form").addEventListener("submit", function (e) {
-          e.preventDefault();
-          showView("loading");
-          $("loading-text").textContent = registerDraft.editMode
-            ? "Salvando alterações..."
-            : "Salvando registro...";
-          saveRecord()
-            .then(function () {
-              toast(
-                registerDraft.editMode ? "Alterações salvas" : "Registro salvo",
-              );
-            })
-            .catch(function (err) {
-              renderBasicShellError(err.message || String(err));
-            });
-        });
-        boot();
-      })();
-    </script>
-  </body>
+      } else { toast('As senhas não bateram','err'); pinFirst=''; pinBuffer=''; pinMode='create'; drawPin(); }
+      return;
+    }
+    if(pinBuffer===String(pinUser.pin)){ me=pinUser; entrar(); }
+    else { toast('Senha incorreta','err'); pinBuffer=''; drawPin(); }
+  }
+
+  function abrirCadastro(){
+    ['userpick','linkCadastro','pinarea'].forEach(function(i){ document.getElementById(i).classList.add('hidden'); });
+    document.getElementById('rg_nome').value='';
+    document.getElementById('rg_prod').value='';
+    document.getElementById('rg_pin').value='';
+    document.getElementById('areaCadastro').classList.remove('hidden');
+  }
+  function fecharCadastro(){
+    document.getElementById('areaCadastro').classList.add('hidden');
+    document.getElementById('userpick').classList.remove('hidden');
+    document.getElementById('linkCadastro').classList.remove('hidden');
+  }
+  function criarAcesso(){
+    var nome=document.getElementById('rg_nome').value.trim();
+    var prod=document.getElementById('rg_prod').value.trim();
+    var pin=document.getElementById('rg_pin').value.replace(/\D/g,'');
+    if(!nome){ toast('Informe seu nome','err'); return; }
+    if(!prod){ toast('Informe o que você vende','err'); return; }
+    if(pin.length!==4){ toast('A senha precisa ter 4 dígitos','err'); return; }
+    var us=Store.getUsers();
+    for(var i=0;i<us.length;i++){
+      if(norm(us[i].name)===norm(nome)){ toast('Já existe alguém com esse nome','err'); return; }
+    }
+    Store.addUser({name:nome,pin:pin,role:'vendedor',produto:prod,
+      comissao:(Store.getConfig().comissaoPadrao||0),active:true},function(u){
+      me=u; document.getElementById('areaCadastro').classList.add('hidden');
+      toast('Tudo pronto, '+nome+'!','ok'); entrar();
+    });
+  }
+
+  function entrar(){
+    safeSet('festa_user',JSON.stringify({id:me.id,name:me.name}));
+    document.getElementById('login').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('whoName').textContent=me.name;
+    document.getElementById('whoRole').textContent=ehMaster(me)?'Master':(me.produto||'');
+    montarNav();
+    tab(ehMaster(me)?'painel':'vender');
+  }
+  function logout(){
+    safeDel('festa_user'); me=null;
+    closeSheet('sheetSettings');
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('login').classList.remove('hidden');
+    cancelPin();
+  }
+
+  /* ---------- NAVEGAÇÃO ---------- */
+  function montarNav(){
+    var itens = ehMaster(me)
+      ? [['painel','📊','Painel'],['forn','🧺','Fornecedores'],['vendas','🧾','Vendas']]
+      : [['vender','➕','Vender'],['minhas','🧾','Minhas vendas']];
+    document.getElementById('nav').innerHTML=itens.map(function(i){
+      return '<button data-tab="'+i[0]+'" onclick="App.tab(\''+i[0]+'\')"><span class="ic">'+i[1]+'</span>'+i[2]+'</button>';
+    }).join('');
+  }
+  function tab(nome){
+    aba=nome;
+    ['vender','minhas','painel','forn','vendas'].forEach(function(t){
+      var el=document.getElementById('view-'+t); if(el) el.classList.toggle('hidden', t!==nome);
+    });
+    var bs=document.querySelectorAll('#nav button');
+    for(var i=0;i<bs.length;i++) bs[i].classList.toggle('active', bs[i].getAttribute('data-tab')===nome);
+    if(nome==='vender'){ document.getElementById('meuProduto').textContent=me.produto||'—'; renderVender(); }
+    if(nome==='minhas') renderMinhas();
+    if(nome==='painel') renderPainel();
+    if(nome==='forn') renderForn();
+    if(nome==='vendas') renderVendas();
+  }
+
+  /* ---------- PERÍODO ---------- */
+  function setPeriodo(p){ periodo=p; refresh(); }
+  function periodoLabel(){
+    for(var i=0;i<PERIODOS.length;i++) if(PERIODOS[i][0]===periodo) return PERIODOS[i][1].toLowerCase();
+    return periodo;
+  }
+  function chipsHTML(){
+    return PERIODOS.map(function(p){
+      return '<button class="chip'+(periodo===p[0]?' active':'')+'" onclick="App.setPeriodo(\''+p[0]+'\')">'+p[1]+'</button>';
+    }).join('');
+  }
+  function noPeriodo(o){
+    var d=tsDate(o); if(!d) return false;
+    var k=dayKey(d), hoje=new Date();
+    if(periodo==='hoje') return k===dayKey(hoje);
+    if(periodo==='ontem') return k===dayKey(new Date(hoje.getTime()-864e5));
+    if(periodo==='anteontem') return k===dayKey(new Date(hoje.getTime()-2*864e5));
+    if(periodo==='7d'){
+      var ini=new Date(hoje.getFullYear(),hoje.getMonth(),hoje.getDate()-6);
+      return d>=ini;
+    }
+    return true;
+  }
+  function vendasPeriodo(){ return Store.getSales().filter(function(s){ return !s.canceled && noPeriodo(s); }); }
+
+  /* comissão: calculada ao vivo, do cadastro atual do fornecedor */
+  function comissaoDe(sellerId){
+    var us=Store.getUsers();
+    for(var i=0;i<us.length;i++){ if(us[i].id===sellerId) return Number(us[i].comissao)||0; }
+    return 0;
+  }
+  function nomeFornecedor(s){
+    var us=Store.getUsers();
+    for(var i=0;i<us.length;i++){ if(us[i].id===s.sellerId) return us[i].produto||us[i].name; }
+    return s.produto||s.sellerName||'—';
+  }
+
+  /* ---------- VENDER ---------- */
+  function montarTeclado(){
+    var t=['1','2','3','4','5','6','7','8','9','C','0','⌫'];
+    document.getElementById('teclado').innerHTML=t.map(function(n){
+      var aux=(n==='C'||n==='⌫')?' class="aux"':'';
+      return '<button'+aux+' onclick="App.tecla(\''+n+'\')">'+n+'</button>';
+    }).join('');
+    document.getElementById('atalhos').innerHTML=[1,2,5,10].map(function(v){
+      return '<button onclick="App.somar('+v+')">+'+v+'</button>';
+    }).join('');
+  }
+  function tecla(n){
+    if(n==='C'){ digitado=''; }
+    else if(n==='⌫'){ digitado=digitado.slice(0,-1); }
+    else { if(digitado.length>=7) return; digitado=(digitado+n).replace(/^0+/,''); }
+    pintarVisor();
+  }
+  function somar(v){
+    var atual=valorDigitado();
+    digitado=String(Math.round((atual+v)*100));
+    pintarVisor();
+  }
+  function valorDigitado(){ return digitado? parseInt(digitado,10)/100 : 0; }
+  function pintarVisor(){
+    var v=valorDigitado(), el=document.getElementById('visor');
+    el.textContent=money(v);
+    el.classList.toggle('zero', v===0);
+    document.getElementById('btnRegistrar').disabled = v<=0;
+  }
+  var salvando=false;
+  function registrarVenda(){
+    if(ehMaster(me)){ toast('Contas master não registram venda','err'); return; }
+    var v=valorDigitado();
+    if(v<=0){ toast('Digite o valor','err'); return; }
+    if(salvando) return;
+    salvando=true;
+    Store.addSale({valor:v, sellerId:me.id, sellerName:me.name, produto:me.produto||''},function(){
+      salvando=false; digitado=''; pintarVisor();
+      toast('R$ '+money(v)+' registrado ✓','ok');
+      if(navigator.vibrate){ try{ navigator.vibrate(12); }catch(e){} }
+      renderVender();
+    });
+  }
+  function minhasVendas(){
+    return Store.getSales().filter(function(s){ return s.sellerId===me.id; });
+  }
+  function renderVender(){
+    pintarVisor();
+    var hj=dayKey(new Date());
+    var ms=minhasVendas().filter(function(s){ return !s.canceled && tsDate(s) && dayKey(tsDate(s))===hj; });
+    var t=0; ms.forEach(function(s){ t+=s.valor||0; });
+    document.getElementById('meuHoje').textContent='R$ '+money(t);
+    document.getElementById('meuQtd').textContent=ms.length;
+  }
+  function renderMinhas(){
+    document.getElementById('chipsMinhas').innerHTML=chipsHTML();
+    var lista=minhasVendas().filter(noPeriodo).sort(function(a,b){ return toMillis(b)-toMillis(a); });
+    var ativas=lista.filter(function(s){ return !s.canceled; });
+    var t=0; ativas.forEach(function(s){ t+=s.valor||0; });
+    var h='<div class="resumo"><div class="box"><div class="lb">'+periodoLabel()+'</div>'+
+      '<div class="vl">R$ '+money(t)+'</div></div>'+
+      '<div class="box"><div class="lb">Vendas</div><div class="vl">'+ativas.length+'</div></div></div>';
+    if(lista.length===0){ h+='<div class="empty"><div class="em">🧾</div>Nenhuma venda '+periodoLabel()+'.</div>'; }
+    else{
+      h+=lista.slice(0,200).map(function(s){
+        return '<div class="venda'+(s.canceled?' canc':'')+'">'+
+          '<div class="v-i"><div class="v-t">R$ '+money(s.valor)+(s.canceled?' <span class="tagx">cancelada</span>':'')+'</div>'+
+          '<div class="v-s">'+fmtDia(s)+' às '+fmtHora(s)+'</div></div>'+
+          (s.canceled?'':'<button class="v-x" onclick="App.cancelar(\''+s.id+'\')">cancelar</button>')+
+        '</div>';
+      }).join('');
+    }
+    document.getElementById('minhas').innerHTML=h;
+  }
+  function cancelar(id){
+    if(!confirm('Cancelar esta venda? Ela deixa de contar no total.')) return;
+    Store.cancelSale(id,function(){ toast('Venda cancelada','ok'); refresh(); });
+  }
+
+  /* ---------- PAINEL (master) ---------- */
+  function renderPainel(){
+    document.getElementById('chipsPainel').innerHTML=chipsHTML();
+    var vs=vendasPeriodo();
+    var total=0; vs.forEach(function(s){ total+=s.valor||0; });
+
+    // por fornecedor
+    var porF={};
+    vs.forEach(function(s){
+      var k=s.sellerId||'?';
+      if(!porF[k]) porF[k]={nome:nomeFornecedor(s), pessoa:s.sellerName, total:0, n:0};
+      porF[k].total+=s.valor||0; porF[k].n++;
+    });
+    var chaves=Object.keys(porF);
+    var minha=0;
+    chaves.forEach(function(k){ porF[k].com=porF[k].total*comissaoDe(k)/100; minha+=porF[k].com; });
+    chaves.sort(function(a,b){ return porF[b].total-porF[a].total; });
+    var maior=1; chaves.forEach(function(k){ if(porF[k].total>maior) maior=porF[k].total; });
+
+    var h='';
+    h+='<div class="kpis">'+
+      '<div class="kpi"><div class="k-label">Vendido — '+periodoLabel()+'</div><div class="k-val">R$ '+money(total)+'</div></div>'+
+      '<div class="kpi g"><div class="k-label">Minha comissão</div><div class="k-val">R$ '+money(minha)+'</div></div>'+
+      '<div class="kpi"><div class="k-label">Vendas</div><div class="k-val">'+vs.length+'</div></div>'+
+      '<div class="kpi"><div class="k-label">Fornecedores ativos</div><div class="k-val">'+chaves.length+'</div></div>'+
+    '</div>';
+
+    // por dia — o acompanhamento que faltava
+    var porDia={};
+    Store.getSales().forEach(function(s){
+      if(s.canceled) return;
+      var d=tsDate(s); if(!d) return;
+      var k=dayKey(d);
+      if(!porDia[k]) porDia[k]={total:0,n:0};
+      porDia[k].total+=s.valor||0; porDia[k].n++;
+    });
+    var dias=Object.keys(porDia).sort().reverse().slice(0,14);
+    var maiorDia=1; dias.forEach(function(k){ if(porDia[k].total>maiorDia) maiorDia=porDia[k].total; });
+    h+='<div class="card"><h4>Por dia</h4>';
+    if(dias.length===0){ h+='<div class="muted">Nenhuma venda registrada ainda.</div>'; }
+    else{
+      var somaGeral=0; Object.keys(porDia).forEach(function(k){ somaGeral+=porDia[k].total; });
+      h+=dias.map(function(k){
+        var d=porDia[k];
+        return '<div class="linha"><div class="l-i"><div class="l-n">'+diaExtenso(k)+'</div>'+
+          '<div class="l-s">'+d.n+' venda(s)</div>'+
+          '<div class="barra"><i style="width:'+(d.total/maiorDia*100)+'%"></i></div></div>'+
+          '<div class="l-v"><b>R$ '+money(d.total)+'</b></div></div>';
+      }).join('');
+      h+='<div class="linha" style="border-top:2px solid var(--line);margin-top:4px">'+
+        '<div class="l-i"><div class="l-n">Total geral</div></div>'+
+        '<div class="l-v"><b>R$ '+money(somaGeral)+'</b></div></div>';
+    }
+    h+='</div>';
+
+    // por fornecedor
+    h+='<div class="card"><h4>Por fornecedor — '+periodoLabel()+'</h4>';
+    if(chaves.length===0){ h+='<div class="muted">Nenhuma venda no período.</div>'; }
+    else{
+      h+=chaves.map(function(k){
+        var f=porF[k];
+        return '<div class="linha"><div class="l-i"><div class="l-n">'+esc(f.nome)+'</div>'+
+          '<div class="l-s">'+esc(f.pessoa||'')+' · '+f.n+' venda(s) · '+comissaoDe(k)+'%</div>'+
+          '<div class="barra"><i style="width:'+(f.total/maior*100)+'%"></i></div></div>'+
+          '<div class="l-v"><b>R$ '+money(f.total)+'</b><span>comissão '+money(f.com)+'</span></div></div>';
+      }).join('');
+      h+='<div class="linha" style="border-top:2px solid var(--line);margin-top:4px">'+
+        '<div class="l-i"><div class="l-n">Total</div></div>'+
+        '<div class="l-v"><b>R$ '+money(total)+'</b><span>comissão '+money(minha)+'</span></div></div>';
+    }
+    h+='</div>';
+
+    h+='<div class="btn-row" style="margin-top:0"><button class="btn ghost" onclick="App.enviarResumo()">Enviar resumo</button></div>';
+    document.getElementById('painel').innerHTML=h;
+  }
+
+  function enviarResumo(){
+    var vs=vendasPeriodo(), total=0, porF={};
+    vs.forEach(function(s){
+      total+=s.valor||0;
+      var k=s.sellerId||'?';
+      if(!porF[k]) porF[k]={nome:nomeFornecedor(s),total:0};
+      porF[k].total+=s.valor||0;
+    });
+    var L=['*Festa São Matheus Moreira*','Resumo — '+periodoLabel(),''];
+    var chaves=Object.keys(porF).sort(function(a,b){ return porF[b].total-porF[a].total; });
+    var com=0;
+    chaves.forEach(function(k){
+      var c=porF[k].total*comissaoDe(k)/100; com+=c;
+      L.push(porF[k].nome+': R$ '+money(porF[k].total)+' (comissão R$ '+money(c)+')');
+    });
+    L.push('');
+    L.push('*Total vendido: R$ '+money(total)+'*');
+    L.push('*Comissão total: R$ '+money(com)+'*');
+    L.push(vs.length+' venda(s)');
+    var txt=L.join('\n');
+    if(navigator.share){ navigator.share({text:txt}).catch(function(){}); }
+    else if(navigator.clipboard){ navigator.clipboard.writeText(txt); toast('Resumo copiado','ok'); }
+    else { alert(txt); }
+  }
+
+  /* ---------- FORNECEDORES (master) ---------- */
+  function renderForn(){
+    var us=Store.getUsers().slice().sort(function(a,b){
+      return (ehMaster(b)?1:0)-(ehMaster(a)?1:0) || a.name.localeCompare(b.name); });
+    var todas=Store.getSales().filter(function(s){ return !s.canceled; });
+    var h='<div class="muted" style="margin-bottom:12px">O percentual é aplicado na hora do relatório — pode ajustar quando quiser que os números se refazem.</div>';
+    h+=us.map(function(u){
+      var t=0,n=0;
+      todas.forEach(function(s){ if(s.sellerId===u.id){ t+=s.valor||0; n++; } });
+      if(ehMaster(u)){
+        return '<div class="card" style="padding:12px"><div class="linha" style="border:none;padding:0">'+
+          '<div class="l-i"><div class="l-n">'+esc(u.name)+' <span class="muted">(master)</span></div>'+
+          '<div class="l-s">acompanha, não vende</div></div>'+
+          (u.id!==me.id? '<button class="v-x" onclick="App.removerUser(\''+u.id+'\')">remover</button>':'')+
+          '</div></div>';
+      }
+      return '<div class="card" style="padding:12px">'+
+        '<div class="linha" style="border:none;padding:0 0 8px">'+
+        '<div class="l-i"><div class="l-n">'+esc(u.produto||'(sem produto)')+'</div>'+
+        '<div class="l-s">'+esc(u.name)+' · '+n+' venda(s) no total</div></div>'+
+        '<div class="l-v"><b>R$ '+money(t)+'</b><span>comissão '+money(t*(Number(u.comissao)||0)/100)+'</span></div></div>'+
+        '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
+        '<span class="muted">Comissão</span>'+
+        '<input class="mini" inputmode="decimal" value="'+(u.comissao!=null?u.comissao:'')+'" onchange="App.setComissao(\''+u.id+'\',this.value)">'+
+        '<span class="muted">%</span>'+
+        '<button class="r-edit" onclick="App.editarProduto(\''+u.id+'\')">produto</button>'+
+        '<button class="r-edit" onclick="App.zerarSenha(\''+u.id+'\')">zerar senha</button>'+
+        '<button class="v-x" onclick="App.removerUser(\''+u.id+'\')">remover</button>'+
+        '</div></div>';
+    }).join('');
+    document.getElementById('forn').innerHTML=h;
+  }
+  function setComissao(id,v){
+    var n=parseFloat(String(v).replace(',','.'))||0;
+    if(n<0||n>100){ toast('Percentual entre 0 e 100','err'); renderForn(); return; }
+    Store.updateUser(id,{comissao:n},function(){ toast('Comissão atualizada','ok'); renderForn(); refresh(); });
+  }
+  function editarProduto(id){
+    var us=Store.getUsers(), u=null;
+    for(var i=0;i<us.length;i++){ if(us[i].id===id) u=us[i]; }
+    if(!u) return;
+    var novo=prompt('O que '+u.name+' vende?', u.produto||'');
+    if(novo===null) return;
+    novo=novo.trim(); if(!novo){ toast('Nome vazio','err'); return; }
+    Store.updateUser(id,{produto:novo},function(){ toast('Produto atualizado','ok'); renderForn(); refresh(); });
+  }
+  function zerarSenha(id){
+    if(!confirm('Zerar a senha? A pessoa cria outra no próximo acesso.')) return;
+    Store.updateUser(id,{pin:null},function(){ toast('Senha zerada','ok'); renderForn(); });
+  }
+  function removerUser(id){
+    var us=Store.getUsers(), u=null;
+    for(var i=0;i<us.length;i++){ if(us[i].id===id) u=us[i]; }
+    if(!u) return;
+    var n=0; Store.getSales().forEach(function(s){ if(s.sellerId===id && !s.canceled) n++; });
+    if(n>0 && !confirm(u.name+' tem '+n+' venda(s) registradas.\n\nAs vendas continuam no relatório, mas sem o cadastro o nome do produto pode se perder. Remover mesmo assim?')) return;
+    if(n===0 && !confirm('Remover '+u.name+'?')) return;
+    Store.removeUser(id,function(){ toast('Removido','ok'); renderForn(); refresh(); });
+  }
+
+  /* ---------- VENDAS (master) ---------- */
+  function renderVendas(){
+    document.getElementById('chipsVendas').innerHTML=chipsHTML();
+    var lista=Store.getSales().filter(noPeriodo).sort(function(a,b){ return toMillis(b)-toMillis(a); });
+    var h='';
+    if(lista.length===0){ h='<div class="empty"><div class="em">🧾</div>Nenhuma venda '+periodoLabel()+'.</div>'; }
+    else{
+      var corte=lista.length>200;
+      if(corte) h+='<div class="muted" style="margin-bottom:8px">Mostrando as 200 mais recentes.</div>';
+      h+=lista.slice(0,200).map(function(s){
+        return '<div class="venda'+(s.canceled?' canc':'')+'">'+
+          '<div class="v-i"><div class="v-t">R$ '+money(s.valor)+(s.canceled?' <span class="tagx">cancelada</span>':'')+'</div>'+
+          '<div class="v-s">'+esc(nomeFornecedor(s))+' · '+fmtDia(s)+' às '+fmtHora(s)+'</div></div>'+
+          (s.canceled?'':'<button class="v-x" onclick="App.cancelar(\''+s.id+'\')">cancelar</button>')+
+        '</div>';
+      }).join('');
+    }
+    document.getElementById('vendas').innerHTML=h;
+  }
+
+  /* ---------- CONFIGURAÇÕES ---------- */
+  function openSettings(){
+    var master=ehMaster(me);
+    document.getElementById('cardMaster').style.display=master?'block':'none';
+    document.getElementById('cardComissao').style.display=master?'block':'none';
+    document.getElementById('cardLimpeza').style.display=master?'block':'none';
+    document.getElementById('cardMeuProd').style.display=master?'none':'block';
+    if(!master) document.getElementById('cfg_prod').value=me.produto||'';
+    document.getElementById('cfg_com').value=Store.getConfig().comissaoPadrao;
+    var info=document.getElementById('connInfo');
+    var ver='<br>Versão: <b>'+APP_VERSION+'</b>';
+    info.innerHTML = Store.getMode()==='firebase'
+      ? '🟢 <b>Online</b> · projeto '+esc(FIREBASE_CONFIG.projectId)+ver+
+        '<br>Cache offline ativo: sem internet dá pra continuar registrando; sincroniza quando voltar.'
+      : '🟡 <b>Modo demonstração</b>'+ver+'<br>Os dados somem ao recarregar.';
+    if(master && !document.getElementById('lp_data').value){
+      var hj=new Date();
+      document.getElementById('lp_data').value=dayKey(hj);
+    }
+    if(master) previewLimpeza();
+    document.getElementById('sheetSettings').classList.add('show');
+  }
+  function salvarMeuProduto(){
+    var v=document.getElementById('cfg_prod').value.trim();
+    if(!v){ toast('Informe o produto','err'); return; }
+    Store.updateUser(me.id,{produto:v},function(){
+      me.produto=v;
+      document.getElementById('whoRole').textContent=v;
+      document.getElementById('meuProduto').textContent=v;
+      toast('Atualizado','ok');
+    });
+  }
+  function criarMaster(){
+    var nome=document.getElementById('nm_nome').value.trim();
+    var pin=document.getElementById('nm_pin').value.replace(/\D/g,'');
+    if(!nome){ toast('Informe o nome','err'); return; }
+    if(pin && pin.length!==4){ toast('Senha de 4 dígitos','err'); return; }
+    var us=Store.getUsers();
+    for(var i=0;i<us.length;i++){ if(norm(us[i].name)===norm(nome)){ toast('Já existe esse nome','err'); return; } }
+    Store.addUser({name:nome,pin:pin||null,role:'master',produto:'',comissao:0,active:true},function(){
+      toast(pin? 'Master criado':'Master criado — vai criar a senha no 1º acesso','ok');
+      document.getElementById('nm_nome').value=''; document.getElementById('nm_pin').value='';
+      renderUserPicker();
+    });
+  }
+  function salvarComissao(){
+    var n=parseFloat(String(document.getElementById('cfg_com').value).replace(',','.'))||0;
+    if(n<0||n>100){ toast('Entre 0 e 100','err'); return; }
+    Store.saveConfig({comissaoPadrao:n},function(){ toast('Comissão padrão salva','ok'); });
+  }
+  function dataCorteMs(){
+    var v=document.getElementById('lp_data').value; if(!v) return 0;
+    var p=v.split('-'); return new Date(+p[0],+p[1]-1,+p[2],0,0,0).getTime();
+  }
+  function previewLimpeza(){
+    var el=document.getElementById('lp_preview'); if(!el) return;
+    var ms=dataCorteMs();
+    if(!ms){ el.textContent='Escolha uma data.'; return; }
+    var c=Store.contarAntesDe(ms), d=new Date(ms);
+    el.innerHTML='Serão apagadas <b>'+c.vendas+' venda(s)</b> antes de '+
+      ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear()+'.'+
+      (c.semData? '<br><span style="color:var(--danger)">'+c.semData+' sem data não serão tocadas.</span>':'');
+  }
+  function limparHistorico(){
+    var ms=dataCorteMs(); if(!ms){ toast('Escolha a data','err'); return; }
+    var c=Store.contarAntesDe(ms);
+    if(c.vendas===0){ toast('Nada para apagar','ok'); return; }
+    if(!confirm('Apagar '+c.vendas+' venda(s)? Não pode ser desfeito.')) return;
+    if(!confirm('Confirma mesmo? Some para todos os celulares.')) return;
+    Store.apagarAntesDe(ms,function(n){ toast(n+' vendas apagadas','ok'); previewLimpeza(); refresh(); });
+  }
+
+  /* ---------- helpers ---------- */
+  function refresh(){
+    if(aba==='vender') renderVender();
+    if(aba==='minhas') renderMinhas();
+    if(aba==='painel') renderPainel();
+    if(aba==='forn') renderForn();
+    if(aba==='vendas') renderVendas();
+  }
+  function closeSheet(id){ document.getElementById(id).classList.remove('show'); }
+  var tt=null;
+  function toast(msg,kind){
+    var t=document.getElementById('toast'); t.textContent=msg;
+    t.className=''; void t.offsetWidth; t.classList.add('show'); if(kind) t.classList.add(kind);
+    clearTimeout(tt); tt=setTimeout(function(){ t.classList.remove('show'); },1900);
+  }
+
+  return {boot:boot,recarregar:recarregar,setNet:setNet,toast:toast,
+    pickUser:pickUser,cancelPin:cancelPin,pinKey:pinKey,logout:logout,
+    abrirCadastro:abrirCadastro,fecharCadastro:fecharCadastro,criarAcesso:criarAcesso,
+    tab:tab,setPeriodo:setPeriodo,
+    tecla:tecla,somar:somar,registrarVenda:registrarVenda,cancelar:cancelar,
+    setComissao:setComissao,editarProduto:editarProduto,zerarSenha:zerarSenha,removerUser:removerUser,
+    enviarResumo:enviarResumo,
+    openSettings:openSettings,salvarMeuProduto:salvarMeuProduto,criarMaster:criarMaster,salvarComissao:salvarComissao,
+    previewLimpeza:previewLimpeza,limparHistorico:limparHistorico,closeSheet:closeSheet};
+})();
+
+/* trava de zoom */
+(function(){
+  ['gesturestart','gesturechange','gestureend'].forEach(function(ev){
+    document.addEventListener(ev,function(e){ e.preventDefault(); },{passive:false});
+  });
+  var ult=0;
+  function interativo(t){
+    while(t && t!==document.body){
+      var g=t.tagName;
+      if(g==='BUTTON'||g==='INPUT'||g==='SELECT'||g==='TEXTAREA'||g==='LABEL'||t.onclick) return true;
+      t=t.parentNode;
+    }
+    return false;
+  }
+  document.addEventListener('touchend',function(e){
+    var ag=Date.now();
+    if(ag-ult<=300 && !interativo(e.target)) e.preventDefault();
+    ult=ag;
+  },{passive:false});
+  document.addEventListener('touchmove',function(e){ if(e.touches.length>1) e.preventDefault(); },{passive:false});
+  document.addEventListener('wheel',function(e){ if(e.ctrlKey) e.preventDefault(); },{passive:false});
+})();
+
+App.boot();
+</script>
+</body>
 </html>
